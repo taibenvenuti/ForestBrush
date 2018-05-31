@@ -10,6 +10,11 @@
     <Translation ID="FOREST-BRUSH-USETREESIZE" String="Use tree size for spacing" />
     <Translation ID="FOREST-BRUSH-SQUARE" String="Enable Square Brush" />
     <Translation ID="FOREST-BRUSH-SPACING" String="Spacing" />
+    <Translation ID="FOREST-BRUSH-BRUSH-OPTIONS-BUTTON" String="Brush" />
+    <Translation ID="FOREST-BRUSH-BRUSH-OPTIONS-TITLE" String="Brush Options" />
+    <Translation ID="FOREST-BRUSH-BRUSH-OPTIONS-SQUAREBRUSH" String="Square Brush" />
+    <Translation ID="FOREST-BRUSH-BRUSH-OPTIONS-DENSITY" String="Brush Density" />
+    <Translation ID="FOREST-BRUSH-BRUSH-OPTIONS-AUTODENSITY" String="Auto-density" />
     <Translation ID="FOREST-BRUSH-MODAL-WARNING" String="Warning" />
     <Translation ID="FOREST-BRUSH-MODAL-MESSAGE" String="Message" />
     <Translation ID="FOREST-BRUSH-PROMPT-NEW" String="Please type a name for your new brush" />

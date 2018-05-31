@@ -1,30 +1,65 @@
 ﻿
 using ColossalFramework.Plugins;
+using ColossalFramework.UI;
+using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 namespace ForestBrush
 {
-    public class Perk
+    public interface IForestBrushPerk
     {
-        public enum Level : ulong
+        void Initialize(ForestBrushSettings settings, UIPanel forestBrushPanel);
+    }
+
+    public class ForestBrushPerks
+    {
+        private static IForestBrushPerk[] perks = { };
+
+        public static void Initialize()
         {
-            None,
-            Common = 1397372773u,
-            Uncommon,
-            Rare,
-            Epic,
-            Mythic,
-            Legendary,
-            Titan,
-            Primordial,
-            Count = 8u
+            var pluginsList = new List<IForestBrushPerk>();
+            var enabledMods = PluginManager.instance.GetPluginsInfo().Where(p => p.isEnabled);
+            foreach (var mod in enabledMods)
+            {
+                var assemblies = GetPrivate<List<Assembly>>(mod, "m_Assemblies");
+                if (assemblies == null)
+                {
+                    continue;
+                }
+                foreach (var assembly in assemblies)
+                {
+                    try
+                    {
+                        var types = assembly.GetTypes();
+                        pluginsList.AddRange(types
+                            .Where(type => typeof(IForestBrushPerk).IsAssignableFrom(type))
+                            .Select(type => (IForestBrushPerk)Activator.CreateInstance(type))
+                            );
+                    }
+                    catch
+                    {
+                        
+                    }
+                }
+            }
+            perks = pluginsList.ToArray();
         }
 
-        public Perk.Level GetLevel()
+        public static void Apply()
         {
-            if (PluginManager.instance.GetPluginsInfo().ToList().Find(p => p.publishedFileID.AsUInt64 == (ulong)Level.Common) != null) return Level.Common;
-            if (PluginManager.instance.GetPluginsInfo().ToList().Find(p => p.publishedFileID.AsUInt64 == (ulong)Level.Uncommon) != null) return Level.Uncommon;
-            return Level.None;
+            if (perks.Length < 1) return;
+            foreach (var plugin in perks)
+            {
+                plugin.Initialize(UserMod.Settings, ForestBrushes.instance.BrushPanel);
+            }
+        }
+
+        public static T GetPrivate<T>(object o, string fieldName)
+        {
+            var field = o.GetType().GetField(fieldName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+            return (T)field.GetValue(o);
         }
     }
 }

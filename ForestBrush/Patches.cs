@@ -2,6 +2,7 @@
 using ColossalFramework.Math;
 using Harmony;
 using System;
+using System.Collections;
 using UnityEngine;
 using static RenderManager;
 
@@ -10,13 +11,21 @@ namespace ForestBrush
     [HarmonyPatch(typeof(TreeTool), "ApplyBrush")]
     public class ApplyBrushPatch
     {
+        internal static float Angle = ToolsModifierControl.cameraController.m_currentAngle.x;
+
+        internal static bool AngleChanged;
+
+        internal static bool RotationTogglePressed()
+        {
+            return (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl) || Input.GetKey(KeyCode.LeftCommand) || Input.GetKey(KeyCode.RightCommand));
+        }
+
         static bool Prefix(TreeTool __instance, Randomizer ___m_randomizer, Vector3 ___m_mousePosition, bool ___m_mouseLeftDown, bool ___m_mouseRightDown, ToolController ___m_toolController)
         {
-            if(ForestBrushes.instance.BrushPanel != null)
+            if(ForestBrushes.instance.BrushPanel != null && ___m_mouseLeftDown)
             {
-
                 ___m_toolController.SetBrush(null, Vector3.zero, 1f);
-                if (___m_mouseLeftDown && __instance.m_prefab != null)
+                if (__instance.m_prefab != null)
                 {
                     for (var i = 0; i < 1024; i++)
                     {
@@ -26,9 +35,7 @@ namespace ForestBrush
                         var position = ___m_mousePosition + new Vector3(_x, 0f, _y) * (__instance.m_brushSize / 2);
                         if (UserMod.Settings.SquareBrush)
                         {
-                            var angle = ToolsModifierControl.cameraController.m_currentAngle.x;
-                            angle += 180f;
-                            var radians = angle * Mathf.Deg2Rad;
+                            var radians = Angle * Mathf.Deg2Rad;
                             var c = Mathf.Cos(radians);
                             var s = Mathf.Sin(radians);
                             var brushRadius = new Vector2(__instance.m_brushSize, __instance.m_brushSize) * 0.5f;                            
@@ -102,59 +109,6 @@ namespace ForestBrush
                         }
                     }
                 }
-                else if (___m_mouseRightDown || __instance.m_prefab == null)
-                {
-                    float[] brushData = ___m_toolController.BrushData;
-                    float num = __instance.m_brushSize * 0.5f;
-                    float num2 = 32f;
-                    int num3 = 540;
-                    global::TreeInstance[] buffer = Singleton<TreeManager>.instance.m_trees.m_buffer;
-                    uint[] treeGrid = Singleton<TreeManager>.instance.m_treeGrid;
-                    float strength = __instance.m_strength;
-                    Vector3 mousePosition = ___m_mousePosition;
-                    int num4 = Mathf.Max((int)((mousePosition.x - num) / num2 + (float)num3 * 0.5f), 0);
-                    int num5 = Mathf.Max((int)((mousePosition.z - num) / num2 + (float)num3 * 0.5f), 0);
-                    int num6 = Mathf.Min((int)((mousePosition.x + num) / num2 + (float)num3 * 0.5f), num3 - 1);
-                    int num7 = Mathf.Min((int)((mousePosition.z + num) / num2 + (float)num3 * 0.5f), num3 - 1);
-                    for (int i = num5; i <= num7; i++)
-                    {
-                        float num8 = (((float)i - (float)num3 * 0.5f + 0.5f) * num2 - mousePosition.z + num) / __instance.m_brushSize * 64f - 0.5f;
-                        int num9 = Mathf.Clamp(Mathf.FloorToInt(num8), 0, 63);
-                        int num10 = Mathf.Clamp(Mathf.CeilToInt(num8), 0, 63);
-                        for (int j = num4; j <= num6; j++)
-                        {
-                            float num11 = (((float)j - (float)num3 * 0.5f + 0.5f) * num2 - mousePosition.x + num) / __instance.m_brushSize * 64f - 0.5f;
-                            int num12 = Mathf.Clamp(Mathf.FloorToInt(num11), 0, 63);
-                            int num13 = Mathf.Clamp(Mathf.CeilToInt(num11), 0, 63);
-                            float num14 = brushData[num9 * 64 + num12];
-                            float num15 = brushData[num9 * 64 + num13];
-                            float num16 = brushData[num10 * 64 + num12];
-                            float num17 = brushData[num10 * 64 + num13];
-                            float num18 = num14 + (num15 - num14) * (num11 - (float)num12);
-                            float num19 = num16 + (num17 - num16) * (num11 - (float)num12);
-                            float num20 = num18 + (num19 - num18) * (num8 - (float)num9);
-                            int num21 = (int)(strength * (num20 * 1.2f - 0.2f) * 10000f);
-
-                            uint num26 = treeGrid[i * num3 + j];
-                            int num27 = 0;
-                            while (num26 != 0u)
-                            {
-                                uint nextGridTree = buffer[(int)((UIntPtr)num26)].m_nextGridTree;
-                                if (___m_randomizer.Int32(10000u) < num21)
-                                {
-                                    Singleton<TreeManager>.instance.ReleaseTree(num26);
-                                }
-                                num26 = nextGridTree;
-                                if (++num27 >= 262144)
-                                {
-                                    CODebugBase<LogChannel>.Error(LogChannel.Core, "Invalid list detected!\n" + Environment.StackTrace);
-                                    break;
-                                }
-                            }
-
-                        }
-                    }
-                }
                 return false;
             }
             return true;
@@ -164,9 +118,13 @@ namespace ForestBrush
     [HarmonyPatch(typeof(TreeTool), "RenderOverlay", new Type[] { typeof(CameraInfo) })]
     class RenderOverlayPatch
     {
-        static bool Prefix(TreeTool __instance, ToolController ___m_toolController, ToolBase.ToolErrors ___m_placementErrors, Vector3 ___m_mousePosition, Randomizer ___m_randomizer, CameraInfo cameraInfo)
+        static bool Prefix(TreeTool __instance, ToolController ___m_toolController, ToolBase.ToolErrors ___m_placementErrors, Vector3 ___m_mousePosition, bool ___m_mouseRightDown, Randomizer ___m_randomizer, CameraInfo cameraInfo)
         {
-            if(ForestBrushes.instance.BrushPanel != null)
+            if(ForestBrushes.instance.BrushPanel == null || (___m_mouseRightDown && !ApplyBrushPatch.RotationTogglePressed()))
+            {
+                return true;
+            }
+            else
             {
                 TreeInfo treeInfo = __instance.m_prefab;
                 if (__instance.m_mode == TreeTool.Mode.Brush && treeInfo != null && !___m_toolController.IsInsideUI && Cursor.visible)
@@ -178,9 +136,8 @@ namespace ForestBrush
                     instance.m_drawCallData.m_overlayCalls = instance.m_drawCallData.m_overlayCalls + 1;
                     if(UserMod.Settings.SquareBrush)
                     {
-                        var cameraAngleX = ToolsModifierControl.cameraController.m_targetAngle.x;
-                        cameraAngleX += 180f;
-                        var radians = cameraAngleX * Mathf.Deg2Rad;
+                        var Angle = ApplyBrushPatch.Angle;
+                        var radians = Angle * Mathf.Deg2Rad;
                         var cos = Mathf.Cos(radians);
                         var sin = Mathf.Sin(radians);                       
 
@@ -222,35 +179,92 @@ namespace ForestBrush
                 }
                 return false;
             }
-            return true;
+        }
+    }
+
+    [HarmonyPatch(typeof(TreeTool), "OnToolGUI")]
+    public class OnToolGUIPatch
+    {
+        static bool Prefix(TreeTool __instance, ToolController ___m_toolController, bool ___m_mouseLeftDown, bool ___m_mouseRightDown, Event e)
+        {
+            if (ForestBrushes.instance.BrushPanel != null)
+            {
+                if (!___m_toolController.IsInsideUI && e.type == EventType.MouseDown)
+                {
+                    if (e.button == 0)
+                    {
+                        ___m_mouseLeftDown = true;
+                        if (__instance.m_mode == TreeTool.Mode.Single)
+                        {
+                            Singleton<SimulationManager>.instance.AddAction((IEnumerator)typeof(TreeTool).GetMethod("CreateTree", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).Invoke(__instance, null));
+                        }
+                    }
+                    else if (e.button == 1)
+                    {
+                        ___m_mouseRightDown = true;
+                        ApplyBrushPatch.AngleChanged = false;
+                    }
+                }
+                else if (e.type == EventType.MouseUp)
+                {
+                    if (e.button == 0)
+                    {
+                        ___m_mouseLeftDown = false;
+                    }
+                    else if (e.button == 1)
+                    {
+                        ___m_mouseRightDown = false;
+                        if (__instance.m_mode == TreeTool.Mode.Brush && !ApplyBrushPatch.AngleChanged)
+                        {
+                            Singleton<SimulationManager>.instance.AddAction(ToggleAngle());
+                        }
+                    }
+                }
+                return false;
+            }
+            else return true;
         }
 
-        private static Color GetToolColor(bool warning, bool error)
+        private static IEnumerator ToggleAngle()
         {
-            if (Singleton<InfoManager>.instance.CurrentMode != InfoManager.InfoMode.None)
+            ApplyBrushPatch.Angle = Mathf.Round(ApplyBrushPatch.Angle / 45f - 1f) * 45f;
+            if (ApplyBrushPatch.Angle < 0f)
             {
-                if (error)
-                {
-                    return ToolsModifierControl.toolController.m_errorColorInfo;
-                }
-                if (warning)
-                {
-                    return ToolsModifierControl.toolController.m_warningColorInfo;
-                }
-                return ToolsModifierControl.toolController.m_validColorInfo;
+                ApplyBrushPatch.Angle += 360f;
             }
-            else
+            if (ApplyBrushPatch.Angle >= 360f)
             {
-                if (error)
-                {
-                    return ToolsModifierControl.toolController.m_errorColor;
-                }
-                if (warning)
-                {
-                    return ToolsModifierControl.toolController.m_warningColor;
-                }
-                return ToolsModifierControl.toolController.m_validColor;
+                ApplyBrushPatch.Angle -= 360f;
             }
+            yield return 0;
+            yield break;
+        }
+    }
+
+    [HarmonyPatch(typeof(TreeTool), "OnToolUpdate")]
+    public class OnToolUpdatePatch
+    {
+        static void Postfix(TreeTool __instance, ToolController ___m_toolController)
+        {
+            if (ForestBrushes.instance.BrushPanel != null)
+            {
+                if (__instance.m_mode == TreeTool.Mode.Brush && Input.GetKey(KeyCode.Mouse1) && ApplyBrushPatch.RotationTogglePressed())
+                {
+                    float axis = Input.GetAxis("Mouse X");
+                    if (axis != 0f)
+                    {
+                        ApplyBrushPatch.AngleChanged = true;
+                        Singleton<SimulationManager>.instance.AddAction(DeltaAngle(axis * 10f));
+                    }
+                }
+            }
+        }
+
+        private static IEnumerator DeltaAngle(float delta)
+        {
+            ApplyBrushPatch.Angle += delta;
+            yield return 0;
+            yield break;
         }
     }
 }

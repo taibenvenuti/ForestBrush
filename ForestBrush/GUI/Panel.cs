@@ -16,10 +16,10 @@ namespace ForestBrush.GUI
         UIButton saveCurrentButton;
         UIButton saveNewButton;
         UIButton deleteButton;
+        UIButton brushOptionsButton;
         UILabel searchLabel;
         UITextField searchTextField;
-        UISlider densitySlider;
-        UILabel densityLabel;
+        public BrushOptionsPanel brushOptionsPanel;
 
         public override void Start()
         {
@@ -34,7 +34,9 @@ namespace ForestBrush.GUI
             atlas = UIUtilities.GetAtlas();
             backgroundSprite = "MenuPanel";
             isVisible = true;
-            isInteractive = true;            
+            isInteractive = true;
+
+            brushOptionsPanel = AddUIComponent<BrushOptionsPanel>();
 
             titleLabel = AddUIComponent<UILabel>();
             titleLabel.text = UserMod.Translation.GetTranslation("FOREST-BRUSH-MODNAME");
@@ -143,7 +145,7 @@ namespace ForestBrush.GUI
 
             searchTextField = AddUIComponent<UITextField>();
             searchTextField.atlas = UIUtilities.GetAtlas();
-            searchTextField.size = new Vector2(200f, 30f);
+            searchTextField.size = new Vector2(150f, 30f);
             searchTextField.padding = new RectOffset(6, 6, 6, 6);
             searchTextField.builtinKeyNavigation = true;
             searchTextField.isInteractive = true;
@@ -164,6 +166,12 @@ namespace ForestBrush.GUI
             searchLabel.textScale = Constants.UITextScale;
             searchLabel.relativePosition = new Vector3(searchTextField.relativePosition.x - searchLabel.width - Constants.UISpacing, searchTextField.relativePosition.y + ((30f - searchLabel.height) / 2));
 
+            brushOptionsButton = UIUtilities.CreateButton(this, UserMod.Translation.GetTranslation("FOREST-BRUSH-BRUSH-OPTIONS-BUTTON"));
+            brushOptionsButton.relativePosition = new Vector3(Constants.UISpacing, searchTextField.relativePosition.y);
+            brushOptionsButton.eventClicked += (c, e) =>
+            {
+                brushOptionsPanel.isVisible = !brushOptionsPanel.isVisible;
+            };
         }
 
         internal void UpdateDropDown()

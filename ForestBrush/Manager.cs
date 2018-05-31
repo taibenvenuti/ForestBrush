@@ -11,7 +11,9 @@ namespace ForestBrush
         internal AppMode AppMode { get; set; }
 
         UIComponent treePanel;
-        
+
+        UIComponent findItPanel;
+
         internal TreeBrushPanel BrushPanel;
 
         TreeBrushTool brushTool;
@@ -25,12 +27,13 @@ namespace ForestBrush
         public TreeBrushTool BrushTool { get => brushTool; set => brushTool = value; }
 
         internal void Initialize()
-        {            
+        {
+            ForestBrushPerks.Initialize();
             Trees = LoadAllTrees();
             Container = PrefabCollection<TreeInfo>.FindLoaded("ForestBrushContainer.Forest Brush_Data");
             if (Container == null) return;
             treePanel = AppMode == AppMode.Game ? UIView.Find<UIComponent>("LandscapingTreesPanel") : UIView.Find<UIComponent>("ForestDefaultPanel");
-            var findItPanel = UIView.Find<UIComponent>("FindItDefaultPanel");
+            findItPanel = UIView.Find<UIComponent>("FindItDefaultPanel");
             treePanel.eventVisibilityChanged += (c, e) =>
             {
                 if (!e && BrushPanel) DestroyImmediate(BrushPanel.gameObject);
@@ -66,6 +69,7 @@ namespace ForestBrush
             if (BrushPanel != null || brushTool?.Container == null || !(ToolsModifierControl.toolController?.CurrentTool is TreeTool) || ((TreeTool)ToolsModifierControl.toolController?.CurrentTool)?.m_prefab != brushTool?.Container) return;
 
             BrushPanel = UIView.GetAView()?.AddUIComponent(typeof(TreeBrushPanel)) as TreeBrushPanel;
+            ForestBrushPerks.Apply();
         }
 
 

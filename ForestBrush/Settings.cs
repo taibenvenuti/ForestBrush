@@ -23,7 +23,7 @@ namespace ForestBrush
 
         public bool ConfirmOverwrite { get; internal set; } = true;
             
-        public bool UseTreeSize { get; internal set; } = true;
+        public bool UseTreeSize { get; internal set; } = false;
 
         public bool SquareBrush { get; internal set; } = true;
 
