@@ -14,7 +14,7 @@ namespace ForestBrush
 
         UIComponent findItPanel;
 
-        internal TreeBrushPanel BrushPanel;
+        internal ForestBrushPanel BrushPanel;
 
         TreeBrushTool brushTool;
 
@@ -67,9 +67,8 @@ namespace ForestBrush
         void Update()
         {
             if (BrushPanel != null || brushTool?.Container == null || !(ToolsModifierControl.toolController?.CurrentTool is TreeTool) || ((TreeTool)ToolsModifierControl.toolController?.CurrentTool)?.m_prefab != brushTool?.Container) return;
-
-            BrushPanel = UIView.GetAView()?.AddUIComponent(typeof(TreeBrushPanel)) as TreeBrushPanel;
-            ForestBrushPerks.Apply();
+            
+            BrushPanel = UIView.GetAView()?.AddUIComponent(typeof(ForestBrushPanel)) as ForestBrushPanel;
         }
 
 

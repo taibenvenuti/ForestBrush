@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace ForestBrush.GUI
 {
-    internal class TreeBrushPanel : UIPanel
+    public class ForestBrushPanel : UIPanel
     {
         UIDragHandle dragHandle;
         UILabel titleLabel;
@@ -172,6 +172,8 @@ namespace ForestBrush.GUI
             {
                 brushOptionsPanel.isVisible = !brushOptionsPanel.isVisible;
             };
+
+            ForestBrushPerks.Apply();
         }
 
         internal void UpdateDropDown()

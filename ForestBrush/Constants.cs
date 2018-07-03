@@ -4,22 +4,22 @@ namespace ForestBrush
 {
     public class Constants
     {
-        internal static readonly string VanillaPack = "All Vanilla Trees";
+        public static readonly string VanillaPack = "All Vanilla Trees";
 
-        internal static readonly Vector2 UIPanelSize = new Vector2(400f, 840f);
+        public static readonly Vector2 UIPanelSize = new Vector2(400f, 840f);
 
         public static readonly Vector2 UICheckboxSize = new Vector2(16f, 16f);
 
-        internal const float UIButtonWidth = 120f;
+        public const float UIButtonWidth = 120f;
 
-        internal const float UIButtonHeight = 30f;
+        public const float UIButtonHeight = 30f;
 
-        internal const float UISpacing = 10f;
+        public const float UISpacing = 10f;
 
-        internal const float UITextScale = 0.9f;
+        public const float UITextScale = 0.9f;
 
-        internal const float UITitleBarHeight = 40f;
+        public const float UITitleBarHeight = 40f;
 
-        internal const float UIItemHeight = 60f;
+        public const float UIItemHeight = 60f;
     }
 }

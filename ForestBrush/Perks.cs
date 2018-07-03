@@ -1,6 +1,6 @@
 ﻿
 using ColossalFramework.Plugins;
-using ColossalFramework.UI;
+using ForestBrush.GUI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +10,7 @@ namespace ForestBrush
 {
     public interface IForestBrushPerk
     {
-        void Initialize(ForestBrushSettings settings, UIPanel forestBrushPanel);
+        void Initialize(ForestBrushSettings settings,   BrushOptionsPanel panel);
     }
 
     public class ForestBrushPerks
@@ -52,7 +52,7 @@ namespace ForestBrush
             if (perks.Length < 1) return;
             foreach (var plugin in perks)
             {
-                plugin.Initialize(UserMod.Settings, ForestBrushes.instance.BrushPanel);
+                plugin.Initialize(UserMod.Settings, ForestBrushes.instance.BrushPanel.brushOptionsPanel);
             }
         }
 

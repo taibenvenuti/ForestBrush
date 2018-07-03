@@ -13,21 +13,21 @@ namespace ForestBrush
         [XmlIgnore]
         private static readonly string configurationPath = Path.Combine(DataLocation.localApplicationData, "ForestBrushSettings.xml");
 
-        public List<KeyValuePair<string, List<string>>> SavedBrushes { get; internal set; } = new List<KeyValuePair<string, List<string>>>() { new KeyValuePair<string, List<string>>(Constants.VanillaPack, new List<string>())};
+        public List<KeyValuePair<string, List<string>>> SavedBrushes { get; set; } = new List<KeyValuePair<string, List<string>>>() { new KeyValuePair<string, List<string>>(Constants.VanillaPack, new List<string>())};
 
-        public string SelectedBrush { get; internal set; } = Constants.VanillaPack;
+        public string SelectedBrush { get; set; } = Constants.VanillaPack;
 
-        public float PanelX { get; internal set; } = 8f;
+        public float PanelX { get; set; } = 8f;
 
-        public float PanelY { get; internal set; } = 65f;
+        public float PanelY { get; set; } = 65f;
 
-        public bool ConfirmOverwrite { get; internal set; } = true;
+        public bool ConfirmOverwrite { get; set; } = true;
             
-        public bool UseTreeSize { get; internal set; } = false;
+        public bool UseTreeSize { get; set; } = false;
 
-        public bool SquareBrush { get; internal set; } = true;
+        public bool SquareBrush { get; set; } = true;
 
-        public float Spacing { get; internal set; } = 4f;
+        public float Spacing { get; set; } = 4f;
 
         public static string ConfigurationPath
         {

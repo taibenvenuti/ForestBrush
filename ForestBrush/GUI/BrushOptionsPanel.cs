@@ -49,7 +49,8 @@ namespace ForestBrush.GUI
             };
 
             densityLabel = AddUIComponent<UILabel>();
-            densityLabel.text = UserMod.Translation.GetTranslation("FOREST-BRUSH-BRUSH-OPTIONS-DENSITY") + ": " + Math.Round(16f - UserMod.Settings.Spacing, 1).ToString()   ;            
+            densityLabel.text = UserMod.Translation.GetTranslation("FOREST-BRUSH-BRUSH-OPTIONS-DENSITY") + ": " + Math.Round(16f - UserMod.Settings.Spacing, 1).ToString()   ;
+            densityLabel.textScale = Constants.UITextScale;
 
             densitySlider = AddUIComponent<UISlider>();
             densitySlider.size = new Vector2(width - densityLabel.width - Constants.UISpacing * 4, 5f);
@@ -74,9 +75,10 @@ namespace ForestBrush.GUI
             densitySlider.thumbObject = thumb;
 
             densityLabel.relativePosition = new Vector3(densitySlider.relativePosition.x - densityLabel.width - Constants.UISpacing, Constants.UITitleBarHeight + (Constants.UITitleBarHeight - densityLabel.height) / 2);
-            //Perk
-
-
+            
         }
+
+        public string AutoDensityLabelText => UserMod.Translation.GetTranslation("FOREST-BRUSH-BRUSH-OPTIONS-AUTODENSITY");
+        public string SquareBrushLabelText => UserMod.Translation.GetTranslation("FOREST-BRUSH-BRUSH-OPTIONS-SQUAREBRUSH");
     }
 }
