@@ -8,6 +8,34 @@ using static RenderManager;
 
 namespace ForestBrush
 {
+    [HarmonyPatch(typeof(ToolController), "SetBrush")]
+    public class SetBrushPatch
+    {
+        static bool Prefix(ref Texture2D ___m_brush, ref float[] ___m_brushData, ref Vector3 ___m_brushPosition, ref float ___m_brushSize, Texture2D brush, Vector3 brushPosition, float brushSize)
+        {
+            if (ForestBrushes.instance.BrushPanel != null && ForestBrushes.instance.IsCurrentTreeContainer)
+            {
+                if (___m_brush != brush)
+                {
+                    ___m_brush = brush;
+                    
+                    for (int i = 0; i < 64; i++)
+                    {
+                        for (int j = 0; j < 64; j++)
+                        {
+                            if(___m_brush != null) ___m_brushData[i * 64 + j] = ___m_brush.GetPixel(j, i).a;
+                        }
+                    }
+                    
+                }
+                ___m_brushPosition = brushPosition;
+                ___m_brushSize = brushSize;
+                return false;
+            }
+            return true;
+        }        
+    }
+
     [HarmonyPatch(typeof(TreeTool), "ApplyBrush")]
     public class ApplyBrushPatch
     {
@@ -22,7 +50,7 @@ namespace ForestBrush
 
         static bool Prefix(TreeTool __instance, Randomizer ___m_randomizer, Vector3 ___m_mousePosition, bool ___m_mouseLeftDown, bool ___m_mouseRightDown, ToolController ___m_toolController)
         {
-            if(ForestBrushes.instance.BrushPanel != null && ___m_mouseLeftDown)
+            if(ForestBrushes.instance.BrushPanel != null && ForestBrushes.instance.IsCurrentTreeContainer && ___m_mouseLeftDown)
             {
                 ___m_toolController.SetBrush(null, Vector3.zero, 1f);
                 if (__instance.m_prefab != null)
@@ -96,8 +124,7 @@ namespace ForestBrush
                                                 var scale = randomizer.Int32(160) / 10;
                                                 if (Mathf.PerlinNoise(position.x * scale, position.y * scale) > 0.5)
                                                 {
-                                                    uint num25;
-                                                    if (Singleton<TreeManager>.instance.CreateTree(out num25, ref ___m_randomizer, ___m_treeInfo, position, false))
+                                                    if (Singleton<TreeManager>.instance.CreateTree(out uint num25, ref ___m_randomizer, ___m_treeInfo, position, false))
                                                     {
                                                     }
                                                 }
@@ -111,6 +138,10 @@ namespace ForestBrush
                 }
                 return false;
             }
+            else if (ForestBrushes.instance.BrushPanel != null && ForestBrushes.instance.IsCurrentTreeContainer && ___m_mouseRightDown && RotationTogglePressed())
+            {
+                return false;
+            }
             return true;
         }
     }
@@ -120,7 +151,7 @@ namespace ForestBrush
     {
         static bool Prefix(TreeTool __instance, ToolController ___m_toolController, ToolBase.ToolErrors ___m_placementErrors, Vector3 ___m_mousePosition, bool ___m_mouseRightDown, Randomizer ___m_randomizer, CameraInfo cameraInfo)
         {
-            if(ForestBrushes.instance.BrushPanel == null || (___m_mouseRightDown && !ApplyBrushPatch.RotationTogglePressed()))
+            if(ForestBrushes.instance.BrushPanel == null || !ForestBrushes.instance.IsCurrentTreeContainer || (___m_mouseRightDown && !ApplyBrushPatch.RotationTogglePressed()))
             {
                 return true;
             }
@@ -130,7 +161,7 @@ namespace ForestBrush
                 if (__instance.m_mode == TreeTool.Mode.Brush && treeInfo != null && !___m_toolController.IsInsideUI && Cursor.visible)
                 {
                     var size = __instance.m_brushSize / 2;
-                    Color toolColor = ToolsModifierControl.toolController.m_validColorInfo;
+                    Color toolColor = UserMod.Settings.OverlayColor;
                     ___m_toolController.RenderColliding(cameraInfo, toolColor, toolColor, toolColor, toolColor, 0, 0);
                     ToolManager instance = Singleton<ToolManager>.instance;
                     instance.m_drawCallData.m_overlayCalls = instance.m_drawCallData.m_overlayCalls + 1;
@@ -187,7 +218,7 @@ namespace ForestBrush
     {
         static bool Prefix(TreeTool __instance, ToolController ___m_toolController, bool ___m_mouseLeftDown, bool ___m_mouseRightDown, Event e)
         {
-            if (ForestBrushes.instance.BrushPanel != null)
+            if (ForestBrushes.instance.BrushPanel != null && ForestBrushes.instance.IsCurrentTreeContainer)
             {
                 if (!___m_toolController.IsInsideUI && e.type == EventType.MouseDown)
                 {
@@ -246,7 +277,7 @@ namespace ForestBrush
     {
         static void Postfix(TreeTool __instance, ToolController ___m_toolController)
         {
-            if (ForestBrushes.instance.BrushPanel != null)
+            if (ForestBrushes.instance.BrushPanel != null && ForestBrushes.instance.IsCurrentTreeContainer)
             {
                 if (__instance.m_mode == TreeTool.Mode.Brush && Input.GetKey(KeyCode.Mouse1) && ApplyBrushPatch.RotationTogglePressed())
                 {

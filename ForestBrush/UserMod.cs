@@ -1,15 +1,13 @@
-﻿using ColossalFramework.Plugins;
-using ForestBrush.TranslationFramework;
+﻿using ForestBrush.TranslationFramework;
 using Harmony;
 using ICities;
-using System.Linq;
 using System.Reflection;
 
 namespace ForestBrush
 {
     public class UserMod : IUserMod
     {
-        public string Name => "Forest Brush";
+        public string Name => "Forest Brushes";
         public string Description => Translation.GetTranslation("FOREST-BRUSH-MODDESCRIPTION");
         internal static Translation Translation = new Translation();
         private HarmonyInstance harmony;
@@ -18,13 +16,15 @@ namespace ForestBrush
         {
             get
             {
-                if (settings == null)
-                    settings = ForestBrushSettings.Load();
-                if (settings == null)
+                if(settings == null)
                 {
-                    settings = new ForestBrushSettings();
-                    settings.Save();
-                }                
+                    settings = ForestBrushSettings.Load();
+                    if (settings == null)
+                    {
+                        settings = new ForestBrushSettings();
+                        settings.Save();
+                    }
+                }
                 return settings;
             }
             set
@@ -37,17 +37,6 @@ namespace ForestBrush
         {
             harmony = HarmonyInstance.Create("com.tpb.forestbrush");
             harmony.PatchAll(Assembly.GetExecutingAssembly());
-        }
-
-        internal static bool IsCherryUnlocked()
-        {
-            var plugins = PluginManager.instance.GetPluginsInfo();
-            return (from plugin in plugins.Where(p => p.isEnabled)
-                    select plugin.GetInstances<IUserMod>() into instances
-                    where instances.Any()
-                    select instances[0].Name into name
-                    where name == "Zen Garden Cherry Blossom Unlocker"
-                    select name).Any();
         }
     }
 }

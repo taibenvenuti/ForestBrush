@@ -91,15 +91,13 @@ namespace ForestBrush
             UserMod.Settings.Save();
         }
 
-        public void New(string name)
+        public void New(string brushName)
         {
-            brushName = name;
             var newTreeNames = treeInfos.Select(p => p.name).ToList();
             if (!ForestBrushes.instance.Brushes.TryGetValue(brushName, out List<string> treeNames))
             {
                 ForestBrushes.instance.Brushes.Add(brushName, newTreeNames);
                 UserMod.Settings.Save();
-                /// Change dropdown index and repopulate treesList -TODO!!!
             }                
             else ForestBrushes.instance.BrushPanel.OnSaveCurrentClickedEventHandler(true);
             UserMod.Settings.SelectedBrush = brushName;

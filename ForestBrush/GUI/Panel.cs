@@ -172,8 +172,6 @@ namespace ForestBrush.GUI
             {
                 brushOptionsPanel.isVisible = !brushOptionsPanel.isVisible;
             };
-
-            ForestBrushPerks.Apply();
         }
 
         internal void UpdateDropDown()

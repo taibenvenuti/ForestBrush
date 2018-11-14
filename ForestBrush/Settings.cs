@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml.Serialization;
+using UnityEngine;
 
 namespace ForestBrush
 {
@@ -13,7 +14,7 @@ namespace ForestBrush
         [XmlIgnore]
         private static readonly string configurationPath = Path.Combine(DataLocation.localApplicationData, "ForestBrushSettings.xml");
 
-        public List<KeyValuePair<string, List<string>>> SavedBrushes { get; set; } = new List<KeyValuePair<string, List<string>>>() { new KeyValuePair<string, List<string>>(Constants.VanillaPack, new List<string>())};
+        public List<KeyValuePair<string, List<string>>> SavedBrushes { get; set; } = new List<KeyValuePair<string, List<string>>>() { new KeyValuePair<string, List<string>>(Constants.VanillaPack, new List<string>()) };
 
         public string SelectedBrush { get; set; } = Constants.VanillaPack;
 
@@ -22,12 +23,14 @@ namespace ForestBrush
         public float PanelY { get; set; } = 65f;
 
         public bool ConfirmOverwrite { get; set; } = true;
-            
+
         public bool UseTreeSize { get; set; } = false;
 
         public bool SquareBrush { get; set; } = true;
 
         public float Spacing { get; set; } = 4f;
+
+        public OverlayColor OverlayColor { get; set; } = new Color32(133, 33, 33, 255);
 
         public static string ConfigurationPath
         {

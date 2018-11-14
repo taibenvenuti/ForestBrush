@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using ColossalFramework;
 using ColossalFramework.UI;
 using UnityEngine;
 
@@ -6,7 +7,7 @@ namespace ForestBrush.GUI
 {
     public class TreeItem : UIPanel, IUIFastListRow
     {
-        TreeInfo treeInfo;
+        TreeInfo prefab;
         UICheckBox includeCheckBox;
         UILabel treeNameLabel;
         UITextureSprite thumbNailSprite;
@@ -17,7 +18,7 @@ namespace ForestBrush.GUI
         {
             if (initialized) return;
 
-            treeInfo = info;
+            prefab = info;
 
             //General
             atlas = UIUtilities.GetAtlas();
@@ -28,7 +29,7 @@ namespace ForestBrush.GUI
 
             //Thumbnail
             thumbNailSprite = AddUIComponent<UITextureSprite>();
-            thumbNailSprite.texture = treeInfo.m_Atlas.sprites.Find(spr => spr.name == treeInfo.m_Thumbnail).texture;
+            thumbNailSprite.texture = prefab.m_Atlas.sprites.Find(spr => spr.name == prefab.m_Thumbnail).texture;
             thumbNailSprite.size = new Vector2(50f, 54.5f);
             thumbNailSprite.relativePosition = new Vector3(Constants.UISpacing, (Constants.UIItemHeight - thumbNailSprite.height) / 2);
 
@@ -46,12 +47,12 @@ namespace ForestBrush.GUI
             includeCheckBox.checkedBoxObject.size = includeCheckBox.size;
             includeCheckBox.checkedBoxObject.relativePosition = Vector3.zero;
             includeCheckBox.eventCheckChanged += EventIncludeTree;
-            includeCheckBox.isChecked = ForestBrushes.instance.BrushTool.Container.m_variations.Any(v => v.m_finalTree == treeInfo);
+            includeCheckBox.isChecked = ForestBrushes.instance.BrushTool.Container.m_variations.Any(v => v.m_finalTree == prefab);
             includeCheckBox.relativePosition = new Vector3(width - (Constants.UISpacing * 2) - includeCheckBox.width, (height - includeCheckBox.height) / 2);
 
             //Label
             treeNameLabel = AddUIComponent<UILabel>();
-            treeNameLabel.text = treeInfo.GetUncheckedLocalizedTitle();
+            treeNameLabel.text = prefab.GetUncheckedLocalizedTitle();
             treeNameLabel.relativePosition = new Vector3(thumbNailSprite.width + Constants.UISpacing * 2, (height - treeNameLabel.height) / 2);
 
             initialized = true;
@@ -64,7 +65,7 @@ namespace ForestBrush.GUI
 
         public void UpdateCheckbox()
         {
-            includeCheckBox.isChecked = ForestBrushes.instance.BrushTool.Container.m_variations.Any(v => v.m_finalTree == treeInfo);
+            includeCheckBox.isChecked = ForestBrushes.instance.BrushTool.Container.m_variations.Any(v => v.m_finalTree == prefab);
         }
 
         private void EventIncludeTree(UIComponent component, bool value)
@@ -72,7 +73,7 @@ namespace ForestBrush.GUI
             bool updateAll = false;
             if (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.LeftCommand) || Input.GetKey(KeyCode.RightControl) || Input.GetKey(KeyCode.RightCommand))
                 updateAll = true;
-            ForestBrushes.instance.BrushTool.Update(treeInfo, value, updateAll);
+            ForestBrushes.instance.BrushTool.Update(prefab, value, updateAll);
         }
 
         public void Deselect(bool isRowOdd)
@@ -82,19 +83,28 @@ namespace ForestBrush.GUI
 
         public void Display(object data, bool isRowOdd)
         {
-            treeInfo = data as TreeInfo;
-            Initialize(treeInfo);
-            includeCheckBox.isChecked = ForestBrushes.instance.BrushTool.Container.m_variations.Any(v => v.m_finalTree == treeInfo);
-            treeNameLabel.text = treeInfo.GetUncheckedLocalizedTitle();
-            thumbNailSprite.texture = treeInfo.m_Atlas.sprites.Find(spr => spr.name == treeInfo.m_Thumbnail).texture;
-            backgroundSprite = null;
-            if (isRowOdd)
-                backgroundSprite = "ListItemHover";
+            if (data == null) return;
+            try
+            {
+                prefab = data as TreeInfo;
+                Initialize(prefab);
+                includeCheckBox.isChecked = ForestBrushes.instance.BrushTool.Container.m_variations.Any(v => v.m_finalTree == prefab);
+                treeNameLabel.text = prefab.GetUncheckedLocalizedTitle();
+                thumbNailSprite.texture = prefab.m_Atlas.sprites.Find(spr => spr.name == prefab.m_Thumbnail).texture;
+                backgroundSprite = null;
+                if (isRowOdd)
+                    backgroundSprite = "ListItemHover";
+            }
+            catch (System.Exception exception)
+            {
+                Debug.LogWarning(exception + "Stacktrace: " + exception.StackTrace, this);
+                
+            }
         }
 
         public void Select(bool isRowOdd)
         {
             
-        }
+        }       
     }
 }

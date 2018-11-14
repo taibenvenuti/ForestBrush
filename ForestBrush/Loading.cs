@@ -18,5 +18,11 @@ namespace ForestBrush
             base.OnLevelLoaded(mode);
             if(appMode == AppMode.Game || appMode == AppMode.MapEditor) ForestBrushes.instance.Initialize();
         }
+
+        public override void OnReleased()
+        {
+            base.OnReleased();
+            ForestBrushes.instance.CleanUp();
+        }
     }
 }
