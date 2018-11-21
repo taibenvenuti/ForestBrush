@@ -10,37 +10,35 @@ namespace ForestBrush
 
         List<TreeInfo> treeInfos;
 
-        TreeInfo container;
-
-        public TreeInfo Container => container;
+        public TreeInfo Container { get; private set; }
 
         public TreeBrushTool()
         {
             treeInfos = new List<TreeInfo>();
         }
 
-        public TreeBrushTool(string name, List<string> treeNames = null)
+        public TreeBrushTool(string name, List<string> treeNames)
         {
-            container = ForestBrushes.instance.Container;
+            Container = ForestBrushMod.instance.Container;
 
             brushName = name;
 
-            if (!container) return;
+            if (!Container) return;
 
-            if(treeNames == null)
-                treeInfos = ForestBrushes.instance.Trees.Values.Where(t => t.m_isCustomContent == false).ToList();
+            if(name == Constants.VanillaPack)
+                treeInfos = ForestBrushMod.instance.Trees.Values.Where(t => t.m_isCustomContent == false).ToList();
             else
             {
                 treeInfos = new List<TreeInfo>();
                 foreach (var treeName in treeNames)
                 {
-                    var tree = ForestBrushes.instance.Trees[treeName];
+                    var tree = ForestBrushMod.instance.Trees[treeName];
                     if (!tree) continue;
                     treeInfos.Add(tree);
                 }
             }               
 
-            container = CreateBrush(container);
+            Container = CreateBrush(Container);
         }
 
         private void Add(TreeInfo tree)
@@ -57,8 +55,8 @@ namespace ForestBrush
 
         public void RemoveAll()
         {
-            var infoBuffer = ForestBrushes.instance.BrushPanel.TreesList.rowsData.m_buffer;
-            var itemBuffer = ForestBrushes.instance.BrushPanel.TreesList.rows.m_buffer;
+            var infoBuffer = ForestBrushMod.instance.ForestBrushPanel.TreesList.rowsData.m_buffer;
+            var itemBuffer = ForestBrushMod.instance.ForestBrushPanel.TreesList.rows.m_buffer;
             foreach (TreeInfo tree in infoBuffer)
             {
                 if (treeInfos.Contains(tree))
@@ -72,9 +70,9 @@ namespace ForestBrush
 
         private void AddAll()
         {
-            var infoBuffer = ForestBrushes.instance.BrushPanel.TreesList.rowsData.m_buffer.Cast<TreeInfo>().ToList();
-            treeInfos = ForestBrushes.instance.Trees.Values.Where(treeInfo => infoBuffer.Contains(treeInfo)).ToList();
-            var itemBuffer = ForestBrushes.instance.BrushPanel.TreesList.rows.m_buffer;
+            var infoBuffer = ForestBrushMod.instance.ForestBrushPanel.TreesList.rowsData.m_buffer.Cast<TreeInfo>().ToList();
+            treeInfos = ForestBrushMod.instance.Trees.Values.Where(treeInfo => infoBuffer.Contains(treeInfo)).ToList();
+            var itemBuffer = ForestBrushMod.instance.ForestBrushPanel.TreesList.rows.m_buffer;
             foreach (TreeItem item in itemBuffer)
             {
                 item?.ToggleCheckbox(true);
@@ -84,32 +82,32 @@ namespace ForestBrush
         internal void Save()
         {            
             var newTreeNames = treeInfos.Select(p => p.name).ToList();
-            if (!ForestBrushes.instance.Brushes.TryGetValue(brushName, out List<string> treeNames))
-                ForestBrushes.instance.Brushes.Add(brushName, newTreeNames);
-            else ForestBrushes.instance.Brushes[brushName] = newTreeNames;
+            if (!ForestBrushMod.instance.Brushes.TryGetValue(brushName, out List<string> treeNames))
+                ForestBrushMod.instance.Brushes.Add(brushName, newTreeNames);
+            else ForestBrushMod.instance.Brushes[brushName] = newTreeNames;
 
-            UserMod.Settings.Save();
+            UserMod.BrushSettings.Save();
         }
 
         public void New(string brushName)
         {
             var newTreeNames = treeInfos.Select(p => p.name).ToList();
-            if (!ForestBrushes.instance.Brushes.TryGetValue(brushName, out List<string> treeNames))
+            if (!ForestBrushMod.instance.Brushes.TryGetValue(brushName, out List<string> treeNames))
             {
-                ForestBrushes.instance.Brushes.Add(brushName, newTreeNames);
-                UserMod.Settings.Save();
+                ForestBrushMod.instance.Brushes.Add(brushName, newTreeNames);
+                UserMod.BrushSettings.Save();
             }                
-            else ForestBrushes.instance.BrushPanel.OnSaveCurrentClickedEventHandler(true);
-            UserMod.Settings.SelectedBrush = brushName;
-            ForestBrushes.instance.BrushPanel.UpdateDropDown();
+            else ForestBrushMod.instance.ForestBrushPanel.OnSaveCurrentClickedEventHandler(true);
+            SavedSettings.SelectedBrush.value = brushName;
+            ForestBrushMod.instance.ForestBrushPanel.UpdateDropDown();
         }
 
         internal void Delete()
         {            
-            if (ForestBrushes.instance.Brushes.TryGetValue(brushName, out List<string> treeNames))
-                ForestBrushes.instance.Brushes.Remove(brushName);
-            UserMod.Settings.Save();
-            ForestBrushes.instance.BrushPanel.UpdateDropDown();
+            if (ForestBrushMod.instance.Brushes.TryGetValue(brushName, out List<string> treeNames))
+                ForestBrushMod.instance.Brushes.Remove(brushName);
+            UserMod.BrushSettings.Save();
+            ForestBrushMod.instance.ForestBrushPanel.UpdateDropDown();
         }
 
         public TreeInfo CreateBrush(TreeInfo info)
@@ -152,7 +150,7 @@ namespace ForestBrush
                 if (value) AddAll();
                 else RemoveAll();
             }
-            container = CreateBrush(container);
+            Container = CreateBrush(Container);
         }
     }
 }

@@ -1,14 +1,45 @@
-﻿using ColossalFramework;
-using ColossalFramework.UI;
+﻿using ColossalFramework.UI;
 using System.IO;
 using System.Reflection;
 using UnityEngine;
 
-namespace ForestBrush
+namespace ForestBrush.Resources
 {
     //Class by SamsamTS
-    class ResourceLoader
+    public class ResourceLoader
     {
+
+        public static UITextureAtlas LoadAtlas()
+        {
+            UITextureAtlas atlas;
+
+            string[] spriteNames = new string[]
+            {
+                "ForestBrushNormal",
+                "ForestBrushDisabled",
+                "ForestBrushFocused",
+                "ForestBrushHovered",
+                "ForestBrushPressed",
+            };
+
+            atlas = CreateTextureAtlas("ForestBrushAtlas", spriteNames, "ForestBrush.Resources.");
+
+            UITextureAtlas defaultAtlas = GetAtlas("Ingame");
+
+            Texture2D[] textures = new Texture2D[]
+            {
+                defaultAtlas["ToolbarIconGroup6Normal"].texture,
+                defaultAtlas["ToolbarIconGroup6Disabled"].texture,
+                defaultAtlas["ToolbarIconGroup6Focused"].texture,
+                defaultAtlas["ToolbarIconGroup6Hovered"].texture,
+                defaultAtlas["ToolbarIconGroup6Pressed"].texture
+            };
+
+            AddTexturesInAtlas(atlas, textures);
+
+            return atlas;
+        }
+
         public static UITextureAtlas CreateTextureAtlas(string atlasName, string[] spriteNames, string assemblyPath)
         {
             int maxSize = 1024;
@@ -17,7 +48,7 @@ namespace ForestBrush
             Rect[] regions = new Rect[spriteNames.Length];
 
             for (int i = 0; i < spriteNames.Length; i++)
-                textures[i] = loadTextureFromAssembly(assemblyPath + spriteNames[i] + ".png");
+                textures[i] = LoadTextureFromAssembly(assemblyPath + spriteNames[i] + ".png");
 
             regions = texture2D.PackTextures(textures, 2, maxSize);
 
@@ -94,7 +125,7 @@ namespace ForestBrush
 
         public static UITextureAtlas GetAtlas(string name)
         {
-            UITextureAtlas[] atlases = Resources.FindObjectsOfTypeAll(typeof(UITextureAtlas)) as UITextureAtlas[];
+            UITextureAtlas[] atlases = UnityEngine.Resources.FindObjectsOfTypeAll(typeof(UITextureAtlas)) as UITextureAtlas[];
             for (int i = 0; i < atlases.Length; i++)
             {
                 if (atlases[i].name == name)
@@ -104,16 +135,22 @@ namespace ForestBrush
             return UIView.GetAView().defaultAtlas;
         }
 
-        public static Texture2D loadTextureFromAssembly(string path)
+        public static Texture2D LoadTextureFromAssembly(string path)
         {
-            Stream manifestResourceStream = Assembly.GetExecutingAssembly().GetManifestResourceStream(path);
-
-            byte[] array = new byte[manifestResourceStream.Length];
-            manifestResourceStream.Read(array, 0, array.Length);
-
             Texture2D texture2D = new Texture2D(2, 2, TextureFormat.ARGB32, false);
-            texture2D.LoadImage(array);
-
+            try
+            {
+                using (Stream manifestResourceStream = Assembly.GetExecutingAssembly().GetManifestResourceStream(path))
+                {
+                    byte[] array = new byte[manifestResourceStream.Length];
+                    manifestResourceStream.Read(array, 0, array.Length);
+                    texture2D.LoadImage(array);
+                }
+            }
+            catch (System.Exception)
+            {
+                Debug.LogWarning("Failed to Load Texture from Assembly");
+            }
             return texture2D;
         }
 

@@ -10,19 +10,18 @@ namespace ForestBrush
         {
             base.OnCreated(loading);
             appMode = loading.currentMode;
-            ForestBrushes.instance.AppMode = appMode;
         }
 
         public override void OnLevelLoaded(LoadMode mode)
         {
             base.OnLevelLoaded(mode);
-            if(appMode == AppMode.Game || appMode == AppMode.MapEditor) ForestBrushes.instance.Initialize();
+            if(appMode == AppMode.Game || appMode == AppMode.MapEditor) ForestBrushMod.instance.Initialize();
         }
 
         public override void OnReleased()
         {
             base.OnReleased();
-            ForestBrushes.instance.CleanUp();
+            ForestBrushMod.instance.CleanUp();
         }
     }
 }

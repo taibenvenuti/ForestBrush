@@ -40,14 +40,14 @@ namespace ForestBrush.GUI
 
             if (rendered)
             {
-                Texture2D texture = ResourceLoader.ConvertRenderTexture(m_previewRenderer.texture);
+                Texture2D texture = Resources.ResourceLoader.ConvertRenderTexture(m_previewRenderer.texture);
                 texture.name = name;
 
                 prefab.m_Thumbnail = name;
-                prefab.m_Atlas = ResourceLoader.CreateTextureAtlas("ForestBrushThumbnails_" + name, new string[] { }, null);
+                prefab.m_Atlas = Resources.ResourceLoader.CreateTextureAtlas("ForestBrushThumbnails_" + name, new string[] { }, null);
 
-                ResourceLoader.ResizeTexture(texture, 109, 100);
-                ResourceLoader.AddTexturesInAtlas(prefab.m_Atlas, GenerateMissingThumbnailVariants(texture));
+                Resources.ResourceLoader.ResizeTexture(texture, 109, 100);
+                Resources.ResourceLoader.AddTexturesInAtlas(prefab.m_Atlas, GenerateMissingThumbnailVariants(texture));
 
                 Debug.Log("Generated thumbnails for: " + name);
             }
@@ -62,9 +62,9 @@ namespace ForestBrush.GUI
         public static void AddThumbnailVariantsInAtlas(PrefabInfo prefab)
         {
             Texture2D texture = prefab.m_Atlas[prefab.m_Thumbnail].texture;
-            prefab.m_Atlas = ResourceLoader.CreateTextureAtlas("ForestBrushThumbnails_" + prefab.m_Thumbnail, new string[] { }, null);
+            prefab.m_Atlas = Resources.ResourceLoader.CreateTextureAtlas("ForestBrushThumbnails_" + prefab.m_Thumbnail, new string[] { }, null);
 
-            ResourceLoader.AddTexturesInAtlas(prefab.m_Atlas, GenerateMissingThumbnailVariants(texture));
+            Resources.ResourceLoader.AddTexturesInAtlas(prefab.m_Atlas, GenerateMissingThumbnailVariants(texture));
 
             Debug.Log("Generated thumbnails variants for: " + prefab.name);
         }
@@ -118,7 +118,7 @@ namespace ForestBrush.GUI
         {
             if (focusedFilterTexture == null)
             {
-                focusedFilterTexture = ResourceLoader.loadTextureFromAssembly("ForestBrush.Resources.SelectFilter.png");
+                focusedFilterTexture = Resources.ResourceLoader.LoadTextureFromAssembly("ForestBrush.Resources.SelectFilter.png");
             }
 
             int b = c.b * 31 / 255;

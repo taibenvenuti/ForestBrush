@@ -14,7 +14,7 @@ namespace ForestBrush.GUI
             {
                 _atlases = new Dictionary<string, UITextureAtlas>();
 
-                UITextureAtlas[] atlases = Resources.FindObjectsOfTypeAll(typeof(UITextureAtlas)) as UITextureAtlas[];
+                UITextureAtlas[] atlases = UnityEngine.Resources.FindObjectsOfTypeAll(typeof(UITextureAtlas)) as UITextureAtlas[];
                 for (int i = 0; i < atlases.Length; i++)
                 {
                     if (!_atlases.ContainsKey(atlases[i].name))

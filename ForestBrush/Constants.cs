@@ -6,7 +6,7 @@ namespace ForestBrush
     {
         public static readonly string VanillaPack = "All Vanilla Trees";
 
-        public static readonly Vector2 UIPanelSize = new Vector2(400f, 840f);
+        public static readonly Vector2 UIPanelSize = new Vector2(400f, 640f);
 
         public static readonly Vector2 UICheckboxSize = new Vector2(16f, 16f);
 

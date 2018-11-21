@@ -1,5 +1,4 @@
 ﻿using ColossalFramework.UI;
-using System;
 using UnityEngine;
 
 namespace ForestBrush.GUI
@@ -9,19 +8,22 @@ namespace ForestBrush.GUI
         UIDragHandle dragHandle;
         UILabel titleLabel;
         UIButton closeButton;
+        UILabel sizeLabel;
+        public UISlider sizeSlider;
         UILabel densityLabel;
-        UISlider densitySlider;
-        public UILabel autoDensityLabel;
+        public UISlider densitySlider;
+        UILabel autoDensityLabel;
         public UICheckBox autoDensityCheckBox;
-        public UILabel squareBrushLabel;
+        UILabel squareBrushLabel;
         public UICheckBox squareBrushCheckBox;
-        public UILabel overlayColorLabel;
+        UILabel overlayColorLabel;
         public UIColorField colorFieldTemplate;
-        public UIPanel layoutPanel0;
-        public UIPanel layoutPanel1;
-        public UIPanel layoutPanel2;
-        public UIPanel layoutPanel3;
-        public UIPanel layoutPanel4;
+        UIPanel layoutPanelTitle;
+        UIPanel layoutPanelSize;
+        UIPanel layoutPanelDensity;
+        UIPanel layoutPanelAutoDensityColor;
+        UIPanel layoutPanelSquareBrush;
+        UIPanel layoutPanelSpace;
 
         public override void Start()
         {
@@ -30,36 +32,36 @@ namespace ForestBrush.GUI
             autoLayout = true;
             autoLayoutDirection = LayoutDirection.Vertical;
             autoFitChildrenVertically = true;
-            autoLayoutPadding = new RectOffset(0, 0, 0, 14);
+            autoLayoutPadding = new RectOffset(0, 0, 0, 14);          
 
 
             width = 400f;
-            relativePosition = new Vector3(0f, parent.height);
+            relativePosition = new Vector3(0f, parent.height + 1f);
             atlas = UIUtilities.GetAtlas();
             backgroundSprite = "MenuPanel";
             isVisible = false;
             isInteractive = true;
 
 
-            layoutPanel0 = AddUIComponent<UIPanel>();
-            layoutPanel0.size = new Vector2(width, 40);
-            layoutPanel0.zOrder = 0;
+            layoutPanelTitle = AddUIComponent<UIPanel>();
+            layoutPanelTitle.size = new Vector2(width, 40);
+            layoutPanelTitle.zOrder = 0;
 
-            titleLabel = layoutPanel0.AddUIComponent<UILabel>();
+            titleLabel = layoutPanelTitle.AddUIComponent<UILabel>();
             titleLabel.autoSize = titleLabel.autoHeight = false;
             titleLabel.text = UserMod.Translation.GetTranslation("FOREST-BRUSH-BRUSH-OPTIONS-TITLE");
             titleLabel.textScale = Constants.UITextScale;
             titleLabel.verticalAlignment = UIVerticalAlignment.Middle;
             titleLabel.textAlignment = UIHorizontalAlignment.Center;
-            titleLabel.size = new Vector2(layoutPanel0.width, 40f);
+            titleLabel.size = new Vector2(layoutPanelTitle.width, 40f);
             titleLabel.relativePosition = Vector3.zero;
 
-            dragHandle = layoutPanel0.AddUIComponent<UIDragHandle>();
+            dragHandle = layoutPanelTitle.AddUIComponent<UIDragHandle>();
             dragHandle.size = titleLabel.size;
             dragHandle.relativePosition = Vector3.zero;
             dragHandle.target = this;
 
-            closeButton = layoutPanel0.AddUIComponent<UIButton>();
+            closeButton = layoutPanelTitle.AddUIComponent<UIButton>();
             closeButton.atlas = UIUtilities.GetAtlas();
             closeButton.size = new Vector2(20f, 20f);
             closeButton.relativePosition = new Vector3(width - 30f, 10f);
@@ -71,63 +73,110 @@ namespace ForestBrush.GUI
                 isVisible = false;
             };
 
-            layoutPanel1 = AddUIComponent<UIPanel>();
-            layoutPanel1.size = new Vector2(width, 16);
-            layoutPanel1.autoLayout = true;
-            layoutPanel1.autoLayoutDirection = LayoutDirection.Horizontal;
-            layoutPanel1.autoFitChildrenHorizontally = true;
-            layoutPanel1.autoLayoutPadding = new RectOffset(14, 0, 0, 0);
-            layoutPanel1.zOrder = 1;
+            layoutPanelSize = AddUIComponent<UIPanel>();
+            layoutPanelSize.size = new Vector2(width, 16);
+            layoutPanelSize.autoLayout = true;
+            layoutPanelSize.autoLayoutDirection = LayoutDirection.Horizontal;
+            layoutPanelSize.autoFitChildrenHorizontally = true;
+            layoutPanelSize.autoLayoutPadding = new RectOffset(14, 0, 0, 0);
+            layoutPanelSize.zOrder = 1;
 
-            densityLabel = layoutPanel1.AddUIComponent<UILabel>();
-            densityLabel.text = UserMod.Translation.GetTranslation("FOREST-BRUSH-BRUSH-OPTIONS-DENSITY") + ": " + Math.Round(16f - UserMod.Settings.Spacing, 1).ToString();
-            densityLabel.textScale = Constants.UITextScale;
-            densityLabel.autoSize = true;
-            densityLabel.textAlignment = UIHorizontalAlignment.Left;
-            densityLabel.verticalAlignment = UIVerticalAlignment.Middle;
-            densityLabel.zOrder = 0;
+            //size slider
+            sizeLabel = layoutPanelSize.AddUIComponent<UILabel>();
+            sizeLabel.text = UserMod.Translation.GetTranslation("FOREST-BRUSH-BRUSH-OPTIONS-SIZE");
+            sizeLabel.textScale = Constants.UITextScale;
+            sizeLabel.autoSize = true;
+            sizeLabel.disabledTextColor = new Color32(100, 100, 100, 255);
+            sizeLabel.textAlignment = UIHorizontalAlignment.Left;
+            sizeLabel.verticalAlignment = UIVerticalAlignment.Middle;
+            sizeLabel.zOrder = 0;
 
-            densitySlider = layoutPanel1.AddUIComponent<UISlider>();
-            densitySlider.size = new Vector2(400f - densityLabel.size.x - 42f, 13f);
-            densitySlider.color = new Color32(0, 0, 0, 128);
-            densitySlider.minValue = 0f;
-            densitySlider.maxValue = 16f;
-            densitySlider.stepSize = 0.1f;
-            densitySlider.value = 16 - UserMod.Settings.Spacing;
-            densitySlider.scrollWheelAmount = 0.1f;
-            densitySlider.eventValueChanged += (c, e) =>
+            sizeSlider = layoutPanelSize.AddUIComponent<UISlider>();
+            sizeSlider.size = new Vector2(400f - sizeLabel.size.x - 42f, 13f);
+            sizeSlider.color = new Color32(0, 0, 0, 255);
+            sizeSlider.disabledColor = new Color32(190, 190, 190, 255);
+            sizeSlider.minValue = 1f;
+            sizeSlider.maxValue = 2000f;
+            sizeSlider.stepSize = 1f;
+            sizeSlider.value = SavedSettings.BrushSize;
+            sizeSlider.scrollWheelAmount = 1f;  
+            sizeSlider.eventValueChanged += (c, e) =>
             {
-                UserMod.Settings.Spacing = 16f - e;
-                densityLabel.text = UserMod.Translation.GetTranslation("FOREST-BRUSH-BRUSH-OPTIONS-DENSITY") + ": " + Math.Round(e, 1).ToString();
-                UserMod.Settings.Save();
+                SavedSettings.BrushSize.value = e;
+                sizeSlider.tooltip = SavedSettings.BrushSize.value.ToString();
+                sizeSlider.RefreshTooltip();
             };
-            densitySlider.backgroundSprite = "OptionsScrollbarTrack";
-            densitySlider.zOrder = 1;
+            sizeSlider.backgroundSprite = "OptionsScrollbarTrack";
+            sizeSlider.tooltip = SavedSettings.BrushSize.value.ToString();
+            sizeSlider.zOrder = 1;
 
-            UISprite thumb = densitySlider.AddUIComponent<UISprite>();
+            UISprite thumb = sizeSlider.AddUIComponent<UISprite>();
             thumb.atlas = UIUtilities.GetAtlas();
             thumb.size = new Vector2(20, 20);
             thumb.spriteName = "IconPolicyForest";
-            densitySlider.thumbObject = thumb;
+            sizeSlider.thumbObject = thumb;
+
+
+            //density slider
+            layoutPanelDensity = AddUIComponent<UIPanel>();
+            layoutPanelDensity.size = new Vector2(width, 16);
+            layoutPanelDensity.autoLayout = true;
+            layoutPanelDensity.autoLayoutDirection = LayoutDirection.Horizontal;
+            layoutPanelDensity.autoFitChildrenHorizontally = true;
+            layoutPanelDensity.autoLayoutPadding = new RectOffset(14, 0, 0, 0);
+            layoutPanelDensity.zOrder = 2;
+
+            densityLabel = layoutPanelDensity.AddUIComponent<UILabel>();
+            densityLabel.text = UserMod.Translation.GetTranslation("FOREST-BRUSH-BRUSH-OPTIONS-DENSITY");
+            densityLabel.textScale = Constants.UITextScale;
+            densityLabel.autoSize = true;
+            densityLabel.disabledTextColor = new Color32(100, 100, 100, 255);
+            densityLabel.textAlignment = UIHorizontalAlignment.Left;
+            densityLabel.verticalAlignment = UIVerticalAlignment.Middle;
+            densityLabel.zOrder = 0;
+            densityLabel.isEnabled = !SavedSettings.AutoDensity;
+
+            densitySlider = layoutPanelDensity.AddUIComponent<UISlider>();
+            densitySlider.size = new Vector2(400f - densityLabel.size.x - 42f, 13f);
+            densitySlider.color = new Color32(0, 0, 0, 255);
+            densitySlider.disabledColor = new Color32(190, 190, 190, 255);
+            densitySlider.minValue = 0f;
+            densitySlider.maxValue = 16f;
+            densitySlider.stepSize = 0.1f;
+            densitySlider.value = 16 - SavedSettings.BrushDensity;
+            densitySlider.scrollWheelAmount = 0.1f;
+            densitySlider.eventValueChanged += (c, e) =>
+            {
+                SavedSettings.BrushDensity.value = 16f - e;
+            };
+            densitySlider.backgroundSprite = "OptionsScrollbarTrack";
+            densitySlider.zOrder = 1;
+            densitySlider.isEnabled = !SavedSettings.AutoDensity;
+
+            UISprite thumb1 = densitySlider.AddUIComponent<UISprite>();
+            thumb1.atlas = UIUtilities.GetAtlas();
+            thumb1.size = new Vector2(20, 20);
+            thumb1.spriteName = "IconPolicyForest";
+            densitySlider.thumbObject = thumb1;
 
             
-            layoutPanel2 = AddUIComponent<UIPanel>();
-            layoutPanel2.size = new Vector2(width, 16);
-            layoutPanel2.autoLayout = true;
-            layoutPanel2.autoLayoutDirection = LayoutDirection.Horizontal;
-            layoutPanel2.autoFitChildrenHorizontally = true;
-            layoutPanel2.autoLayoutPadding = new RectOffset(14, 0, 0, 0);
-            layoutPanel2.zOrder = 2;
+            layoutPanelAutoDensityColor = AddUIComponent<UIPanel>();
+            layoutPanelAutoDensityColor.size = new Vector2(width, 16);
+            layoutPanelAutoDensityColor.autoLayout = true;
+            layoutPanelAutoDensityColor.autoLayoutDirection = LayoutDirection.Horizontal;
+            layoutPanelAutoDensityColor.autoFitChildrenHorizontally = true;
+            layoutPanelAutoDensityColor.autoLayoutPadding = new RectOffset(14, 0, 0, 0);
+            layoutPanelAutoDensityColor.zOrder = 3;
 
-            autoDensityLabel = layoutPanel2.AddUIComponent<UILabel>();
+            autoDensityLabel = layoutPanelAutoDensityColor.AddUIComponent<UILabel>();
             autoDensityLabel.text = AutoDensityLabelText;
             autoDensityLabel.textScale = Constants.UITextScale;
             autoDensityLabel.autoSize = true;
             autoDensityLabel.textAlignment = UIHorizontalAlignment.Left;
             autoDensityLabel.verticalAlignment = UIVerticalAlignment.Middle;
-            autoDensityLabel.zOrder = 0;
+            autoDensityLabel.zOrder = 1;
 
-            autoDensityCheckBox = layoutPanel2.AddUIComponent<UICheckBox>();
+            autoDensityCheckBox = layoutPanelAutoDensityColor.AddUIComponent<UICheckBox>();
             autoDensityCheckBox.size = Constants.UICheckboxSize;
             var sprite = autoDensityCheckBox.AddUIComponent<UISprite>();
             sprite.atlas = UIUtilities.GetAtlas();
@@ -140,23 +189,43 @@ namespace ForestBrush.GUI
             ((UISprite)autoDensityCheckBox.checkedBoxObject).spriteName = "ToggleBaseFocused";
             autoDensityCheckBox.checkedBoxObject.size = autoDensityCheckBox.size;
             autoDensityCheckBox.checkedBoxObject.relativePosition = Vector3.zero;
-            autoDensityCheckBox.isChecked = UserMod.Settings.UseTreeSize;
+            autoDensityCheckBox.isChecked = SavedSettings.AutoDensity;
             autoDensityCheckBox.eventCheckChanged += (c, e) =>
             {
-                UserMod.Settings.UseTreeSize = e;
-                UserMod.Settings.Save();
+                SavedSettings.AutoDensity.value = e;
+                densityLabel.isEnabled = densitySlider.isEnabled = !e;
             };
-            autoDensityCheckBox.zOrder = 1;
+            autoDensityCheckBox.zOrder = 0;
 
-            squareBrushLabel = layoutPanel2.AddUIComponent<UILabel>();
+            overlayColorLabel = layoutPanelAutoDensityColor.AddUIComponent<UILabel>();
+            overlayColorLabel.text = OverlayColorLabelText;
+            overlayColorLabel.textScale = Constants.UITextScale;
+            overlayColorLabel.autoSize = true;
+            overlayColorLabel.textAlignment = UIHorizontalAlignment.Left;
+            overlayColorLabel.verticalAlignment = UIVerticalAlignment.Middle;
+            overlayColorLabel.zOrder = 3;
+
+            colorFieldTemplate = CreateColorField(layoutPanelAutoDensityColor);
+            colorFieldTemplate.size = Constants.UICheckboxSize;
+            colorFieldTemplate.zOrder = 2;
+
+            layoutPanelSquareBrush = AddUIComponent<UIPanel>();
+            layoutPanelSquareBrush.size = new Vector2(width, 16);
+            layoutPanelSquareBrush.autoLayout = true;
+            layoutPanelSquareBrush.autoLayoutDirection = LayoutDirection.Horizontal;
+            layoutPanelSquareBrush.autoFitChildrenHorizontally = true;
+            layoutPanelSquareBrush.autoLayoutPadding = new RectOffset(14, 0, 0, 0);
+            layoutPanelSquareBrush.zOrder = 4;
+
+            squareBrushLabel = layoutPanelSquareBrush.AddUIComponent<UILabel>();
             squareBrushLabel.text = SquareBrushLabelText;
             squareBrushLabel.textScale = Constants.UITextScale;
             squareBrushLabel.autoSize = true;
             squareBrushLabel.textAlignment = UIHorizontalAlignment.Left;
             squareBrushLabel.verticalAlignment = UIVerticalAlignment.Middle;
-            squareBrushLabel.zOrder = 2;
+            squareBrushLabel.zOrder = 1;
 
-            squareBrushCheckBox = layoutPanel2.AddUIComponent<UICheckBox>();
+            squareBrushCheckBox = layoutPanelSquareBrush.AddUIComponent<UICheckBox>();
             squareBrushCheckBox.size = Constants.UICheckboxSize;
             var sprite2 = squareBrushCheckBox.AddUIComponent<UISprite>();
             sprite2.atlas = UIUtilities.GetAtlas();
@@ -170,37 +239,16 @@ namespace ForestBrush.GUI
             ((UISprite)squareBrushCheckBox.checkedBoxObject).spriteName = "ToggleBaseFocused";
             squareBrushCheckBox.checkedBoxObject.size = squareBrushCheckBox.size;
             squareBrushCheckBox.checkedBoxObject.relativePosition = Vector3.zero;
-            squareBrushCheckBox.isChecked = UserMod.Settings.SquareBrush;
+            squareBrushCheckBox.isChecked = SavedSettings.SquareBrush;
             squareBrushCheckBox.eventCheckChanged += (c, e) =>
             {
-                UserMod.Settings.SquareBrush = e;
-                UserMod.Settings.Save();
+                SavedSettings.SquareBrush.value = e;
             };
-            squareBrushCheckBox.zOrder = 3;
+            squareBrushCheckBox.zOrder = 0;
 
-            layoutPanel3 = AddUIComponent<UIPanel>();
-            layoutPanel3.size = new Vector2(width, 16);
-            layoutPanel3.autoLayout = true;
-            layoutPanel3.autoLayoutDirection = LayoutDirection.Horizontal;
-            layoutPanel3.autoFitChildrenHorizontally = true;
-            layoutPanel3.autoLayoutPadding = new RectOffset(14, 0, 0, 0);
-            layoutPanel3.zOrder = 3;
-
-            overlayColorLabel = layoutPanel3.AddUIComponent<UILabel>();
-            overlayColorLabel.text = OverlayColorLabelText;
-            overlayColorLabel.textScale = Constants.UITextScale;
-            overlayColorLabel.autoSize = true;
-            overlayColorLabel.textAlignment = UIHorizontalAlignment.Left;
-            overlayColorLabel.verticalAlignment = UIVerticalAlignment.Middle;
-            overlayColorLabel.zOrder = 0;
-
-            colorFieldTemplate = CreateColorField(layoutPanel3);
-            colorFieldTemplate.size = Constants.UICheckboxSize;
-            colorFieldTemplate.zOrder = 1;
-
-            layoutPanel4 = AddUIComponent<UIPanel>();
-            layoutPanel4.size = new Vector2(width, 1);
-            layoutPanel4.zOrder = 4;
+            layoutPanelSpace = AddUIComponent<UIPanel>();
+            layoutPanelSpace.size = new Vector2(width, 1);
+            layoutPanelSpace.zOrder = 5;
         }
 
         private UIColorField CreateColorField(UIComponent parent)
@@ -219,14 +267,14 @@ namespace ForestBrush.GUI
             cF.name = "ForestBrushColorField";
             cF.pickerPosition = UIColorField.ColorPickerPosition.RightBelow;
             cF.eventSelectedColorChanged += EventSelectedColorChangedHandler;
-            cF.selectedColor = UserMod.Settings.OverlayColor;
+            cF.selectedColor = UserMod.BrushSettings.OverlayColor;
             return cF;
         }
 
         private void EventSelectedColorChangedHandler(UIComponent component, Color value)
         {
-            UserMod.Settings.OverlayColor = value;
-            UserMod.Settings.Save();
+            UserMod.BrushSettings.OverlayColor = value;
+            UserMod.BrushSettings.Save();
         }
 
         public string AutoDensityLabelText => UserMod.Translation.GetTranslation("FOREST-BRUSH-BRUSH-OPTIONS-AUTODENSITY");

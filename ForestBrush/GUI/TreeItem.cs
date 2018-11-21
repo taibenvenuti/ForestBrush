@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using ColossalFramework;
 using ColossalFramework.UI;
 using UnityEngine;
 
@@ -47,7 +46,7 @@ namespace ForestBrush.GUI
             includeCheckBox.checkedBoxObject.size = includeCheckBox.size;
             includeCheckBox.checkedBoxObject.relativePosition = Vector3.zero;
             includeCheckBox.eventCheckChanged += EventIncludeTree;
-            includeCheckBox.isChecked = ForestBrushes.instance.BrushTool.Container.m_variations.Any(v => v.m_finalTree == prefab);
+            includeCheckBox.isChecked = ForestBrushMod.instance.BrushTool.Container.m_variations.Any(v => v.m_finalTree == prefab);
             includeCheckBox.relativePosition = new Vector3(width - (Constants.UISpacing * 2) - includeCheckBox.width, (height - includeCheckBox.height) / 2);
 
             //Label
@@ -65,7 +64,7 @@ namespace ForestBrush.GUI
 
         public void UpdateCheckbox()
         {
-            includeCheckBox.isChecked = ForestBrushes.instance.BrushTool.Container.m_variations.Any(v => v.m_finalTree == prefab);
+            includeCheckBox.isChecked = ForestBrushMod.instance.BrushTool.Container.m_variations.Any(v => v.m_finalTree == prefab);
         }
 
         private void EventIncludeTree(UIComponent component, bool value)
@@ -73,7 +72,7 @@ namespace ForestBrush.GUI
             bool updateAll = false;
             if (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.LeftCommand) || Input.GetKey(KeyCode.RightControl) || Input.GetKey(KeyCode.RightCommand))
                 updateAll = true;
-            ForestBrushes.instance.BrushTool.Update(prefab, value, updateAll);
+            ForestBrushMod.instance.BrushTool.Update(prefab, value, updateAll);
         }
 
         public void Deselect(bool isRowOdd)
@@ -88,7 +87,7 @@ namespace ForestBrush.GUI
             {
                 prefab = data as TreeInfo;
                 Initialize(prefab);
-                includeCheckBox.isChecked = ForestBrushes.instance.BrushTool.Container.m_variations.Any(v => v.m_finalTree == prefab);
+                includeCheckBox.isChecked = ForestBrushMod.instance.BrushTool.Container.m_variations.Any(v => v.m_finalTree == prefab);
                 treeNameLabel.text = prefab.GetUncheckedLocalizedTitle();
                 thumbNailSprite.texture = prefab.m_Atlas.sprites.Find(spr => spr.name == prefab.m_Thumbnail).texture;
                 backgroundSprite = null;

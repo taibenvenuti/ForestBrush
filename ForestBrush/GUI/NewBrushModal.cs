@@ -59,7 +59,7 @@ namespace ForestBrush.GUI
             okButton.width = (width - (Constants.UISpacing * 3)) / 2;
             okButton.eventClicked += (c, e) =>
             {
-                ForestBrushes.instance.BrushTool.New(textField.text);
+                ForestBrushMod.instance.BrushTool.New(textField.text);
                 UIView.PopAllModal();
                 DestroyImmediate(gameObject);
             };

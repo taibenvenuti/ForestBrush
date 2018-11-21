@@ -7,15 +7,18 @@
     <Translation ID="FOREST-BRUSH-SAVECURRENT" String="Save" />
     <Translation ID="FOREST-BRUSH-SAVENEW" String="New" />
     <Translation ID="FOREST-BRUSH-DELETE" String="Delete" />
-    <Translation ID="FOREST-BRUSH-USETREESIZE" String="Use tree size for spacing" />
     <Translation ID="FOREST-BRUSH-SQUARE" String="Enable Square Brush" />
     <Translation ID="FOREST-BRUSH-SPACING" String="Spacing" />
+    <Translation ID="FOREST-BRUSH-SEARCH" String="Filter" />
     <Translation ID="FOREST-BRUSH-BRUSH-OPTIONS-BUTTON" String="Options" />
     <Translation ID="FOREST-BRUSH-BRUSH-OPTIONS-TITLE" String="Brush Options" />
     <Translation ID="FOREST-BRUSH-BRUSH-OPTIONS-SQUAREBRUSH" String="Square Brush" />
     <Translation ID="FOREST-BRUSH-BRUSH-OPTIONS-DENSITY" String="Brush Density" />
+    <Translation ID="FOREST-BRUSH-BRUSH-OPTIONS-SIZE" String="Brush Size" />
     <Translation ID="FOREST-BRUSH-BRUSH-OPTIONS-AUTODENSITY" String="Auto-density" />
     <Translation ID="FOREST-BRUSH-BRUSH-OPTIONS-OVERLAYCOLOR" String="Overlay Color" />
+    <Translation ID="FOREST-BRUSH-OPTIONS-CONFIRMOVERWRITE" String="Ask before overwriting existing brushes" />
+    <Translation ID="FOREST-BRUSH-OPTIONS-RESET" String="Reset all options to default values" />
     <Translation ID="FOREST-BRUSH-MODAL-WARNING" String="Warning" />
     <Translation ID="FOREST-BRUSH-MODAL-MESSAGE" String="Message" />
     <Translation ID="FOREST-BRUSH-PROMPT-NEW" String="Please type a name for your new brush" />
@@ -26,6 +29,14 @@
     <Translation ID="FOREST-BRUSH-PROMPT-NO" String="No" />
     <Translation ID="FOREST-BRUSH-PROMPT-OK" String="OK" />
     <Translation ID="FOREST-BRUSH-PROMPT-CANCEL" String="Cancel" />
-    <Translation ID="FOREST-BRUSH-SEARCH" String="Search" />
+    <Translation ID="FOREST-BRUSH-KEYBIND-SEARCH" String="Filter" />
+    <Translation ID="FOREST-BRUSH-KEYBIND-TOGGLE-TOOL" String="Toggle Forest Brush tool" />
+    <Translation ID="FOREST-BRUSH-KEYBIND-TOGGLE-SQUAREBRUSH" String="Toggle Square Brush" />
+    <Translation ID="FOREST-BRUSH-KEYBIND-TOGGLE-AUTODENSITY" String="Toggle Auto-density" />
+    <Translation ID="FOREST-BRUSH-KEYBIND-INCREASE-SIZE" String="Increase Brush Size" />
+    <Translation ID="FOREST-BRUSH-KEYBIND-DECREASE-SIZE" String="Decrease Brush Size" />
+    <Translation ID="FOREST-BRUSH-KEYBIND-INCREASE-DENSITY" String="Increase Brush Density" />
+    <Translation ID="FOREST-BRUSH-KEYBIND-DECREASE-DENSITY" String="Decrease Brush Density" />
+    <Translation ID="FOREST-BRUSH-TUTORIAL" String="Thanks for subscribing to Forest Brush.\n\nStart by creating a new brush using the 'New' button." />
   </Translations>
 </Language>

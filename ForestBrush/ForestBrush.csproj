@@ -71,17 +71,19 @@
   <ItemGroup>
     <Compile Include="GUI\PreviewRenderer.cs" />
     <Compile Include="GUI\ImageUtil.cs" />
+    <Compile Include="OptionsKeyBinding.cs" />
     <Compile Include="OverlayColor.cs" />
     <Compile Include="Patches.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="GUI\BrushOptionsPanel.cs" />
     <Compile Include="GUI\NewBrushModal.cs" />
     <Compile Include="GUI\UIUtilities.cs" />
-    <Compile Include="Manager.cs" />
+    <Compile Include="ForestBrush.cs" />
     <Compile Include="Loading.cs" />
-    <Compile Include="ResourceLoader.cs" />
-    <Compile Include="Settings.cs" />
+    <Compile Include="Resources\ResourceLoader.cs" />
+    <Compile Include="SavedForestBrushes.cs" />
     <Compile Include="GUI\Panel.cs" />
+    <Compile Include="SavedSettings.cs" />
     <Compile Include="Tool.cs" />
     <Compile Include="GUI\TreeItem.cs" />
     <Compile Include="GUI\UIFastList.cs" />
@@ -96,6 +98,11 @@
     <Content Include="Locale\english.xml">
       <SubType>Designer</SubType>
     </Content>
+    <EmbeddedResource Include="Resources\ForestBrushDisabled.png" />
+    <EmbeddedResource Include="Resources\ForestBrushFocused.png" />
+    <EmbeddedResource Include="Resources\ForestBrushHovered.png" />
+    <EmbeddedResource Include="Resources\ForestBrushNormal.png" />
+    <EmbeddedResource Include="Resources\ForestBrushPressed.png" />
     <EmbeddedResource Include="Resources\SelectFilter.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
