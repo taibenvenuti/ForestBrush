@@ -95,11 +95,11 @@ namespace ForestBrush
             if (!ForestBrushMod.instance.Brushes.TryGetValue(brushName, out List<string> treeNames))
             {
                 ForestBrushMod.instance.Brushes.Add(brushName, newTreeNames);
+                SavedSettings.SelectedBrush.value = brushName;
+                ForestBrushMod.instance.ForestBrushPanel.UpdateDropDown();
                 UserMod.BrushSettings.Save();
             }                
             else ForestBrushMod.instance.ForestBrushPanel.OnSaveCurrentClickedEventHandler(true);
-            SavedSettings.SelectedBrush.value = brushName;
-            ForestBrushMod.instance.ForestBrushPanel.UpdateDropDown();
         }
 
         internal void Delete()

@@ -155,6 +155,14 @@ namespace ForestBrush.GUI
             SearchTextField.color = new Color32(255, 255, 255, 255);
             SearchTextField.relativePosition = new Vector3(width - Constants.UISpacing - SearchTextField.width, 600f);
             SearchTextField.eventTextChanged += OnSearchTextChanged;
+            SearchTextField.eventKeyUp += (c, e) =>
+            {
+                if (e.keycode == KeyCode.Escape)
+                {
+                    SearchTextField.text = "";
+                    SearchTextField.Unfocus();
+                }
+            };
 
             searchLabel = AddUIComponent<UILabel>();
             searchLabel.text = UserMod.Translation.GetTranslation("FOREST-BRUSH-SEARCH");
@@ -202,6 +210,7 @@ namespace ForestBrush.GUI
                     });
                 else ForestBrushMod.instance.BrushTool.Save();
             }
+            UpdateDropDown();
         }
 
         private void OnSearchTextChanged(UIComponent component, string text)

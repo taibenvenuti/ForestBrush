@@ -66,13 +66,29 @@ namespace ForestBrush.GUI
             okButton.Disable();
 
             cancelButton = UIUtilities.CreateButton(this, UserMod.Translation.GetTranslation("FOREST-BRUSH-PROMPT-CANCEL"));
-            cancelButton.relativePosition = textField.relativePosition + new Vector3(okButton.relativePosition.x + okButton.width + Constants.UISpacing, textField.height + Constants.UISpacing);
+            cancelButton.relativePosition = okButton.relativePosition + new Vector3(okButton.width + Constants.UISpacing, 0f);
             cancelButton.width = (width - (Constants.UISpacing * 3)) / 2;
             cancelButton.eventClicked += (c, e) =>
             {
                 UIView.PopAllModal();
                 DestroyImmediate(gameObject);
             };
+        }
+
+        protected override void OnKeyDown(UIKeyEventParameter p)
+        {
+            base.OnKeyDown(p);
+            if (!p.used && p.keycode == KeyCode.Escape)
+            {
+                p.Use();
+                cancelButton.SimulateClick();
+            }
+
+            if (!p.used && p.keycode == KeyCode.Return)
+            {
+                p.Use();
+                okButton.SimulateClick();
+            }
         }
     }
 }
