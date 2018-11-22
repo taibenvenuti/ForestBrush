@@ -17,14 +17,14 @@ namespace ForestBrush
         private HarmonyInstance harmony;
         private OptionsKeyBinding optionKeys;
 
-        private static SavedForestBrushes brushSettings;
-        public static SavedForestBrushes BrushSettings
+        private static XMLSerialized brushSettings;
+        public static XMLSerialized BrushSettings
         {
             get
             {
                 if(brushSettings == null)
                 {
-                    brushSettings = SavedForestBrushes.Load();
+                    brushSettings = XMLSerialized.Load();
                 }
                 return brushSettings;
             }
@@ -37,9 +37,9 @@ namespace ForestBrush
         {
             try
             {
-                if (GameSettings.FindSettingsFileByName(SavedSettings.FileName) == null)
+                if (GameSettings.FindSettingsFileByName(CGSSerialized.FileName) == null)
                 {
-                    GameSettings.AddSettingsFile(new SettingsFile[] { new SettingsFile() { fileName = SavedSettings.FileName } });
+                    GameSettings.AddSettingsFile(new SettingsFile[] { new SettingsFile() { fileName = CGSSerialized.FileName } });
                     GameSettings.SaveAll();
                 }
             }
@@ -63,7 +63,7 @@ namespace ForestBrush
 
                 UIPanel panel = group.self as UIPanel;
 
-                UICheckBox checkBox = (UICheckBox)group.AddCheckbox(Translation.GetTranslation("FOREST-BRUSH-OPTIONS-CONFIRMOVERWRITE"), SavedSettings.ConfirmOverwrite, (b) =>
+                UICheckBox checkBox = (UICheckBox)group.AddCheckbox(Translation.GetTranslation("FOREST-BRUSH-OPTIONS-CONFIRMOVERWRITE"), CGSSerialized.ConfirmOverwrite, (b) =>
                 {
 
                 });
@@ -76,7 +76,7 @@ namespace ForestBrush
 
                 UIButton button = (UIButton)group.AddButton(Translation.GetTranslation("FOREST-BRUSH-OPTIONS-RESET"), () =>
                 {
-                    SavedSettings.Reset();
+                    CGSSerialized.Reset();
                 });
 
                 group.AddSpace(10);

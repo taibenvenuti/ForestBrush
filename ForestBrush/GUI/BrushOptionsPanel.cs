@@ -98,16 +98,16 @@ namespace ForestBrush.GUI
             sizeSlider.minValue = 1f;
             sizeSlider.maxValue = 2000f;
             sizeSlider.stepSize = 1f;
-            sizeSlider.value = SavedSettings.BrushSize;
+            sizeSlider.value = CGSSerialized.BrushSize;
             sizeSlider.scrollWheelAmount = 1f;  
             sizeSlider.eventValueChanged += (c, e) =>
             {
-                SavedSettings.BrushSize.value = e;
-                sizeSlider.tooltip = SavedSettings.BrushSize.value.ToString();
+                CGSSerialized.BrushSize.value = e;
+                sizeSlider.tooltip = CGSSerialized.BrushSize.value.ToString();
                 sizeSlider.RefreshTooltip();
             };
             sizeSlider.backgroundSprite = "OptionsScrollbarTrack";
-            sizeSlider.tooltip = SavedSettings.BrushSize.value.ToString();
+            sizeSlider.tooltip = CGSSerialized.BrushSize.value.ToString();
             sizeSlider.zOrder = 1;
 
             UISprite thumb = sizeSlider.AddUIComponent<UISprite>();
@@ -134,7 +134,7 @@ namespace ForestBrush.GUI
             densityLabel.textAlignment = UIHorizontalAlignment.Left;
             densityLabel.verticalAlignment = UIVerticalAlignment.Middle;
             densityLabel.zOrder = 0;
-            densityLabel.isEnabled = !SavedSettings.AutoDensity;
+            densityLabel.isEnabled = !CGSSerialized.AutoDensity;
 
             densitySlider = layoutPanelDensity.AddUIComponent<UISlider>();
             densitySlider.size = new Vector2(400f - densityLabel.size.x - 42f, 13f);
@@ -143,22 +143,21 @@ namespace ForestBrush.GUI
             densitySlider.minValue = 0f;
             densitySlider.maxValue = 16f;
             densitySlider.stepSize = 0.1f;
-            densitySlider.value = 16 - SavedSettings.BrushDensity;
+            densitySlider.value = 16 - CGSSerialized.BrushDensity;
             densitySlider.scrollWheelAmount = 0.1f;
             densitySlider.eventValueChanged += (c, e) =>
             {
-                SavedSettings.BrushDensity.value = 16f - e;
+                CGSSerialized.BrushDensity.value = 16f - e;
             };
             densitySlider.backgroundSprite = "OptionsScrollbarTrack";
             densitySlider.zOrder = 1;
-            densitySlider.isEnabled = !SavedSettings.AutoDensity;
+            densitySlider.isEnabled = !CGSSerialized.AutoDensity;
 
             UISprite thumb1 = densitySlider.AddUIComponent<UISprite>();
             thumb1.atlas = UIUtilities.GetAtlas();
             thumb1.size = new Vector2(20, 20);
             thumb1.spriteName = "IconPolicyForest";
             densitySlider.thumbObject = thumb1;
-
             
             layoutPanelAutoDensityColor = AddUIComponent<UIPanel>();
             layoutPanelAutoDensityColor.size = new Vector2(width, 16);
@@ -189,10 +188,10 @@ namespace ForestBrush.GUI
             ((UISprite)autoDensityCheckBox.checkedBoxObject).spriteName = "ToggleBaseFocused";
             autoDensityCheckBox.checkedBoxObject.size = autoDensityCheckBox.size;
             autoDensityCheckBox.checkedBoxObject.relativePosition = Vector3.zero;
-            autoDensityCheckBox.isChecked = SavedSettings.AutoDensity;
+            autoDensityCheckBox.isChecked = CGSSerialized.AutoDensity;
             autoDensityCheckBox.eventCheckChanged += (c, e) =>
             {
-                SavedSettings.AutoDensity.value = e;
+                CGSSerialized.AutoDensity.value = e;
                 densityLabel.isEnabled = densitySlider.isEnabled = !e;
             };
             autoDensityCheckBox.zOrder = 0;
@@ -239,10 +238,10 @@ namespace ForestBrush.GUI
             ((UISprite)squareBrushCheckBox.checkedBoxObject).spriteName = "ToggleBaseFocused";
             squareBrushCheckBox.checkedBoxObject.size = squareBrushCheckBox.size;
             squareBrushCheckBox.checkedBoxObject.relativePosition = Vector3.zero;
-            squareBrushCheckBox.isChecked = SavedSettings.SquareBrush;
+            squareBrushCheckBox.isChecked = CGSSerialized.SquareBrush;
             squareBrushCheckBox.eventCheckChanged += (c, e) =>
             {
-                SavedSettings.SquareBrush.value = e;
+                CGSSerialized.SquareBrush.value = e;
             };
             squareBrushCheckBox.zOrder = 0;
 

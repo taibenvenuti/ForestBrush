@@ -69,6 +69,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ForestBrush.cs" />
     <Compile Include="GUI\PreviewRenderer.cs" />
     <Compile Include="GUI\ImageUtil.cs" />
     <Compile Include="OptionsKeyBinding.cs" />
@@ -78,12 +79,13 @@
     <Compile Include="GUI\BrushOptionsPanel.cs" />
     <Compile Include="GUI\NewBrushModal.cs" />
     <Compile Include="GUI\UIUtilities.cs" />
-    <Compile Include="ForestBrush.cs" />
+    <Compile Include="ForestBrushMod.cs" />
     <Compile Include="Loading.cs" />
+    <Compile Include="BeginRefactor\ForestTool.cs" />
     <Compile Include="Resources\ResourceLoader.cs" />
-    <Compile Include="SavedForestBrushes.cs" />
+    <Compile Include="XMLSerialized.cs" />
     <Compile Include="GUI\Panel.cs" />
-    <Compile Include="SavedSettings.cs" />
+    <Compile Include="CGSSerialized.cs" />
     <Compile Include="Tool.cs" />
     <Compile Include="GUI\TreeItem.cs" />
     <Compile Include="GUI\UIFastList.cs" />
@@ -105,6 +107,7 @@
     <EmbeddedResource Include="Resources\ForestBrushPressed.png" />
     <EmbeddedResource Include="Resources\SelectFilter.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>mkdir "$(LOCALAPPDATA)\Colossal Order\Cities_Skylines\Addons\Mods\$(ProjectName)"

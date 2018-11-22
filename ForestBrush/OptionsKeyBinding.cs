@@ -18,21 +18,21 @@ namespace ForestBrush
 
         private void Awake()
         {
-            AddKeymapping(UserMod.Translation.GetTranslation("FOREST-BRUSH-KEYBIND-SEARCH"), SavedSettings.Search);
+            AddKeymapping(UserMod.Translation.GetTranslation("FOREST-BRUSH-KEYBIND-SEARCH"), CGSSerialized.Search);
 
-            AddKeymapping(UserMod.Translation.GetTranslation("FOREST-BRUSH-KEYBIND-TOGGLE-TOOL"), SavedSettings.ToggleTool);
+            AddKeymapping(UserMod.Translation.GetTranslation("FOREST-BRUSH-KEYBIND-TOGGLE-TOOL"), CGSSerialized.ToggleTool);
 
-            AddKeymapping(UserMod.Translation.GetTranslation("FOREST-BRUSH-KEYBIND-TOGGLE-SQUAREBRUSH"), SavedSettings.ToggleSquare);
+            AddKeymapping(UserMod.Translation.GetTranslation("FOREST-BRUSH-KEYBIND-TOGGLE-SQUAREBRUSH"), CGSSerialized.ToggleSquare);
 
-            AddKeymapping(UserMod.Translation.GetTranslation("FOREST-BRUSH-KEYBIND-TOGGLE-AUTODENSITY"), SavedSettings.ToggleAutoDensity);
+            AddKeymapping(UserMod.Translation.GetTranslation("FOREST-BRUSH-KEYBIND-TOGGLE-AUTODENSITY"), CGSSerialized.ToggleAutoDensity);
 
-            AddKeymapping(UserMod.Translation.GetTranslation("FOREST-BRUSH-KEYBIND-INCREASE-SIZE"), SavedSettings.IncreaseSize);
+            AddKeymapping(UserMod.Translation.GetTranslation("FOREST-BRUSH-KEYBIND-INCREASE-SIZE"), CGSSerialized.IncreaseSize);
 
-            AddKeymapping(UserMod.Translation.GetTranslation("FOREST-BRUSH-KEYBIND-DECREASE-SIZE"), SavedSettings.DecreaseSize);
+            AddKeymapping(UserMod.Translation.GetTranslation("FOREST-BRUSH-KEYBIND-DECREASE-SIZE"), CGSSerialized.DecreaseSize);
 
-            AddKeymapping(UserMod.Translation.GetTranslation("FOREST-BRUSH-KEYBIND-INCREASE-DENSITY"), SavedSettings.IncreaseDensity);
+            AddKeymapping(UserMod.Translation.GetTranslation("FOREST-BRUSH-KEYBIND-INCREASE-DENSITY"), CGSSerialized.IncreaseDensity);
 
-            AddKeymapping(UserMod.Translation.GetTranslation("FOREST-BRUSH-KEYBIND-DECREASE-DENSITY"), SavedSettings.DecreaseDensity);
+            AddKeymapping(UserMod.Translation.GetTranslation("FOREST-BRUSH-KEYBIND-DECREASE-DENSITY"), CGSSerialized.DecreaseDensity);
         }
 
         private void AddKeymapping(string label, SavedInputKey savedInputKey)

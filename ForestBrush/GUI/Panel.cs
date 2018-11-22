@@ -30,7 +30,7 @@ namespace ForestBrush.GUI
         private void Setup()
         {
             size = Constants.UIPanelSize;
-            relativePosition = new Vector3(SavedSettings.PanelX, SavedSettings.PanelY);
+            relativePosition = new Vector3(CGSSerialized.PanelX, CGSSerialized.PanelY);
             atlas = UIUtilities.GetAtlas();
             backgroundSprite = "MenuPanel";
             isVisible = true;
@@ -47,7 +47,7 @@ namespace ForestBrush.GUI
             dragHandle.size = new Vector2(width, Constants.UITitleBarHeight);
             dragHandle.relativePosition = Vector3.zero;
             dragHandle.target = this;
-            dragHandle.eventMouseUp += (c, e) => UpdatePanelPosition();
+            dragHandle.eventMouseUp += (c, e) => SavePanelPosition();
 
             closeButton = AddUIComponent<UIButton>();
             closeButton.atlas = UIUtilities.GetAtlas();
@@ -82,7 +82,7 @@ namespace ForestBrush.GUI
             brushesDropDown.atlas = UIUtilities.GetAtlas();
             brushesDropDown.size = new Vector2(Constants.UIPanelSize.x - Constants.UISpacing * 2, Constants.UIButtonHeight);
             brushesDropDown.relativePosition = new Vector3(Constants.UISpacing, Constants.UITitleBarHeight + Constants.UISpacing);
-            brushesDropDown.items = ForestBrushMod.instance.Brushes.Keys.ToArray();
+            brushesDropDown.items = UserMod.BrushSettings.SavedBrushes.Select(b => b.Name).ToArray();
             brushesDropDown.listBackground = "StylesDropboxListbox";
             brushesDropDown.itemHeight = (int)Constants.UIButtonHeight;
             brushesDropDown.itemHover = "ListItemHover";
@@ -100,7 +100,7 @@ namespace ForestBrush.GUI
             brushesDropDown.textScale = Constants.UITextScale;
             brushesDropDown.verticalAlignment = UIVerticalAlignment.Middle;
             brushesDropDown.horizontalAlignment = UIHorizontalAlignment.Left;
-            brushesDropDown.selectedIndex = brushesDropDown.items.ToList().FindIndex(i => i == SavedSettings.SelectedBrush) == -1 ? 0 : brushesDropDown.items.ToList().FindIndex(i => i == SavedSettings.SelectedBrush);
+            brushesDropDown.selectedIndex = brushesDropDown.items.ToList().FindIndex(i => i == CGSSerialized.SelectedBrush) == -1 ? 0 : brushesDropDown.items.ToList().FindIndex(i => i == CGSSerialized.SelectedBrush);
             brushesDropDown.textFieldPadding = new RectOffset(8, 0, 8, 0);
             brushesDropDown.itemPadding = new RectOffset(14, 0, 8, 0);
             brushesDropDown.triggerButton = brushesDropDown;
@@ -108,7 +108,7 @@ namespace ForestBrush.GUI
 
             saveCurrentButton = UIUtilities.CreateButton(this, UserMod.Translation.GetTranslation("FOREST-BRUSH-SAVECURRENT"));
             saveCurrentButton.relativePosition = new Vector3(Constants.UISpacing, Constants.UITitleBarHeight + Constants.UIButtonHeight + Constants.UISpacing * 2);
-            saveCurrentButton.eventClicked += (c, e) => OnSaveCurrentClickedEventHandler(SavedSettings.ConfirmOverwrite);
+            saveCurrentButton.eventClicked += (c, e) => OnSaveCurrentClickedEventHandler(CGSSerialized.ConfirmOverwrite);
 
             saveNewButton = UIUtilities.CreateButton(this, UserMod.Translation.GetTranslation("FOREST-BRUSH-SAVENEW"));
             saveNewButton.relativePosition = new Vector3(Constants.UIButtonWidth + Constants.UISpacing * 2, Constants.UITitleBarHeight + Constants.UIButtonHeight + Constants.UISpacing * 2);
@@ -132,7 +132,7 @@ namespace ForestBrush.GUI
                     {
                         if (i == 1)
                         {
-                            ForestBrushMod.instance.BrushTool.Delete();
+                            ForestBrushMod.instance.BrushTool.DeleteCurrent();
                         }
                     });
                 }        
@@ -179,17 +179,17 @@ namespace ForestBrush.GUI
             Hide();
         }
 
-        public void UpdatePanelPosition()
+        public void SavePanelPosition()
         {
-            ClampToScreen();
-            SavedSettings.PanelX.value = relativePosition.x;
-            SavedSettings.PanelY.value = relativePosition.y;
+            CGSSerialized.PanelX.value = relativePosition.x;
+            CGSSerialized.PanelY.value = relativePosition.y;
         }
 
         internal void UpdateDropDown()
         {
-            brushesDropDown.items = ForestBrushMod.instance.Brushes.Keys.ToArray();
-            brushesDropDown.selectedIndex = brushesDropDown.items.ToList().FindIndex(i => i == SavedSettings.SelectedBrush) == -1 ? 0 : brushesDropDown.items.ToList().FindIndex(i => i == SavedSettings.SelectedBrush);
+            brushesDropDown.items = UserMod.BrushSettings.SavedBrushes.Select(b => b.Name).ToArray();
+            int index = brushesDropDown.items.ToList().FindIndex(i => i == CGSSerialized.SelectedBrush);
+            brushesDropDown.selectedIndex = index == -1 ? 0 : index;
         }
 
         internal void OnSaveCurrentClickedEventHandler(bool confirm)
@@ -250,13 +250,14 @@ namespace ForestBrush.GUI
         {
             if (index >= brushesDropDown.items.Length) return;
             var key = brushesDropDown.items[index];
-            if (ForestBrushMod.instance.Brushes.TryGetValue(key, out List<string> value))
-                ForestBrushMod.instance.BrushTool = new TreeBrushTool(key, value);
-            else Debug.LogWarning($"{key} Key not found in {ForestBrushMod.instance.Brushes}");
-            var itemBuffer = ForestBrushMod.instance.ForestBrushPanel.TreesList.rows.m_buffer;
-            foreach (TreeItem item in itemBuffer)
+            if (UserMod.BrushSettings.SavedBrushes.Find(b => b.Name == key) != null)
             {
-                item?.UpdateCheckbox();
+                ForestBrushMod.instance.BrushTool.UpdateTool(key);
+                var itemBuffer = ForestBrushMod.instance.ForestBrushPanel.TreesList.rows.m_buffer;
+                foreach (TreeItem item in itemBuffer)
+                {
+                    item?.UpdateCheckbox();
+                }
             }
         }
     }

@@ -69,7 +69,7 @@ namespace ForestBrush
                         var _x = xz.x;
                         var _y = xz.y;
                         var position = ___m_mousePosition + new Vector3(_x, 0f, _y) * (__instance.m_brushSize / 2);
-                        if (SavedSettings.SquareBrush)
+                        if (CGSSerialized.SquareBrush)
                         {
                             var radians = Angle * Mathf.Deg2Rad;
                             var c = Mathf.Cos(radians);
@@ -96,7 +96,7 @@ namespace ForestBrush
                         }
 
                         position.y = Singleton<TerrainManager>.instance.SampleDetailHeight(position, out float f, out float f2);
-                        var spacing = SavedSettings.AutoDensity ? ___m_treeInfo.m_generatedInfo.m_size.x / 2 : SavedSettings.BrushDensity;
+                        var spacing = CGSSerialized.AutoDensity ? ___m_treeInfo.m_generatedInfo.m_size.x / 2 : CGSSerialized.BrushDensity;
                         if (Mathf.Max(Mathf.Abs(f), Mathf.Abs(f2)) < (float)___m_randomizer.Int32(10000u) * 5E-05f)
                         {
                             Randomizer randomizer = ___m_randomizer;
@@ -173,7 +173,7 @@ namespace ForestBrush
                     ___m_toolController.RenderColliding(cameraInfo, toolColor, toolColor, toolColor, toolColor, 0, 0);
                     ToolManager instance = Singleton<ToolManager>.instance;
                     instance.m_drawCallData.m_overlayCalls = instance.m_drawCallData.m_overlayCalls + 1;
-                    if(SavedSettings.SquareBrush)
+                    if(CGSSerialized.SquareBrush)
                     {
                         var Angle = ApplyBrushPatch.Angle;
                         var radians = Angle * Mathf.Deg2Rad;
@@ -288,7 +288,7 @@ namespace ForestBrush
             if (ForestBrushMod.instance.ForestBrushPanel != null && ForestBrushMod.instance.IsCurrentTreeContainer)
             {
                 __instance.m_mode = TreeTool.Mode.Brush;
-                ___m_brushSize = SavedSettings.BrushSize;
+                ___m_brushSize = CGSSerialized.BrushSize;
             }
         }
 
