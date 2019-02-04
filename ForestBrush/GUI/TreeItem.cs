@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using ColossalFramework.UI;
+using ForestBrush.Resources;
 using UnityEngine;
 
 namespace ForestBrush.GUI
@@ -11,7 +12,6 @@ namespace ForestBrush.GUI
         UILabel treeNameLabel;
         UITextureSprite thumbNailSprite;
         bool initialized;
-        public string Name => treeNameLabel?.text;
 
         private void Initialize(TreeInfo info)
         {
@@ -20,7 +20,8 @@ namespace ForestBrush.GUI
             prefab = info;
 
             //General
-            atlas = UIUtilities.GetAtlas();
+            name = info.GetUncheckedLocalizedTitle() + "ListItem"; 
+            atlas = ResourceLoader.GetAtlas("Ingame");
             width = parent.width;
             height = Constants.UIItemHeight;
             isVisible = true;
@@ -36,17 +37,17 @@ namespace ForestBrush.GUI
             includeCheckBox = AddUIComponent<UICheckBox>();
             includeCheckBox.size = Constants.UICheckboxSize;
             var sprite = includeCheckBox.AddUIComponent<UISprite>();
-            sprite.atlas = UIUtilities.GetAtlas();
-            sprite.spriteName = "ToggleBase";
+            sprite.atlas =  ResourceLoader.GetAtlas("Ingame");
+            sprite.spriteName = Constants.CheckBoxSpriteUnchecked;
             sprite.size = includeCheckBox.size;
             sprite.relativePosition = Vector3.zero;
             includeCheckBox.checkedBoxObject = sprite.AddUIComponent<UISprite>();
-            ((UISprite)includeCheckBox.checkedBoxObject).atlas = UIUtilities.GetAtlas();
-            ((UISprite)includeCheckBox.checkedBoxObject).spriteName = "ToggleBaseFocused";
+            ((UISprite)includeCheckBox.checkedBoxObject).atlas =  ResourceLoader.GetAtlas("Ingame");
+            ((UISprite)includeCheckBox.checkedBoxObject).spriteName = Constants.CheckBoxSpriteChecked;
             includeCheckBox.checkedBoxObject.size = includeCheckBox.size;
             includeCheckBox.checkedBoxObject.relativePosition = Vector3.zero;
             includeCheckBox.eventCheckChanged += EventIncludeTree;
-            includeCheckBox.isChecked = ForestBrushMod.instance.BrushTool.Container.m_variations.Any(v => v.m_finalTree == prefab);
+            includeCheckBox.isChecked = ForestBrushMod.instance.Container.m_variations.Any(v => v.m_finalTree == prefab);
             includeCheckBox.relativePosition = new Vector3(width - (Constants.UISpacing * 2) - includeCheckBox.width, (height - includeCheckBox.height) / 2);
 
             //Label
@@ -64,7 +65,7 @@ namespace ForestBrush.GUI
 
         public void UpdateCheckbox()
         {
-            includeCheckBox.isChecked = ForestBrushMod.instance.BrushTool.Container.m_variations.Any(v => v.m_finalTree == prefab);
+            includeCheckBox.isChecked = ForestBrushMod.instance.Container.m_variations.Any(v => v.m_finalTree == prefab);
         }
 
         private void EventIncludeTree(UIComponent component, bool value)
@@ -72,7 +73,7 @@ namespace ForestBrush.GUI
             bool updateAll = false;
             if (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.LeftCommand) || Input.GetKey(KeyCode.RightControl) || Input.GetKey(KeyCode.RightCommand))
                 updateAll = true;
-            ForestBrushMod.instance.BrushTool.Update(prefab, value, updateAll);
+            ForestBrushMod.instance.BrushTool.UpdateTreeList(prefab, value, updateAll);
         }
 
         public void Deselect(bool isRowOdd)
@@ -87,10 +88,10 @@ namespace ForestBrush.GUI
             {
                 prefab = data as TreeInfo;
                 Initialize(prefab);
-                includeCheckBox.isChecked = ForestBrushMod.instance.BrushTool.Container.m_variations.Any(v => v.m_finalTree == prefab);
+                includeCheckBox.isChecked = ForestBrushMod.instance.Container.m_variations.Any(v => v.m_finalTree == prefab);
                 treeNameLabel.text = prefab.GetUncheckedLocalizedTitle();
                 thumbNailSprite.texture = prefab.m_Atlas.sprites.Find(spr => spr.name == prefab.m_Thumbnail).texture;
-                backgroundSprite = null;
+                backgroundSprite = "";
                 if (isRowOdd)
                     backgroundSprite = "ListItemHover";
             }

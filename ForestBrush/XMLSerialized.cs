@@ -11,9 +11,9 @@ namespace ForestBrush
     public class XMLSerialized
     {
         [XmlIgnore]
-        public static readonly string ConfigurationPath = Path.Combine(DataLocation.localApplicationData, "ForestBrush.xml");       
+        public static readonly string ConfigurationPath = Path.Combine(DataLocation.localApplicationData, "ForestBrush.xml");
 
-        public List<ForestBrush> SavedBrushes { get; set; } = new List<ForestBrush>() { new ForestBrush() };
+        public List<KeyValuePair<string, ForestBrush>> SavedBrushes { get; set; } = new List<KeyValuePair<string, ForestBrush>>();
 
         public OverlayColor OverlayColor { get; set; } = new Color32(25, 125, 155, 255);  
 
@@ -22,11 +22,16 @@ namespace ForestBrush
         public void OnPreSerialize() { }
 
         public void OnPostDeserialize() { }
-
+        
         public void Save()
         {   
             var fileName = ConfigurationPath;
             var serializer = new XmlSerializer(typeof(XMLSerialized));
+            SavedBrushes = new List<KeyValuePair<string, ForestBrush>>();
+            foreach (var brush in ForestBrushMod.instance.Brushes)
+            {
+                SavedBrushes.Add(new KeyValuePair<string, ForestBrush>(brush.Key, brush.Value));
+            }
             try
             {
                 using (var writer = new StreamWriter(fileName))

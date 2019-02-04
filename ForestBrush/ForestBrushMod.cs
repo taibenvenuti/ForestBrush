@@ -11,25 +11,87 @@ namespace ForestBrush
 {           
     public class ForestBrushMod : Singleton<ForestBrushMod>
     {
-        private static readonly string kEmptyContainer = "EmptyContainer";
+        public  class BrushTweaks
+        {
+            public int SizeAddend;
+            public int SizeMultiplier;
+            public float MaxRandomRange;
+            public float maxSize;
+            public float MaxSize
+            {
+                get
+                {
+                    return maxSize;
+                }
+                set
+                {
+                    maxSize = value;
+                    instance.ForestBrushPanel.BrushOptionsSection.sizeSlider.maxValue = value;
+                }
+            }
+            public float MinSpacing;
+        }
 
-        private static readonly string kMainToolbarSeparatorTemplate = "MainToolbarSeparator";
+        internal BrushTweaks BrushTweaker = new BrushTweaks()
+        {
+            SizeAddend = 10,
+            SizeMultiplier = 7,
+            MaxRandomRange = 4.0f,
+            maxSize = 1000f
+        };
 
-        private static readonly string kMainToolbarButtonTemplate = "MainToolbarButtonTemplate";
+        private CGSSerialized settings;
+        internal CGSSerialized Settings
+        {
+            get
+            {
+                if (settings == null)
+                    settings = new CGSSerialized();
+                return settings;
+            }
+            set
+            {
+                settings = value;
+            }
 
-        private string kToggleButton = "ForestBrushModToggle";
+        }
 
-        bool initialized;
+        private XMLSerialized brushSettings;
+        public XMLSerialized BrushSettings
+        {
+            get
+            {
+                if (brushSettings == null)
+                {
+                    brushSettings = XMLSerialized.Load();
+                }
+                return brushSettings;
+            }
+            set
+            {
+                brushSettings = value;
+            }
+        }
 
-        ToolBase lastTool;
+        private TreeInfo container;
+        internal TreeInfo Container
+        {
+            get
+            {
+                if (container == null)
+                {
+                    container = Instantiate(PrefabCollection<TreeInfo>.GetLoaded(0u).gameObject).GetComponent<TreeInfo>();
+                    container.gameObject.transform.parent = gameObject.transform;
+                    container.gameObject.name = "ForestBrushContainer";
+                    container.name = "ForestBrushContainer";
+                    container.m_mesh = null;
+                }
+                return container;
+            }
+        }
 
-        internal ForestBrushPanel ForestBrushPanel { get; private set; }
-
-        internal TreeInfo Container { get; private set; }
-
-        UITextureAtlas atlas;
-
-        UITextureAtlas Atlas
+        private UITextureAtlas atlas;
+        internal UITextureAtlas Atlas
         {
             get
             {
@@ -41,36 +103,58 @@ namespace ForestBrush
             }
         }
 
-        internal bool IsCurrentTreeContainer =>  Container != null && ToolsModifierControl.toolController.CurrentTool is TreeTool && ((TreeTool)ToolsModifierControl.toolController?.CurrentTool)?.m_prefab == Container;
+        internal bool IsCurrentTreeContainer => Container != null && ToolsModifierControl.toolController.CurrentTool is TreeTool && ((TreeTool)ToolsModifierControl.toolController?.CurrentTool)?.m_prefab == Container;
 
-        public Dictionary<string, TreeInfo> Trees { get; set; } = new Dictionary<string, TreeInfo>();
+        public Dictionary<string, TreeInfo> Trees { get; set; }
 
-        public ForestBrushTool BrushTool { get; internal set; }
+        public Dictionary<string, ForestBrush> Brushes { get; set; }
+
+        private ForestBrushTool brushTool;
+        public ForestBrushTool BrushTool
+        {
+            get
+            {
+                if (brushTool == null)
+                    brushTool = gameObject.AddComponent<ForestBrushTool>();
+                return brushTool;
+            }
+            private set
+            {
+                brushTool = value;
+            }
+        }
 
         public UIButton ToggleButton { get; private set; }
 
-        GameObject page;
+        internal ForestBrushPanel ForestBrushPanel { get; private set; }
+
+        internal bool Initialized;
+
+        private static readonly string kEmptyContainer = "EmptyContainer";
+
+        private static readonly string kMainToolbarSeparatorTemplate = "MainToolbarSeparator";
+
+        private static readonly string kMainToolbarButtonTemplate = "MainToolbarButtonTemplate";
+
+        private static readonly string kToggleButton = "ForestBrushModToggle";
+
+        private ToolBase lastTool;
+
+        private GameObject tabStripPage;
 
         internal void Initialize()
         {
-            Container = PrefabCollection<TreeInfo>.FindLoaded("ForestBrushContainer.Forest Brush_Data");
-            if (Container == null)
-            {
-                Debug.LogWarning("Can't find ForestBrushContainer asset. Initialization failed.");
-                return;
-            }
-
             UITabstrip tabstrip = ToolsModifierControl.mainToolbar.component as UITabstrip;
-
-            CreateSeparator(tabstrip);
+            
             ToggleButton = CreateToggleButton(tabstrip);
-            CreateSeparator(tabstrip);
 
-            Trees = LoadAllTrees();
+            ForestBrushPanel = tabStripPage.GetComponent<UIPanel>().AddUIComponent<ForestBrushPanel>();
+            
+            Trees = LoadTrees();
 
-            BrushTool = new ForestBrushTool();
+            Brushes = LoadBrushes();
 
-            ForestBrushPanel = page.GetComponent<UIPanel>().AddUIComponent(typeof(ForestBrushPanel)) as ForestBrushPanel;
+            BrushTool = BrushTool;
 
             ToggleButton.eventClick += OnToggleClick;
 
@@ -80,18 +164,20 @@ namespace ForestBrush
             
             SetTutorialLocale();
 
-            initialized = true;
+            Initialized = true;
         }
 
         private UIButton CreateToggleButton(UITabstrip tabstrip)
         {
+            CreateSeparator(tabstrip);
+
             UIButton button;
 
             GameObject mainToolbarButtonTemplate = UITemplateManager.GetAsGameObject(kMainToolbarButtonTemplate);
 
-            page = UITemplateManager.GetAsGameObject(kEmptyContainer);
+            tabStripPage = UITemplateManager.GetAsGameObject(kEmptyContainer);
 
-            button = tabstrip.AddTab(kToggleButton, mainToolbarButtonTemplate, page, new Type[0]) as UIButton;
+            button = tabstrip.AddTab(kToggleButton, mainToolbarButtonTemplate, tabStripPage, new Type[0]) as UIButton;
             button.atlas = Atlas;
 
             button.normalFgSprite = "ForestBrushNormal";
@@ -109,6 +195,8 @@ namespace ForestBrush
             IncrementObjectIndex();
 
             button.parent.height = 1f;
+
+            CreateSeparator(tabstrip);
 
             return button;
         }
@@ -156,6 +244,7 @@ namespace ForestBrush
 
         private void OnForestBrushPanelVisibilityChanged(UIComponent component, bool visible)
         {
+
             if (visible)
             {
                 lastTool = ToolsModifierControl.toolController.CurrentTool;
@@ -172,21 +261,20 @@ namespace ForestBrush
         private void OnToggleClick(UIComponent component, UIMouseEventParameter eventParam)
         {
             ForestBrushPanel.BringToFront();
-            ForestBrushPanel.SavePanelPosition();
             ForestBrushPanel.isVisible = !ForestBrushPanel.isVisible;
         }
 
         internal void CleanUp()
         {
-            if (ForestBrushPanel && initialized)
+            if (ForestBrushPanel && Initialized)
             {
-                Destroy(ForestBrushPanel);
+                Destroy(ForestBrushPanel.gameObject);
                 ForestBrushPanel = null;
             } 
-            initialized = false;
+            Initialized = false;
         }
 
-        private Dictionary<string, TreeInfo> LoadAllTrees()
+        private Dictionary<string, TreeInfo> LoadTrees()
         {
             var trees = new Dictionary<string, TreeInfo>();
             var treeCount = PrefabCollection<TreeInfo>.LoadedCount();
@@ -206,6 +294,18 @@ namespace ForestBrush
             return trees;
         }
 
+        public Dictionary<string, ForestBrush> LoadBrushes()
+        {
+            Dictionary<string, ForestBrush> dictionary = new Dictionary<string, ForestBrush>();
+
+            foreach (KeyValuePair<string, ForestBrush> brush in BrushSettings.SavedBrushes)
+            {
+                if (!dictionary.ContainsKey(brush.Key))
+                    dictionary.Add(brush.Key, brush.Value);
+            }
+            return dictionary;
+        }
+
         public static string GetName(PrefabInfo prefab)
         {
             string name = prefab.name;
@@ -220,12 +320,12 @@ namespace ForestBrush
         {
             try
             {
-                if (initialized && !UIView.HasModalInput() &&
+                if (Initialized && !UIView.HasModalInput() &&
                     (!UIView.HasInputFocus() || (UIView.activeComponent != null)))
                 {
                     Event e = Event.current;
 
-                    if (CGSSerialized.ToggleTool.IsPressed(e))
+                    if (Settings.ToggleTool.IsPressed(e))
                     {
                         ToggleButton.SimulateClick();
                     }
@@ -233,33 +333,33 @@ namespace ForestBrush
                     if (ForestBrushPanel.isVisible)
                     {
 
-                        if (CGSSerialized.Search.IsPressed(e))
+                        if (Settings.Search.IsPressed(e))
                         {
-                            ForestBrushPanel.SearchTextField.Focus();
+                            ForestBrushPanel.BrushEditSection.FocusSearchField();
                         }
-                        if (CGSSerialized.ToggleSquare.IsPressed(e))
+                        if (Settings.ToggleSquare.IsPressed(e))
                         {
-                            ForestBrushPanel.brushOptionsPanel.squareBrushCheckBox.SimulateClick();
+                            ForestBrushPanel.BrushOptionsSection.squareBrushCheckBox.SimulateClick();
                         }
-                        if (CGSSerialized.ToggleAutoDensity.IsPressed(e))
+                        if (Settings.ToggleAutoDensity.IsPressed(e))
                         {
-                            ForestBrushPanel.brushOptionsPanel.autoDensityCheckBox.SimulateClick();
+                            ForestBrushPanel.BrushOptionsSection.autoDensityCheckBox.SimulateClick();
                         }
-                        if (CGSSerialized.IncreaseSize.IsPressed(e))
+                        if (Settings.IncreaseSize.IsPressed(e))
                         {
-                            ForestBrushPanel.brushOptionsPanel.sizeSlider.value += 5f;
+                            ForestBrushPanel.BrushOptionsSection.sizeSlider.value += 5f;
                         }
-                        if (CGSSerialized.DecreaseSize.IsPressed(e))
+                        if (Settings.DecreaseSize.IsPressed(e))
                         {
-                            ForestBrushPanel.brushOptionsPanel.sizeSlider.value -= 5f;
+                            ForestBrushPanel.BrushOptionsSection.sizeSlider.value -= 5f;
                         }
-                        if (CGSSerialized.IncreaseDensity.IsPressed(e))
+                        if (Settings.IncreaseDensity.IsPressed(e))
                         {
-                            ForestBrushPanel.brushOptionsPanel.densitySlider.value += 0.1f;
+                            ForestBrushPanel.BrushOptionsSection.densitySlider.value += 0.1f;
                         }
-                        if (CGSSerialized.DecreaseDensity.IsPressed(e))
+                        if (Settings.DecreaseDensity.IsPressed(e))
                         {
-                            ForestBrushPanel.brushOptionsPanel.densitySlider.value -= 0.1f;
+                            ForestBrushPanel.BrushOptionsSection.densitySlider.value -= 0.1f;
                         }
                     }
                 }

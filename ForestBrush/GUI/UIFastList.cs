@@ -1,4 +1,5 @@
 ﻿using ColossalFramework.UI;
+using ForestBrush.Resources;
 using System;
 using UnityEngine;
 
@@ -542,7 +543,7 @@ namespace ForestBrush.GUI
 
             // Panel 
             m_panel = AddUIComponent<UIPanel>();
-            m_panel.atlas = UIUtilities.GetAtlas();
+            m_panel.atlas =  ResourceLoader.GetAtlas("Ingame");
             m_panel.width = width - 10f;
             m_panel.height = height;
             m_panel.padding = new RectOffset(2, 2, 2, 2);
@@ -563,7 +564,7 @@ namespace ForestBrush.GUI
             m_scrollbar.incrementAmount = 60;
 
             UISlicedSprite tracSprite = m_scrollbar.AddUIComponent<UISlicedSprite>();
-            tracSprite.atlas = UIUtilities.GetAtlas();
+            tracSprite.atlas =  ResourceLoader.GetAtlas("Ingame");
             tracSprite.relativePosition = new Vector3(0 , 0);
             tracSprite.autoSize = true;
             tracSprite.size = tracSprite.parent.size;
@@ -573,7 +574,7 @@ namespace ForestBrush.GUI
             m_scrollbar.trackObject = tracSprite;
 
             UISlicedSprite thumbSprite = tracSprite.AddUIComponent<UISlicedSprite>();
-            thumbSprite.atlas = UIUtilities.GetAtlas();
+            thumbSprite.atlas =  ResourceLoader.GetAtlas("Ingame");
             thumbSprite.relativePosition = Vector2.zero;
             thumbSprite.fillDirection = UIFillDirection.Vertical;
             thumbSprite.autoSize = true;

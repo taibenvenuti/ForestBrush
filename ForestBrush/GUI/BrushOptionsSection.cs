@@ -1,170 +1,210 @@
-﻿using ColossalFramework.UI;
+﻿using System;
+using ColossalFramework.UI;
+using ForestBrush.Resources;
 using UnityEngine;
 
 namespace ForestBrush.GUI
 {
-    public class BrushOptionsPanel : UIPanel
+    public class BrushOptionsSection : UIPanel
     {
-        UIDragHandle dragHandle;
-        UILabel titleLabel;
-        UIButton closeButton;
-        UILabel sizeLabel;
-        public UISlider sizeSlider;
-        UILabel densityLabel;
-        public UISlider densitySlider;
-        UILabel autoDensityLabel;
-        public UICheckBox autoDensityCheckBox;
-        UILabel squareBrushLabel;
-        public UICheckBox squareBrushCheckBox;
-        UILabel overlayColorLabel;
-        public UIColorField colorFieldTemplate;
-        UIPanel layoutPanelTitle;
         UIPanel layoutPanelSize;
+        UILabel sizeLabel;
+        internal UISlider sizeSlider;
+
+        UIPanel layoutPanelStrength;
+        UILabel strengthLabel;
+        internal UISlider strengthSlider;
+
         UIPanel layoutPanelDensity;
+        UILabel densityLabel;
+        internal UISlider densitySlider;
+
         UIPanel layoutPanelAutoDensityColor;
+        UILabel autoDensityLabel;
+
+        internal UICheckBox autoDensityCheckBox;
+        UILabel overlayColorLabel;
+        UIColorField colorFieldTemplate;
+
         UIPanel layoutPanelSquareBrush;
-        UIPanel layoutPanelSpace;
+        UILabel squareBrushLabel;
+        internal UICheckBox squareBrushCheckBox;
 
         public override void Start()
         {
             base.Start();
 
+            Setup();
+            SetupSizePanel();
+            SetupStrengthPanel();
+            SetupDensityPanel();
+            SetupAutoDensityPanel();
+            SetupSquareBrushPanel();
+            Hide();
+        }
+
+        private void Setup()
+        {
             autoLayout = true;
             autoLayoutDirection = LayoutDirection.Vertical;
             autoFitChildrenVertically = true;
-            autoLayoutPadding = new RectOffset(0, 0, 0, 14);          
+            autoLayoutPadding = new RectOffset(0, 0, 10, 0);
+            width = parent.width;
+        }
 
-
-            width = 400f;
-            relativePosition = new Vector3(0f, parent.height + 1f);
-            atlas = UIUtilities.GetAtlas();
-            backgroundSprite = "MenuPanel";
-            isVisible = false;
-            isInteractive = true;
-
-
-            layoutPanelTitle = AddUIComponent<UIPanel>();
-            layoutPanelTitle.size = new Vector2(width, 40);
-            layoutPanelTitle.zOrder = 0;
-
-            titleLabel = layoutPanelTitle.AddUIComponent<UILabel>();
-            titleLabel.autoSize = titleLabel.autoHeight = false;
-            titleLabel.text = UserMod.Translation.GetTranslation("FOREST-BRUSH-BRUSH-OPTIONS-TITLE");
-            titleLabel.textScale = Constants.UITextScale;
-            titleLabel.verticalAlignment = UIVerticalAlignment.Middle;
-            titleLabel.textAlignment = UIHorizontalAlignment.Center;
-            titleLabel.size = new Vector2(layoutPanelTitle.width, 40f);
-            titleLabel.relativePosition = Vector3.zero;
-
-            dragHandle = layoutPanelTitle.AddUIComponent<UIDragHandle>();
-            dragHandle.size = titleLabel.size;
-            dragHandle.relativePosition = Vector3.zero;
-            dragHandle.target = this;
-
-            closeButton = layoutPanelTitle.AddUIComponent<UIButton>();
-            closeButton.atlas = UIUtilities.GetAtlas();
-            closeButton.size = new Vector2(20f, 20f);
-            closeButton.relativePosition = new Vector3(width - 30f, 10f);
-            closeButton.normalBgSprite = "DeleteLineButton";
-            closeButton.hoveredBgSprite = "DeleteLineButtonHovered";
-            closeButton.pressedBgSprite = "DeleteLineButtonPressed";
-            closeButton.eventClick += (component, param) =>
-            {
-                isVisible = false;
-            };
-
+        private void SetupSizePanel()
+        {
             layoutPanelSize = AddUIComponent<UIPanel>();
-            layoutPanelSize.size = new Vector2(width, 16);
+            layoutPanelSize.size = new Vector2(width, 10);
             layoutPanelSize.autoLayout = true;
             layoutPanelSize.autoLayoutDirection = LayoutDirection.Horizontal;
             layoutPanelSize.autoFitChildrenHorizontally = true;
-            layoutPanelSize.autoLayoutPadding = new RectOffset(14, 0, 0, 0);
-            layoutPanelSize.zOrder = 1;
+            layoutPanelSize.autoLayoutPadding = new RectOffset(10, 0, 0, 0);
+            layoutPanelSize.zOrder = 0;
 
             //size slider
             sizeLabel = layoutPanelSize.AddUIComponent<UILabel>();
             sizeLabel.text = UserMod.Translation.GetTranslation("FOREST-BRUSH-BRUSH-OPTIONS-SIZE");
             sizeLabel.textScale = Constants.UITextScale;
-            sizeLabel.autoSize = true;
+            sizeLabel.autoSize = false;
+            sizeLabel.width = 80f;            
             sizeLabel.disabledTextColor = new Color32(100, 100, 100, 255);
             sizeLabel.textAlignment = UIHorizontalAlignment.Left;
             sizeLabel.verticalAlignment = UIVerticalAlignment.Middle;
             sizeLabel.zOrder = 0;
 
             sizeSlider = layoutPanelSize.AddUIComponent<UISlider>();
-            sizeSlider.size = new Vector2(400f - sizeLabel.size.x - 42f, 13f);
+            sizeSlider.size = new Vector2(400f - sizeLabel.width - 30f, 5f);
             sizeSlider.color = new Color32(0, 0, 0, 255);
             sizeSlider.disabledColor = new Color32(190, 190, 190, 255);
             sizeSlider.minValue = 1f;
-            sizeSlider.maxValue = 2000f;
+            sizeSlider.maxValue = ForestBrushMod.instance.BrushTweaker.MaxSize;
             sizeSlider.stepSize = 1f;
-            sizeSlider.value = CGSSerialized.BrushSize;
-            sizeSlider.scrollWheelAmount = 1f;  
+            sizeSlider.value = ForestBrushMod.instance.Settings.BrushSize;
+            sizeSlider.scrollWheelAmount = 1f;
             sizeSlider.eventValueChanged += (c, e) =>
             {
-                CGSSerialized.BrushSize.value = e;
-                sizeSlider.tooltip = CGSSerialized.BrushSize.value.ToString();
+                ForestBrushMod.instance.Settings.BrushSize.value = e;
+                sizeSlider.tooltip = ForestBrushMod.instance.Settings.BrushSize.value.ToString();
                 sizeSlider.RefreshTooltip();
             };
+            sizeSlider.eventMouseUp += (c, e) => ForestBrushMod.instance.BrushTool.Brush.Options.Capture();
             sizeSlider.backgroundSprite = "OptionsScrollbarTrack";
-            sizeSlider.tooltip = CGSSerialized.BrushSize.value.ToString();
+            sizeSlider.tooltip = ForestBrushMod.instance.Settings.BrushSize.value.ToString();
+            sizeSlider.pivot = UIPivotPoint.TopLeft;
             sizeSlider.zOrder = 1;
 
             UISprite thumb = sizeSlider.AddUIComponent<UISprite>();
-            thumb.atlas = UIUtilities.GetAtlas();
+            thumb.atlas = ResourceLoader.GetAtlas("Ingame");
             thumb.size = new Vector2(20, 20);
             thumb.spriteName = "IconPolicyForest";
             sizeSlider.thumbObject = thumb;
+        }
 
+        private void SetupStrengthPanel()
+        {
+            layoutPanelStrength = AddUIComponent<UIPanel>();
+            layoutPanelStrength.size = new Vector2(width, 10);
+            layoutPanelStrength.autoLayout = true;
+            layoutPanelStrength.autoLayoutDirection = LayoutDirection.Horizontal;
+            layoutPanelStrength.autoFitChildrenHorizontally = true;
+            layoutPanelStrength.autoLayoutPadding = new RectOffset(10, 0, 0, 0);
+            layoutPanelStrength.zOrder = 1;
 
-            //density slider
+            strengthLabel = layoutPanelStrength.AddUIComponent<UILabel>();
+            strengthLabel.text = UserMod.Translation.GetTranslation("FOREST-BRUSH-BRUSH-OPTIONS-STRENGTH");
+            strengthLabel.textScale = Constants.UITextScale;
+            strengthLabel.autoSize = false;
+            strengthLabel.width = 80f;
+            strengthLabel.disabledTextColor = new Color32(100, 100, 100, 255);
+            strengthLabel.textAlignment = UIHorizontalAlignment.Left;
+            strengthLabel.verticalAlignment = UIVerticalAlignment.Middle;
+            strengthLabel.zOrder = 0;
+
+            strengthSlider = layoutPanelStrength.AddUIComponent<UISlider>();
+            strengthSlider.size = new Vector2(400f - strengthLabel.width - 30f, 5f);
+            strengthSlider.color = new Color32(0, 0, 0, 255);
+            strengthSlider.disabledColor = new Color32(190, 190, 190, 255);
+            strengthSlider.minValue = 0.01f;
+            strengthSlider.maxValue = 1f;
+            strengthSlider.stepSize = 0.01f;
+            strengthSlider.value = ForestBrushMod.instance.Settings.BrushStrength;
+            strengthSlider.scrollWheelAmount = 0.01f;
+            strengthSlider.tooltip = Math.Round(strengthSlider.value * 100, 1, MidpointRounding.AwayFromZero) + "%";
+            strengthSlider.eventValueChanged += (c, p) =>
+            {
+                ForestBrushMod.instance.Settings.BrushStrength.value = p;
+                strengthSlider.tooltip = Math.Round(p * 100, 1) + "%";
+                strengthSlider.RefreshTooltip();
+            };
+            strengthSlider.eventMouseUp += (c, e) => ForestBrushMod.instance.BrushTool.Brush.Options.Capture();
+            strengthSlider.backgroundSprite = "OptionsScrollbarTrack";
+            strengthSlider.zOrder = 1;
+            strengthSlider.pivot = UIPivotPoint.TopLeft;
+
+            UISprite thumb1 = strengthSlider.AddUIComponent<UISprite>();
+            thumb1.atlas = ResourceLoader.GetAtlas("Ingame");
+            thumb1.size = new Vector2(20, 20);
+            thumb1.spriteName = "IconPolicyForest";
+            strengthSlider.thumbObject = thumb1;
+        }
+
+        private void SetupDensityPanel()
+        {
             layoutPanelDensity = AddUIComponent<UIPanel>();
-            layoutPanelDensity.size = new Vector2(width, 16);
+            layoutPanelDensity.size = new Vector2(width, 10);
             layoutPanelDensity.autoLayout = true;
             layoutPanelDensity.autoLayoutDirection = LayoutDirection.Horizontal;
             layoutPanelDensity.autoFitChildrenHorizontally = true;
-            layoutPanelDensity.autoLayoutPadding = new RectOffset(14, 0, 0, 0);
+            layoutPanelDensity.autoLayoutPadding = new RectOffset(10, 0, 0, 0);
             layoutPanelDensity.zOrder = 2;
 
             densityLabel = layoutPanelDensity.AddUIComponent<UILabel>();
             densityLabel.text = UserMod.Translation.GetTranslation("FOREST-BRUSH-BRUSH-OPTIONS-DENSITY");
             densityLabel.textScale = Constants.UITextScale;
-            densityLabel.autoSize = true;
+            densityLabel.autoSize = false;
+            densityLabel.width = 80f;
             densityLabel.disabledTextColor = new Color32(100, 100, 100, 255);
             densityLabel.textAlignment = UIHorizontalAlignment.Left;
             densityLabel.verticalAlignment = UIVerticalAlignment.Middle;
             densityLabel.zOrder = 0;
-            densityLabel.isEnabled = !CGSSerialized.AutoDensity;
+            densityLabel.isEnabled = !ForestBrushMod.instance.Settings.AutoDensity;
 
             densitySlider = layoutPanelDensity.AddUIComponent<UISlider>();
-            densitySlider.size = new Vector2(400f - densityLabel.size.x - 42f, 13f);
+            densitySlider.size = new Vector2(400f - densityLabel.width - 30f, 5f);
             densitySlider.color = new Color32(0, 0, 0, 255);
             densitySlider.disabledColor = new Color32(190, 190, 190, 255);
             densitySlider.minValue = 0f;
             densitySlider.maxValue = 16f;
             densitySlider.stepSize = 0.1f;
-            densitySlider.value = 16 - CGSSerialized.BrushDensity;
+            densitySlider.value = 16 - ForestBrushMod.instance.Settings.BrushDensity;
             densitySlider.scrollWheelAmount = 0.1f;
             densitySlider.eventValueChanged += (c, e) =>
             {
-                CGSSerialized.BrushDensity.value = 16f - e;
+                ForestBrushMod.instance.Settings.BrushDensity.value = 16f - e;
             };
+            densitySlider.eventMouseUp += (c, e) => ForestBrushMod.instance.BrushTool.Brush.Options.Capture();
             densitySlider.backgroundSprite = "OptionsScrollbarTrack";
             densitySlider.zOrder = 1;
-            densitySlider.isEnabled = !CGSSerialized.AutoDensity;
+            densitySlider.pivot = UIPivotPoint.TopLeft;
+            densitySlider.arbitraryPivotOffset = new Vector2(0f, 3f);
+            densitySlider.isEnabled = !ForestBrushMod.instance.Settings.AutoDensity;
 
             UISprite thumb1 = densitySlider.AddUIComponent<UISprite>();
-            thumb1.atlas = UIUtilities.GetAtlas();
+            thumb1.atlas = ResourceLoader.GetAtlas("Ingame");
             thumb1.size = new Vector2(20, 20);
             thumb1.spriteName = "IconPolicyForest";
             densitySlider.thumbObject = thumb1;
-            
+        }
+
+        private void SetupAutoDensityPanel()
+        {
             layoutPanelAutoDensityColor = AddUIComponent<UIPanel>();
             layoutPanelAutoDensityColor.size = new Vector2(width, 16);
             layoutPanelAutoDensityColor.autoLayout = true;
             layoutPanelAutoDensityColor.autoLayoutDirection = LayoutDirection.Horizontal;
             layoutPanelAutoDensityColor.autoFitChildrenHorizontally = true;
-            layoutPanelAutoDensityColor.autoLayoutPadding = new RectOffset(14, 0, 0, 0);
+            layoutPanelAutoDensityColor.autoLayoutPadding = new RectOffset(10, 0, 0, 0);
             layoutPanelAutoDensityColor.zOrder = 3;
 
             autoDensityLabel = layoutPanelAutoDensityColor.AddUIComponent<UILabel>();
@@ -178,21 +218,22 @@ namespace ForestBrush.GUI
             autoDensityCheckBox = layoutPanelAutoDensityColor.AddUIComponent<UICheckBox>();
             autoDensityCheckBox.size = Constants.UICheckboxSize;
             var sprite = autoDensityCheckBox.AddUIComponent<UISprite>();
-            sprite.atlas = UIUtilities.GetAtlas();
-            sprite.spriteName = "ToggleBase";
+            sprite.atlas = ResourceLoader.GetAtlas("Ingame");
+            sprite.spriteName = Constants.CheckBoxSpriteUnchecked;
             sprite.size = autoDensityCheckBox.size;
             sprite.transform.parent = autoDensityCheckBox.transform;
             sprite.transform.localPosition = Vector3.zero;
             autoDensityCheckBox.checkedBoxObject = sprite.AddUIComponent<UISprite>();
-            ((UISprite)autoDensityCheckBox.checkedBoxObject).atlas = UIUtilities.GetAtlas();
-            ((UISprite)autoDensityCheckBox.checkedBoxObject).spriteName = "ToggleBaseFocused";
+            ((UISprite)autoDensityCheckBox.checkedBoxObject).atlas = ResourceLoader.GetAtlas("Ingame");
+            ((UISprite)autoDensityCheckBox.checkedBoxObject).spriteName = Constants.CheckBoxSpriteChecked;
             autoDensityCheckBox.checkedBoxObject.size = autoDensityCheckBox.size;
             autoDensityCheckBox.checkedBoxObject.relativePosition = Vector3.zero;
-            autoDensityCheckBox.isChecked = CGSSerialized.AutoDensity;
+            autoDensityCheckBox.isChecked = ForestBrushMod.instance.Settings.AutoDensity;
             autoDensityCheckBox.eventCheckChanged += (c, e) =>
             {
-                CGSSerialized.AutoDensity.value = e;
+                ForestBrushMod.instance.Settings.AutoDensity.value = e;
                 densityLabel.isEnabled = densitySlider.isEnabled = !e;
+                ForestBrushMod.instance.BrushTool.Brush.Options.Capture();
             };
             autoDensityCheckBox.zOrder = 0;
 
@@ -205,15 +246,18 @@ namespace ForestBrush.GUI
             overlayColorLabel.zOrder = 3;
 
             colorFieldTemplate = CreateColorField(layoutPanelAutoDensityColor);
-            colorFieldTemplate.size = Constants.UICheckboxSize;
+            colorFieldTemplate.size = Constants.UIColorFieldSize;
             colorFieldTemplate.zOrder = 2;
+        }
 
+        private void SetupSquareBrushPanel()
+        {
             layoutPanelSquareBrush = AddUIComponent<UIPanel>();
             layoutPanelSquareBrush.size = new Vector2(width, 16);
             layoutPanelSquareBrush.autoLayout = true;
             layoutPanelSquareBrush.autoLayoutDirection = LayoutDirection.Horizontal;
             layoutPanelSquareBrush.autoFitChildrenHorizontally = true;
-            layoutPanelSquareBrush.autoLayoutPadding = new RectOffset(14, 0, 0, 0);
+            layoutPanelSquareBrush.autoLayoutPadding = new RectOffset(10, 0, 0, 0);
             layoutPanelSquareBrush.zOrder = 4;
 
             squareBrushLabel = layoutPanelSquareBrush.AddUIComponent<UILabel>();
@@ -227,27 +271,24 @@ namespace ForestBrush.GUI
             squareBrushCheckBox = layoutPanelSquareBrush.AddUIComponent<UICheckBox>();
             squareBrushCheckBox.size = Constants.UICheckboxSize;
             var sprite2 = squareBrushCheckBox.AddUIComponent<UISprite>();
-            sprite2.atlas = UIUtilities.GetAtlas();
-            sprite2.spriteName = "ToggleBase";
+            sprite2.atlas = ResourceLoader.GetAtlas("Ingame");
+            sprite2.spriteName = Constants.CheckBoxSpriteUnchecked;
             sprite2.size = squareBrushCheckBox.size;
             sprite2.transform.parent = squareBrushCheckBox.transform;
             sprite2.transform.localPosition = Vector3.zero;
             squareBrushCheckBox.checkedBoxObject = sprite2.AddUIComponent<UISprite>();
 
-            ((UISprite)squareBrushCheckBox.checkedBoxObject).atlas = UIUtilities.GetAtlas();
-            ((UISprite)squareBrushCheckBox.checkedBoxObject).spriteName = "ToggleBaseFocused";
+            ((UISprite)squareBrushCheckBox.checkedBoxObject).atlas = ResourceLoader.GetAtlas("Ingame");
+            ((UISprite)squareBrushCheckBox.checkedBoxObject).spriteName = Constants.CheckBoxSpriteChecked;
             squareBrushCheckBox.checkedBoxObject.size = squareBrushCheckBox.size;
             squareBrushCheckBox.checkedBoxObject.relativePosition = Vector3.zero;
-            squareBrushCheckBox.isChecked = CGSSerialized.SquareBrush;
+            squareBrushCheckBox.isChecked = ForestBrushMod.instance.Settings.SquareBrush;
             squareBrushCheckBox.eventCheckChanged += (c, e) =>
             {
-                CGSSerialized.SquareBrush.value = e;
+                ForestBrushMod.instance.Settings.SquareBrush.value = e;
+                ForestBrushMod.instance.BrushTool.Brush.Options.Capture();
             };
             squareBrushCheckBox.zOrder = 0;
-
-            layoutPanelSpace = AddUIComponent<UIPanel>();
-            layoutPanelSpace.size = new Vector2(width, 1);
-            layoutPanelSpace.zOrder = 5;
         }
 
         private UIColorField CreateColorField(UIComponent parent)
@@ -266,18 +307,30 @@ namespace ForestBrush.GUI
             cF.name = "ForestBrushColorField";
             cF.pickerPosition = UIColorField.ColorPickerPosition.RightBelow;
             cF.eventSelectedColorChanged += EventSelectedColorChangedHandler;
-            cF.selectedColor = UserMod.BrushSettings.OverlayColor;
+            cF.selectedColor = ForestBrushMod.instance.BrushSettings.OverlayColor;
             return cF;
         }
 
         private void EventSelectedColorChangedHandler(UIComponent component, Color value)
         {
-            UserMod.BrushSettings.OverlayColor = value;
-            UserMod.BrushSettings.Save();
+            ForestBrushMod.instance.BrushSettings.OverlayColor = value;
+            ForestBrushMod.instance.BrushSettings.Save();
         }
 
         public string AutoDensityLabelText => UserMod.Translation.GetTranslation("FOREST-BRUSH-BRUSH-OPTIONS-AUTODENSITY");
         public string SquareBrushLabelText => UserMod.Translation.GetTranslation("FOREST-BRUSH-BRUSH-OPTIONS-SQUAREBRUSH");
-        public string OverlayColorLabelText => UserMod.Translation.GetTranslation("FOREST-BRUSH-BRUSH-OPTIONS-OVERLAYCOLOR");
+        public string OverlayColorLabelText => UserMod.Translation.GetTranslation("FOREST-BRUSH-BRUSH-OPTIONS-OVERLAYCOLOR");        
+
+        internal void LoadBrush(ForestBrush brush)
+        {
+            sizeSlider.value = brush.Options.Size;
+            sizeSlider.tooltip = brush.Options.Size.ToString();
+            strengthSlider.value = brush.Options.Strength;
+            strengthSlider.tooltip = Math.Round(brush.Options.Strength * 100, 1) + "%";
+            densitySlider.value = brush.Options.Density;
+            autoDensityCheckBox.isChecked = brush.Options.AutoDensity;
+            colorFieldTemplate.selectedColor = brush.Options.OverlayColor;
+            squareBrushCheckBox.isChecked = brush.Options.IsSquare;
+        }
     }
 }

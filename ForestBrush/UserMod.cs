@@ -1,10 +1,8 @@
 ﻿using ColossalFramework;
 using ColossalFramework.UI;
 using ForestBrush.TranslationFramework;
-using Harmony;
 using ICities;
 using System;
-using System.Reflection;
 using UnityEngine;
 
 namespace ForestBrush
@@ -14,25 +12,8 @@ namespace ForestBrush
         public string Name => "Forest Brush";
         public string Description => Translation.GetTranslation("FOREST-BRUSH-MODDESCRIPTION");
         internal static Translation Translation = new Translation();
-        private HarmonyInstance harmony;
         private OptionsKeyBinding optionKeys;
 
-        private static XMLSerialized brushSettings;
-        public static XMLSerialized BrushSettings
-        {
-            get
-            {
-                if(brushSettings == null)
-                {
-                    brushSettings = XMLSerialized.Load();
-                }
-                return brushSettings;
-            }
-            set
-            {
-                brushSettings = value;
-            }
-        }
         public UserMod()
         {
             try
@@ -51,8 +32,7 @@ namespace ForestBrush
 
         public void OnEnabled()
         {
-            harmony = HarmonyInstance.Create("com.tpb.forestbrush");
-            harmony.PatchAll(Assembly.GetExecutingAssembly());
+
         }
 
         public void OnSettingsUI(UIHelperBase helper)
@@ -63,11 +43,6 @@ namespace ForestBrush
 
                 UIPanel panel = group.self as UIPanel;
 
-                UICheckBox checkBox = (UICheckBox)group.AddCheckbox(Translation.GetTranslation("FOREST-BRUSH-OPTIONS-CONFIRMOVERWRITE"), CGSSerialized.ConfirmOverwrite, (b) =>
-                {
-
-                });
-
                 group.AddSpace(10);
 
                 optionKeys = panel.gameObject.AddComponent<OptionsKeyBinding>();
@@ -76,7 +51,8 @@ namespace ForestBrush
 
                 UIButton button = (UIButton)group.AddButton(Translation.GetTranslation("FOREST-BRUSH-OPTIONS-RESET"), () =>
                 {
-                    CGSSerialized.Reset();
+                    ForestBrushMod.instance.Settings.Reset();
+                    optionKeys.RefreshBindableInputs();
                 });
 
                 group.AddSpace(10);

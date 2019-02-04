@@ -13,7 +13,7 @@ namespace ForestBrush
     {
         static bool Prefix(ref Texture2D ___m_brush, ref float[] ___m_brushData, ref Vector3 ___m_brushPosition, ref float ___m_brushSize, Texture2D brush, Vector3 brushPosition, float brushSize)
         {
-            if (ForestBrushMod.instance.ForestBrushPanel != null && ForestBrushMod.instance.IsCurrentTreeContainer)
+            if (ForestBrushMod.instance.ForestBrushPanel.isVisible && ForestBrushMod.instance.IsCurrentTreeContainer)
             {
                 if (___m_brush != brush)
                 {
@@ -40,7 +40,7 @@ namespace ForestBrush
                 return false;
             }
             return true;
-        }        
+        }
     }
 
     [HarmonyPatch(typeof(TreeTool), "ApplyBrush")]
@@ -58,18 +58,19 @@ namespace ForestBrush
         static bool Prefix(TreeTool __instance, Randomizer ___m_randomizer, Vector3 ___m_mousePosition, bool ___m_mouseLeftDown, bool ___m_mouseRightDown, ToolController ___m_toolController)
         {
             if (ForestBrushMod.instance.IsCurrentTreeContainer && ForestBrushMod.instance.Container.m_variations.Length == 0) return false;
-            else if (ForestBrushMod.instance.ForestBrushPanel != null && ForestBrushMod.instance.IsCurrentTreeContainer && ___m_mouseLeftDown)
+            else if (ForestBrushMod.instance.ForestBrushPanel.isVisible && ForestBrushMod.instance.IsCurrentTreeContainer && ___m_mouseLeftDown)
             {
-                ___m_toolController.SetBrush(null, Vector3.zero, 1f);
                 if (__instance.m_prefab != null)
                 {
-                    for (var i = 0; i < 1024; i++)
+                    int batchSize = (int)__instance.m_brushSize * ForestBrushMod.instance.BrushTweaker.SizeMultiplier + ForestBrushMod.instance.BrushTweaker.SizeAddend;//(int)(((__instance.m_brushSize/10) * (5 - ForestBrushMod.instance.Settings.BrushDensity / 4)) * ForestBrushMod.instance.Settings.BrushStrength);
+                    
+                    for (int i = 0; i < batchSize; i++)
                     {
                         var xz = UnityEngine.Random.insideUnitCircle;
                         var _x = xz.x;
                         var _y = xz.y;
                         var position = ___m_mousePosition + new Vector3(_x, 0f, _y) * (__instance.m_brushSize / 2);
-                        if (CGSSerialized.SquareBrush)
+                        if (ForestBrushMod.instance.Settings.SquareBrush)
                         {
                             var radians = Angle * Mathf.Deg2Rad;
                             var c = Mathf.Cos(radians);
@@ -85,68 +86,51 @@ namespace ForestBrush
                             _y = xz.y;
                             position = ___m_mousePosition + new Vector3(_x, 0f, _y);
                         }
-                        TreeInfo ___m_treeInfo;
-                        if ((Singleton<ToolManager>.instance.m_properties.m_mode & ItemClass.Availability.AssetEditor) != ItemClass.Availability.None)
-                        {
-                            ___m_treeInfo = __instance.m_prefab;
-                        }
-                        else
-                        {
-                            ___m_treeInfo = __instance.m_prefab.GetVariation(ref ___m_randomizer);
-                        }
+                        TreeInfo ___m_treeInfo = __instance.m_prefab.GetVariation(ref ___m_randomizer);
 
                         position.y = Singleton<TerrainManager>.instance.SampleDetailHeight(position, out float f, out float f2);
-                        var spacing = CGSSerialized.AutoDensity ? ___m_treeInfo.m_generatedInfo.m_size.x / 2 : CGSSerialized.BrushDensity;
-                        if (Mathf.Max(Mathf.Abs(f), Mathf.Abs(f2)) < (float)___m_randomizer.Int32(10000u) * 5E-05f)
+                        var spacing = ForestBrushMod.instance.Settings.AutoDensity ? ___m_treeInfo.m_generatedInfo.m_size.x / 2 : ForestBrushMod.instance.Settings.BrushDensity;
+                        
+                        Randomizer randomizer = ___m_randomizer;
+                        uint seed = Singleton<TreeManager>.instance.m_trees.NextFreeItem(ref randomizer);
+                        Randomizer randomizer2 = new Randomizer(seed);
+                        float num22 = ___m_treeInfo.m_minScale + (float)randomizer2.Int32(10000u) * (___m_treeInfo.m_maxScale - ___m_treeInfo.m_minScale) * 0.0001f;
+                        float num23 = ___m_treeInfo.m_generatedInfo.m_size.y * num22;
+                        float num24 = 4.5f;
+                        Vector2 vector2 = VectorUtils.XZ(position);
+                        Quad2 quad = default(Quad2);
+                        quad.a = vector2 + new Vector2(-num24, -num24);
+                        quad.b = vector2 + new Vector2(-num24, num24);
+                        quad.c = vector2 + new Vector2(num24, num24);
+                        quad.d = vector2 + new Vector2(num24, -num24);
+                        Quad2 quad2 = default(Quad2);
+                        quad2.a = vector2 + new Vector2(-spacing, -spacing);
+                        quad2.b = vector2 + new Vector2(-spacing, spacing);
+                        quad2.c = vector2 + new Vector2(spacing, spacing);
+                        quad2.d = vector2 + new Vector2(spacing, -spacing);
+                        float y = ___m_mousePosition.y;
+                        float maxY = ___m_mousePosition.y + num23;
+                        ItemClass.CollisionType collisionType = ItemClass.CollisionType.Terrain;
+
+                        if (Singleton<PropManager>.instance.OverlapQuad(quad, y, maxY, collisionType, 0, 0) ||
+                            Singleton<TreeManager>.instance.OverlapQuad(quad2, y, maxY, collisionType, 0, 0u)||
+                            Singleton<NetManager>.instance.OverlapQuad(quad, y, maxY, collisionType, ___m_treeInfo.m_class.m_layer, 0, 0, 0) ||
+                            Singleton<BuildingManager>.instance.OverlapQuad(quad, y, maxY, collisionType, ___m_treeInfo.m_class.m_layer, 0, 0, 0) ||
+                            Singleton<TerrainManager>.instance.HasWater(vector2))
+                            continue;
+                        var scale = ___m_randomizer.Int32(16);
+                        var str2Rnd = UnityEngine.Random.Range(0.0f, ForestBrushMod.instance.BrushTweaker.MaxRandomRange); 
+                        if (Mathf.PerlinNoise(position.x * scale, position.y * scale) > 0.5 && str2Rnd < ForestBrushMod.instance.Settings.BrushStrength)
                         {
-                            Randomizer randomizer = ___m_randomizer;
-                            uint seed = Singleton<TreeManager>.instance.m_trees.NextFreeItem(ref randomizer);
-                            Randomizer randomizer2 = new Randomizer(seed);
-                            float num22 = ___m_treeInfo.m_minScale + (float)randomizer2.Int32(10000u) * (___m_treeInfo.m_maxScale - ___m_treeInfo.m_minScale) * 0.0001f;
-                            float num23 = ___m_treeInfo.m_generatedInfo.m_size.y * num22;
-                            float num24 = 4.5f;
-                            Vector2 vector2 = VectorUtils.XZ(position);
-                            Quad2 quad = default(Quad2);
-                            quad.a = vector2 + new Vector2(-num24, -num24);
-                            quad.b = vector2 + new Vector2(-num24, num24);
-                            quad.c = vector2 + new Vector2(num24, num24);
-                            quad.d = vector2 + new Vector2(num24, -num24);
-                            Quad2 quad2 = default(Quad2);
-                            quad2.a = vector2 + new Vector2(-spacing, -spacing);
-                            quad2.b = vector2 + new Vector2(-spacing, spacing);
-                            quad2.c = vector2 + new Vector2(spacing, spacing);
-                            quad2.d = vector2 + new Vector2(spacing, -spacing);
-                            float y = ___m_mousePosition.y;
-                            float maxY = ___m_mousePosition.y + num23;
-                            ItemClass.CollisionType collisionType = ItemClass.CollisionType.Terrain;
-                            if (!Singleton<PropManager>.instance.OverlapQuad(quad, y, maxY, collisionType, 0, 0))
+                            if (Singleton<TreeManager>.instance.CreateTree(out uint num25, ref ___m_randomizer, ___m_treeInfo, position, false))
                             {
-                                if (!Singleton<TreeManager>.instance.OverlapQuad(quad2, y, maxY, collisionType, 0, 0u))
-                                {
-                                    if (!Singleton<NetManager>.instance.OverlapQuad(quad, y, maxY, collisionType, ___m_treeInfo.m_class.m_layer, 0, 0, 0))
-                                    {
-                                        if (!Singleton<BuildingManager>.instance.OverlapQuad(quad, y, maxY, collisionType, ___m_treeInfo.m_class.m_layer, 0, 0, 0))
-                                        {
-                                            if (!Singleton<TerrainManager>.instance.HasWater(vector2))
-                                            {
-                                                var scale = randomizer.Int32(160) / 10;
-                                                if (Mathf.PerlinNoise(position.x * scale, position.y * scale) > 0.5)
-                                                {
-                                                    if (Singleton<TreeManager>.instance.CreateTree(out uint num25, ref ___m_randomizer, ___m_treeInfo, position, false))
-                                                    {
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
                             }
                         }
                     }
                 }
                 return false;
             }
-            else if (ForestBrushMod.instance.ForestBrushPanel != null && ForestBrushMod.instance.IsCurrentTreeContainer && ___m_mouseRightDown && RotationTogglePressed())
+            else if (ForestBrushMod.instance.ForestBrushPanel.isVisible && ForestBrushMod.instance.IsCurrentTreeContainer && ___m_mouseRightDown && RotationTogglePressed())
             {
                 return false;
             }
@@ -159,7 +143,7 @@ namespace ForestBrush
     {
         static bool Prefix(TreeTool __instance, ToolController ___m_toolController, ToolBase.ToolErrors ___m_placementErrors, Vector3 ___m_mousePosition, bool ___m_mouseRightDown, Randomizer ___m_randomizer, CameraInfo cameraInfo)
         {
-            if(ForestBrushMod.instance.ForestBrushPanel == null || !ForestBrushMod.instance.IsCurrentTreeContainer || (___m_mouseRightDown && !ApplyBrushPatch.RotationTogglePressed()))
+            if(!ForestBrushMod.instance.ForestBrushPanel.isVisible || !ForestBrushMod.instance.IsCurrentTreeContainer || (___m_mouseRightDown && !ApplyBrushPatch.RotationTogglePressed()))
             {
                 return true;
             }
@@ -169,16 +153,16 @@ namespace ForestBrush
                 if (__instance.m_mode == TreeTool.Mode.Brush && treeInfo != null && !___m_toolController.IsInsideUI && Cursor.visible)
                 {
                     var size = __instance.m_brushSize / 2;
-                    Color toolColor = UserMod.BrushSettings.OverlayColor;
+                    Color toolColor = ForestBrushMod.instance.BrushSettings.OverlayColor;
                     ___m_toolController.RenderColliding(cameraInfo, toolColor, toolColor, toolColor, toolColor, 0, 0);
                     ToolManager instance = Singleton<ToolManager>.instance;
                     instance.m_drawCallData.m_overlayCalls = instance.m_drawCallData.m_overlayCalls + 1;
-                    if(CGSSerialized.SquareBrush)
+                    if(ForestBrushMod.instance.Settings.SquareBrush.value)
                     {
                         var Angle = ApplyBrushPatch.Angle;
                         var radians = Angle * Mathf.Deg2Rad;
                         var cos = Mathf.Cos(radians);
-                        var sin = Mathf.Sin(radians);                       
+                        var sin = Mathf.Sin(radians);
 
                         Quad3 quad = default(Quad3);
                         Vector2 xz = VectorUtils.XZ(___m_mousePosition);
@@ -188,7 +172,6 @@ namespace ForestBrush
                         a.x = aT.x * cos - aT.y * sin;
                         a.y = aT.y * cos + aT.x * sin;
                         a += xz;
-
 
                         var b = xz + new Vector2(-size, size);
                         var bT = b - xz;
@@ -224,9 +207,9 @@ namespace ForestBrush
     [HarmonyPatch(typeof(TreeTool), "OnToolGUI")]
     public class OnToolGUIPatch
     {
-        static bool Prefix(TreeTool __instance, ToolController ___m_toolController, bool ___m_mouseLeftDown, bool ___m_mouseRightDown, Event e)
+        static bool Prefix(TreeTool __instance, ToolController ___m_toolController, ref bool ___m_mouseLeftDown, ref bool ___m_mouseRightDown, Event e)
         {
-            if (ForestBrushMod.instance.ForestBrushPanel != null && ForestBrushMod.instance.IsCurrentTreeContainer)
+            if (ForestBrushMod.instance.ForestBrushPanel.isVisible && ForestBrushMod.instance.IsCurrentTreeContainer)
             {
                 if (!___m_toolController.IsInsideUI && e.type == EventType.MouseDown)
                 {
@@ -285,16 +268,16 @@ namespace ForestBrush
     {
         static void Prefix(ref TreeTool __instance, ToolController ___m_toolController, ref float ___m_brushSize)
         {
-            if (ForestBrushMod.instance.ForestBrushPanel != null && ForestBrushMod.instance.IsCurrentTreeContainer)
+            if (ForestBrushMod.instance.ForestBrushPanel.isVisible && ForestBrushMod.instance.IsCurrentTreeContainer)
             {
                 __instance.m_mode = TreeTool.Mode.Brush;
-                ___m_brushSize = CGSSerialized.BrushSize;
+                ___m_brushSize = ForestBrushMod.instance.Settings.BrushSize;
             }
         }
 
         static void Postfix(TreeTool __instance, ToolController ___m_toolController)
         {
-            if (ForestBrushMod.instance.ForestBrushPanel != null && ForestBrushMod.instance.IsCurrentTreeContainer)
+            if (ForestBrushMod.instance.ForestBrushPanel.isVisible && ForestBrushMod.instance.IsCurrentTreeContainer)
             {
                 if (__instance.m_mode == TreeTool.Mode.Brush && Input.GetKey(KeyCode.Mouse1) && ApplyBrushPatch.RotationTogglePressed())
                 {

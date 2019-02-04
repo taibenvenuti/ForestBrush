@@ -1,55 +1,56 @@
-﻿using ForestBrush.GUI;
-using System;
+﻿using ColossalFramework.UI;
+using ForestBrush.GUI;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 namespace ForestBrush
 {
-    public class ForestBrushTool
+    public class ForestBrushTool : MonoBehaviour
     {
         public ForestBrush Brush { get; set; }
 
         private List<TreeInfo> TreeInfos { get; set; } = new List<TreeInfo>();
 
-        public TreeInfo Container { get; private set; }
+        private TreeInfo Container { get; set; } = ForestBrushMod.instance.Container;
 
-        public List<ForestBrush> SavedBrushes => UserMod.BrushSettings.SavedBrushes;
-
-        public ForestBrushTool()
+        public Dictionary<string, ForestBrush> Brushes => ForestBrushMod.instance.Brushes;
+               
+        void Awake()
         {
-            UpdateTool(CGSSerialized.SelectedBrush);
+            UpdateTool(ForestBrushMod.instance.Settings.SelectedBrush);
         }
 
-        public void UpdateTool(string name)
+        public void UpdateTool(string brushName)
         {
-            Container = ForestBrushMod.instance.Container;
-
-            if (!Container) return;
-
-            Brush = SavedBrushes.Find(brush => brush.Name == name);
-
-            if (Brush == null)
+            if (!Brushes.TryGetValue(brushName, out ForestBrush brush) || brush == null)
             {
-                Brush = new ForestBrush();
-                CODebug.Log(LogChannel.Modding, "Brush was null, creating new vanilla brush.");
+                bool wasNull = brush == null;
+                
+                brush = new ForestBrush { Name = brushName };
+
+                brush.ReplaceAll(TreeInfos);
+
+                brush.Options.Capture();
+
+                if (wasNull) Brushes[brushName] = brush;
+                else Brushes.Add(brush.Name, brush);
             }
 
-            if (Brush.Name == Constants.VanillaPack)
+            Brush = brush;
+
+            TreeInfos = new List<TreeInfo>();
+
+            foreach (var tree in Brush.Trees)
             {
-                TreeInfos = ForestBrushMod.instance.Trees.Values.Where(t => t.m_isCustomContent == false).ToList();                
-            }
-            else
-            {
-                TreeInfos = new List<TreeInfo>();
-                foreach (var treeName in Brush.Trees)
-                {
-                    var tree = ForestBrushMod.instance.Trees[treeName];
-                    if (!tree) continue;
-                    TreeInfos.Add(tree);
-                }
+                var treeInfo = ForestBrushMod.instance.Trees[tree.Name];
+                if (!treeInfo) continue;
+                TreeInfos.Add(treeInfo);
             }
 
-            Container = SetBrushActive(Container);
+            ForestBrushMod.instance.ForestBrushPanel.LoadBrush(Brush);
+
+            Container = CreateBrushPrefab();
         }
 
         private void Add(TreeInfo tree)
@@ -68,8 +69,8 @@ namespace ForestBrush
 
         public void RemoveAll()
         {
-            var infoBuffer = ForestBrushMod.instance.ForestBrushPanel.TreesList.rowsData.m_buffer;
-            var itemBuffer = ForestBrushMod.instance.ForestBrushPanel.TreesList.rows.m_buffer;
+            var infoBuffer = ForestBrushMod.instance.ForestBrushPanel.BrushEditSection.TreesList.rowsData.m_buffer;
+            var itemBuffer = ForestBrushMod.instance.ForestBrushPanel.BrushEditSection.TreesList.rows.m_buffer;
             foreach (TreeInfo tree in infoBuffer)
             {
                 Remove(tree);
@@ -82,55 +83,62 @@ namespace ForestBrush
 
         private void AddAll()
         {
-            var infoBuffer = ForestBrushMod.instance.ForestBrushPanel.TreesList.rowsData.m_buffer.Cast<TreeInfo>().ToList();
+            var infoBuffer = ForestBrushMod.instance.ForestBrushPanel.BrushEditSection.TreesList.rowsData.m_buffer.Cast<TreeInfo>().ToList();
             TreeInfos = ForestBrushMod.instance.Trees.Values.Where(treeInfo => infoBuffer.Contains(treeInfo)).ToList();
-            var treeNames = TreeInfos.Select(p => p.name).ToList();
-            Brush.Update(treeNames);
-            var itemBuffer = ForestBrushMod.instance.ForestBrushPanel.TreesList.rows.m_buffer;
+            Brush.ReplaceAll(TreeInfos);
+            var itemBuffer = ForestBrushMod.instance.ForestBrushPanel.BrushEditSection.TreesList.rows.m_buffer;
             foreach (TreeItem item in itemBuffer)
             {
                 item?.ToggleCheckbox(true);
             }
         }
 
-        internal void Save()
+        internal void SaveAll()
         {
-            if (Brush.Name == Constants.VanillaPack)
-            {
-                throw new NotImplementedException();
-            }
-            else UserMod.BrushSettings.Save();
+            ForestBrushMod.instance.BrushSettings.Save();
         }
 
         public void New(string brushName)
         {
-            List<string> newTreeNames = TreeInfos.Select(p => p.name).ToList();
-            bool brushExists = SavedBrushes.Find(b => b.Name == brushName) != null; 
-            if (!brushExists)
+            if (!Brushes.TryGetValue(brushName, out ForestBrush brush))
             {
-                SavedBrushes.Add(new ForestBrush(brushName, newTreeNames));
-                CGSSerialized.SelectedBrush.value = brushName;
-                ForestBrushMod.instance.ForestBrushPanel.UpdateDropDown();
-                UserMod.BrushSettings.Save();
+                brush = new ForestBrush()
+                {
+                    Name = brushName,
+                    Options = new ForestBrush.BrushOptions()
+                };
+
+                brush.ReplaceAll(TreeInfos);
+
+                Brushes.Add(brushName, brush);
+
+                ForestBrushMod.instance.Settings.SelectedBrush.value = brushName;
+
+                ForestBrushMod.instance.ForestBrushPanel.BrushSelectSection.UpdateDropDown();
+
+                ForestBrushMod.instance.BrushSettings.Save();
             }                
-            else ForestBrushMod.instance.ForestBrushPanel.OnSaveCurrentClickedEventHandler(true);
+            else UIView.PushModal(NewBrushModal.Instance);
         }
 
         internal void DeleteCurrent()
         {
-            SavedBrushes.Remove(Brush);
-            CGSSerialized.SelectedBrush.value = Constants.VanillaPack;
-            UserMod.BrushSettings.Save();
-            ForestBrushMod.instance.ForestBrushPanel.UpdateDropDown();
+            Brushes.Remove(Brush.Name);
+            ForestBrushMod.instance.Settings.SelectedBrush.value = "";
+            ForestBrushMod.instance.ForestBrushPanel.BrushSelectSection.UpdateDropDown();
+            string nextBrush = ForestBrushMod.instance.ForestBrushPanel.BrushSelectSection.SelectBrushDropDown.items.Length <= 0 ? Constants.NewBrushName :
+                ForestBrushMod.instance.ForestBrushPanel.BrushSelectSection.SelectBrushDropDown.selectedValue;
+            UpdateTool(nextBrush);
+            SaveAll();
         }
 
-        public TreeInfo SetBrushActive(TreeInfo info)
+        public TreeInfo CreateBrushPrefab()
         {   
             var variations = new TreeInfo.Variation[TreeInfos.Count];
             if (TreeInfos.Count == 0)
             {
-                info.m_variations = variations;
-                return info;
+                Container.m_variations = variations;
+                return Container;
             }
             for (int i = 0; i < TreeInfos.Count; i++)
             {
@@ -151,11 +159,11 @@ namespace ForestBrush
                     index = 0;
                 }
             }
-            info.m_variations = variations;
-            return info;
+            Container.m_variations = variations;
+            return Container;
         }
 
-        internal void Update(TreeInfo treeInfo, bool value, bool updateAll)
+        internal void UpdateTreeList(TreeInfo treeInfo, bool value, bool updateAll)
         {
             if (value) Add(treeInfo);
             else Remove(treeInfo);
@@ -164,7 +172,7 @@ namespace ForestBrush
                 if (value) AddAll();
                 else RemoveAll();
             }
-            Container = SetBrushActive(Container);
+            Container = CreateBrushPrefab();
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿using ColossalFramework.UI;
+﻿using ColossalFramework;
+using ColossalFramework.UI;
+using ForestBrush.Resources;
 using UnityEngine;
 
 namespace ForestBrush.GUI
@@ -10,6 +12,16 @@ namespace ForestBrush.GUI
         UITextField textField;
         UIButton okButton;
         UIButton cancelButton;
+        static NewBrushModal instance;
+        internal static NewBrushModal Instance
+        {
+            get
+            {
+                if (instance == null)
+                    instance = UIView.GetAView().AddUIComponent(typeof(NewBrushModal)) as NewBrushModal;
+                return instance;
+            }
+        }
 
         public override void Start()
         {
@@ -22,7 +34,7 @@ namespace ForestBrush.GUI
 
             title = AddUIComponent<UILabel>();
             title.text = UserMod.Translation.GetTranslation("FOREST-BRUSH-PROMPT-NEW");
-            title.textScale = Constants.UITextScale;
+            title.textScale = Constants.UITitleTextScale;
             title.relativePosition = new Vector3((width - title.width) / 2, (Constants.UITitleBarHeight - title.height) / 2);
 
             dragHandle = AddUIComponent<UIDragHandle>();
@@ -31,7 +43,7 @@ namespace ForestBrush.GUI
             dragHandle.target = this;
             
             textField = AddUIComponent<UITextField>();
-            textField.atlas = UIUtilities.GetAtlas();
+            textField.atlas =  ResourceLoader.GetAtlas("Ingame");
             textField.size = new Vector2(width - Constants.UISpacing * 2, 30f);
             textField.padding = new RectOffset(6, 6, 6, 6);
             textField.builtinKeyNavigation = true;
@@ -48,7 +60,7 @@ namespace ForestBrush.GUI
             textField.relativePosition = new Vector3(width - textField.width - Constants.UISpacing, Constants.UITitleBarHeight + Constants.UISpacing);
             textField.eventKeyPress += (c, e) =>
             {
-                if (!char.IsLetterOrDigit(e.character) && !char.IsControl(e.character)) e.Use();
+                if (!char.IsLetterOrDigit(e.character) && !char.IsWhiteSpace(e.character) && !char.IsControl(e.character)) e.Use();
                 if (string.IsNullOrEmpty(textField.text))
                     okButton.Disable();
                 else okButton.Enable();
@@ -60,8 +72,8 @@ namespace ForestBrush.GUI
             okButton.eventClicked += (c, e) =>
             {
                 ForestBrushMod.instance.BrushTool.New(textField.text);
-                UIView.PopAllModal();
-                DestroyImmediate(gameObject);
+                UIView.PopModal();
+                Hide();
             };
             okButton.Disable();
 
@@ -70,8 +82,8 @@ namespace ForestBrush.GUI
             cancelButton.width = (width - (Constants.UISpacing * 3)) / 2;
             cancelButton.eventClicked += (c, e) =>
             {
-                UIView.PopAllModal();
-                DestroyImmediate(gameObject);
+                UIView.PopModal();
+                Hide();
             };
         }
 
@@ -88,6 +100,27 @@ namespace ForestBrush.GUI
             {
                 p.Use();
                 okButton.SimulateClick();
+            }
+        }
+
+        protected override void OnVisibilityChanged()
+        {
+            base.OnVisibilityChanged();
+            UIComponent modalEffect = GetUIView().panelsLibraryModalEffect;
+            if (isVisible)
+            {
+                textField.text = string.Empty;
+                textField.Focus();
+
+                if (modalEffect != null)
+                {
+                    modalEffect.Show(false);
+                    ValueAnimator.Animate("NewForestBrushModalEffect", (f) => modalEffect.opacity = f, new AnimatedFloat(0f, 1f, 0.7f, EasingType.CubicEaseOut));
+                }
+            }
+            else if(modalEffect != null)
+            {
+                ValueAnimator.Animate("NewForestBrushModalEffect", (f) => modalEffect.opacity = f, new AnimatedFloat(1f, 0f, 0.7f, EasingType.CubicEaseOut), () => modalEffect.Hide());
             }
         }
     }

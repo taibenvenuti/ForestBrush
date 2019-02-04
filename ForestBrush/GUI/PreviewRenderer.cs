@@ -9,8 +9,8 @@ namespace ForestBrush.GUI
         private Camera m_camera;
         private float m_rotation = 120f;
         private float m_zoom = 4f;
-
-        public PreviewRenderer()
+        
+        void Awake()
         {
             m_camera = new GameObject("Camera").AddComponent<Camera>();
             m_camera.transform.SetParent(transform);

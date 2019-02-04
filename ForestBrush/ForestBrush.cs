@@ -1,49 +1,69 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ForestBrush
 {
     [Serializable]
     public class ForestBrush
     {
-        public string Name { get; private set; }
+        public string Name { get; set; }
 
-        public List<string> Trees { get; private set; }
+        public List<Tree> Trees { get; set; }
 
-        public ForestBrush()
+        public BrushOptions Options { get; set; }
+
+        public void Add(TreeInfo treeInfo)
         {
-            Name = Constants.VanillaPack;
-            Trees = new List<string>();
+            string name = treeInfo.name;
+            if (!Trees.Any(t => t.Name == name))
+                Trees.Add(new Tree(treeInfo));
+            Options.Capture();
         }
 
-        public ForestBrush(string name)
+        public void Remove(TreeInfo treeInfo)
         {
-            Name = name;
-            Trees = new List<string>();
+            var name = treeInfo.name;
+            Tree tree = Trees.Find(t => t.Name == name);
+            Trees.Remove(tree);
+            Options.Capture();
         }
 
-        public ForestBrush(string name, List<string> trees)
+        /// <summary>
+        /// Replaces all current trees in this brush with the ones provided.
+        /// Also updates the brush options to currently selected options.
+        /// </summary>
+        /// <param name="newTrees">A list of TreeInfo trees to replace the existing ones with.</param>
+        public void ReplaceAll(List<TreeInfo> newTrees)
         {
-            Name = name;
-            Trees = trees;
+            Trees = new List<Tree>();
+            foreach (var treeInfo in newTrees)
+            {
+                Tree tree = new Tree(treeInfo);
+                Trees.Add(tree);
+            }
+            Options.Capture();
         }
 
-        public void Add(TreeInfo tree)
+        [Serializable]
+        public struct BrushOptions
         {
-            var name = tree.GetUncheckedLocalizedTitle();
-            if (!Trees.Contains(name))
-                Trees.Add(name);
-        }
+            public float Size;
+            public float Strength;
+            public float Density;
+            public bool AutoDensity;
+            public bool IsSquare;
+            public OverlayColor OverlayColor;
 
-        public void Remove(TreeInfo tree)
-        {
-            var name = tree.GetUncheckedLocalizedTitle();
-            Trees.Remove(name);
-        }
-
-        public void Update(List<string> newTrees)
-        {
-            Trees = newTrees ?? Trees;
+            public void Capture()
+            {
+                Size = ForestBrushMod.instance.Settings.BrushSize;
+                Strength = ForestBrushMod.instance.Settings.BrushStrength;
+                Density = ForestBrushMod.instance.Settings.BrushDensity;
+                AutoDensity = ForestBrushMod.instance.Settings.AutoDensity;
+                IsSquare = ForestBrushMod.instance.Settings.SquareBrush;
+                OverlayColor = ForestBrushMod.instance.BrushSettings.OverlayColor;
+            }
         }
     }
 }

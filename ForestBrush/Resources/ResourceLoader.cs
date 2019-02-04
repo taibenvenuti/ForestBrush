@@ -9,17 +9,37 @@ namespace ForestBrush.Resources
     public class ResourceLoader
     {
 
+        internal static readonly string ForestBrushNormal = "ForestBrushNormal";
+        internal static readonly string ForestBrushFocused = "ForestBrushFocused";
+        internal static readonly string ForestBrushHovered = "ForestBrushHovered";
+        internal static readonly string ForestBrushPressed = "ForestBrushPressed";
+        internal static readonly string OptionsDropbox = "OptionsDropbox";
+        internal static readonly string OptionsDropboxHovered = "OptionsDropboxHovered";
+        internal static readonly string OptionsDropboxPressed = "OptionsDropboxPressed";
+        internal static readonly string OptionsDropboxFocused = "OptionsDropboxFocused";
+        internal static readonly string SettingsDropbox = "SettingsDropbox";
+        internal static readonly string SettingsDropboxHovered = "SettingsDropboxHovered";
+        internal static readonly string SettingsDropboxPressed = "SettingsDropboxPressed";
+        internal static readonly string SettingsDropboxFocused = "SettingsDropboxFocused";
+
         public static UITextureAtlas LoadAtlas()
         {
             UITextureAtlas atlas;
 
             string[] spriteNames = new string[]
             {
-                "ForestBrushNormal",
-                "ForestBrushDisabled",
-                "ForestBrushFocused",
-                "ForestBrushHovered",
-                "ForestBrushPressed",
+                ForestBrushNormal,
+                ForestBrushFocused,
+                ForestBrushHovered,
+                ForestBrushPressed,
+                OptionsDropbox,
+                OptionsDropboxHovered,
+                OptionsDropboxPressed,
+                OptionsDropboxFocused,
+                SettingsDropbox,
+                SettingsDropboxHovered,
+                SettingsDropboxPressed,
+                SettingsDropboxFocused
             };
 
             atlas = CreateTextureAtlas("ForestBrushAtlas", spriteNames, "ForestBrush.Resources.");
