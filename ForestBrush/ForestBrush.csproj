@@ -61,9 +61,6 @@
       <HintPath>..\..\..\..\Programming\Modding\ReferenceStore\ICities.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="UltimateEyecandy">
-      <HintPath>..\..\..\..\Programming\Modding\ReferenceStore\UltimateEyecandy.dll</HintPath>
-    </Reference>
     <Reference Include="UnityEngine">
       <HintPath>..\..\..\..\Programming\Modding\ReferenceStore\UnityEngine.dll</HintPath>
       <Private>True</Private>
