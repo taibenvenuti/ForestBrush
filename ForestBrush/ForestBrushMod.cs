@@ -5,6 +5,7 @@ using ColossalFramework;
 using ColossalFramework.Globalization;
 using ColossalFramework.UI;
 using ForestBrush.GUI;
+using ForestBrush.TranslationFramework;
 using UnityEngine;
 
 namespace ForestBrush
@@ -211,7 +212,7 @@ namespace ForestBrush
             };
             if (!locale.Exists(key))
             {
-                locale.AddLocalizedString(key, UserMod.Translation.GetTranslation("FOREST-BRUSH-MODNAME"));
+                locale.AddLocalizedString(key, Translation.Instance.GetTranslation("FOREST-BRUSH-MODNAME"));
             }
             key = new Locale.Key
             {
@@ -220,7 +221,7 @@ namespace ForestBrush
             };
             if (!locale.Exists(key))
             {
-                locale.AddLocalizedString(key, UserMod.Translation.GetTranslation("FOREST-BRUSH-TUTORIAL"));
+                locale.AddLocalizedString(key, Translation.Instance.GetTranslation("FOREST-BRUSH-TUTORIAL"));
             }
         }
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using ColossalFramework.UI;
 using ForestBrush.Resources;
+using ForestBrush.TranslationFramework;
 using UnityEngine;
 
 namespace ForestBrush.GUI
@@ -64,7 +65,7 @@ namespace ForestBrush.GUI
 
             //size slider
             sizeLabel = layoutPanelSize.AddUIComponent<UILabel>();
-            sizeLabel.text = UserMod.Translation.GetTranslation("FOREST-BRUSH-BRUSH-OPTIONS-SIZE");
+            sizeLabel.text = Translation.Instance.GetTranslation("FOREST-BRUSH-BRUSH-OPTIONS-SIZE");
             sizeLabel.textScale = Constants.UITextScale;
             sizeLabel.autoSize = false;
             sizeLabel.width = 80f;            
@@ -112,7 +113,7 @@ namespace ForestBrush.GUI
             layoutPanelStrength.zOrder = 1;
 
             strengthLabel = layoutPanelStrength.AddUIComponent<UILabel>();
-            strengthLabel.text = UserMod.Translation.GetTranslation("FOREST-BRUSH-BRUSH-OPTIONS-STRENGTH");
+            strengthLabel.text = Translation.Instance.GetTranslation("FOREST-BRUSH-BRUSH-OPTIONS-STRENGTH");
             strengthLabel.textScale = Constants.UITextScale;
             strengthLabel.autoSize = false;
             strengthLabel.width = 80f;
@@ -160,7 +161,7 @@ namespace ForestBrush.GUI
             layoutPanelDensity.zOrder = 2;
 
             densityLabel = layoutPanelDensity.AddUIComponent<UILabel>();
-            densityLabel.text = UserMod.Translation.GetTranslation("FOREST-BRUSH-BRUSH-OPTIONS-DENSITY");
+            densityLabel.text = Translation.Instance.GetTranslation("FOREST-BRUSH-BRUSH-OPTIONS-DENSITY");
             densityLabel.textScale = Constants.UITextScale;
             densityLabel.autoSize = false;
             densityLabel.width = 80f;
@@ -317,9 +318,9 @@ namespace ForestBrush.GUI
             ForestBrushMod.instance.BrushSettings.Save();
         }
 
-        public string AutoDensityLabelText => UserMod.Translation.GetTranslation("FOREST-BRUSH-BRUSH-OPTIONS-AUTODENSITY");
-        public string SquareBrushLabelText => UserMod.Translation.GetTranslation("FOREST-BRUSH-BRUSH-OPTIONS-SQUAREBRUSH");
-        public string OverlayColorLabelText => UserMod.Translation.GetTranslation("FOREST-BRUSH-BRUSH-OPTIONS-OVERLAYCOLOR");        
+        public string AutoDensityLabelText => Translation.Instance.GetTranslation("FOREST-BRUSH-BRUSH-OPTIONS-AUTODENSITY");
+        public string SquareBrushLabelText => Translation.Instance.GetTranslation("FOREST-BRUSH-BRUSH-OPTIONS-SQUAREBRUSH");
+        public string OverlayColorLabelText => Translation.Instance.GetTranslation("FOREST-BRUSH-BRUSH-OPTIONS-OVERLAYCOLOR");        
 
         internal void LoadBrush(ForestBrush brush)
         {

@@ -1,4 +1,5 @@
 ﻿using ColossalFramework.UI;
+using ForestBrush.TranslationFramework;
 using System.Linq;
 using UnityEngine;
 using static ForestBrush.Resources.ResourceLoader;
@@ -67,7 +68,7 @@ namespace ForestBrush.GUI
 
         private void SetupButtons()
         {
-            toggleEditButton = UIUtilities.CreateSmallButton(this, UserMod.Translation.GetTranslation("FOREST-BRUSH-TOGGLE-EDIT"));
+            toggleEditButton = UIUtilities.CreateSmallButton(this, Translation.Instance.GetTranslation("FOREST-BRUSH-TOGGLE-EDIT"));
             toggleEditButton.zOrder = 1;
             toggleEditButton.atlas = ForestBrushMod.instance.Atlas;
             toggleEditButton.normalBgSprite = SettingsDropbox;
@@ -77,7 +78,7 @@ namespace ForestBrush.GUI
             toggleEditButton.pressedBgSprite = SettingsDropboxPressed;
             toggleEditButton.eventClicked += OnToggleEditClicked;
 
-            toggleOptionsButton = UIUtilities.CreateSmallButton(this, UserMod.Translation.GetTranslation("FOREST-BRUSH-TOGGLE-OPTIONS"));
+            toggleOptionsButton = UIUtilities.CreateSmallButton(this, Translation.Instance.GetTranslation("FOREST-BRUSH-TOGGLE-OPTIONS"));
             toggleOptionsButton.zOrder = 2;
             toggleOptionsButton.atlas = ForestBrushMod.instance.Atlas;
             toggleOptionsButton.normalBgSprite = OptionsDropbox;

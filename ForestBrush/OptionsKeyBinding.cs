@@ -1,6 +1,7 @@
 ﻿using ColossalFramework;
 using ColossalFramework.Globalization;
 using ColossalFramework.UI;
+using ForestBrush.TranslationFramework;
 using System.Reflection;
 using UnityEngine;
 
@@ -18,25 +19,25 @@ namespace ForestBrush
 
         private void Awake()
         {
-            AddKeymapping(UserMod.Translation.GetTranslation("FOREST-BRUSH-KEYBIND-SEARCH"), ForestBrushMod.instance.Settings.Search);
+            AddKeymapping(Translation.Instance.GetTranslation("FOREST-BRUSH-KEYBIND-SEARCH"), ForestBrushMod.instance.Settings.Search);
 
-            AddKeymapping(UserMod.Translation.GetTranslation("FOREST-BRUSH-KEYBIND-TOGGLE-TOOL"), ForestBrushMod.instance.Settings.ToggleTool);
+            AddKeymapping(Translation.Instance.GetTranslation("FOREST-BRUSH-KEYBIND-TOGGLE-TOOL"), ForestBrushMod.instance.Settings.ToggleTool);
 
-            AddKeymapping(UserMod.Translation.GetTranslation("FOREST-BRUSH-KEYBIND-TOGGLE-SQUAREBRUSH"), ForestBrushMod.instance.Settings.ToggleSquare);
+            AddKeymapping(Translation.Instance.GetTranslation("FOREST-BRUSH-KEYBIND-TOGGLE-SQUAREBRUSH"), ForestBrushMod.instance.Settings.ToggleSquare);
 
-            AddKeymapping(UserMod.Translation.GetTranslation("FOREST-BRUSH-KEYBIND-TOGGLE-AUTODENSITY"), ForestBrushMod.instance.Settings.ToggleAutoDensity);
+            AddKeymapping(Translation.Instance.GetTranslation("FOREST-BRUSH-KEYBIND-TOGGLE-AUTODENSITY"), ForestBrushMod.instance.Settings.ToggleAutoDensity);
 
-            AddKeymapping(UserMod.Translation.GetTranslation("FOREST-BRUSH-KEYBIND-INCREASE-SIZE"), ForestBrushMod.instance.Settings.IncreaseSize);
+            AddKeymapping(Translation.Instance.GetTranslation("FOREST-BRUSH-KEYBIND-INCREASE-SIZE"), ForestBrushMod.instance.Settings.IncreaseSize);
 
-            AddKeymapping(UserMod.Translation.GetTranslation("FOREST-BRUSH-KEYBIND-DECREASE-SIZE"), ForestBrushMod.instance.Settings.DecreaseSize);
+            AddKeymapping(Translation.Instance.GetTranslation("FOREST-BRUSH-KEYBIND-DECREASE-SIZE"), ForestBrushMod.instance.Settings.DecreaseSize);
 
-            AddKeymapping(UserMod.Translation.GetTranslation("FOREST-BRUSH-KEYBIND-INCREASE-STRENGTH"), ForestBrushMod.instance.Settings.IncreaseStrength);
+            AddKeymapping(Translation.Instance.GetTranslation("FOREST-BRUSH-KEYBIND-INCREASE-STRENGTH"), ForestBrushMod.instance.Settings.IncreaseStrength);
 
-            AddKeymapping(UserMod.Translation.GetTranslation("FOREST-BRUSH-KEYBIND-DECREASE-STRENGTH"), ForestBrushMod.instance.Settings.DecreaseStrength);
+            AddKeymapping(Translation.Instance.GetTranslation("FOREST-BRUSH-KEYBIND-DECREASE-STRENGTH"), ForestBrushMod.instance.Settings.DecreaseStrength);
 
-            AddKeymapping(UserMod.Translation.GetTranslation("FOREST-BRUSH-KEYBIND-INCREASE-DENSITY"), ForestBrushMod.instance.Settings.IncreaseDensity);
+            AddKeymapping(Translation.Instance.GetTranslation("FOREST-BRUSH-KEYBIND-INCREASE-DENSITY"), ForestBrushMod.instance.Settings.IncreaseDensity);
 
-            AddKeymapping(UserMod.Translation.GetTranslation("FOREST-BRUSH-KEYBIND-DECREASE-DENSITY"), ForestBrushMod.instance.Settings.DecreaseDensity);
+            AddKeymapping(Translation.Instance.GetTranslation("FOREST-BRUSH-KEYBIND-DECREASE-DENSITY"), ForestBrushMod.instance.Settings.DecreaseDensity);
         }
 
         private void AddKeymapping(string label, SavedInputKey savedInputKey)

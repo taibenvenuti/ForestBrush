@@ -10,8 +10,8 @@ namespace ForestBrush
     public class UserMod : IUserMod
     {
         public string Name => "Forest Brush";
-        public string Description => Translation.GetTranslation("FOREST-BRUSH-MODDESCRIPTION");
-        internal static Translation Translation = new Translation();
+        public string Description => Translation.Instance.GetTranslation("FOREST-BRUSH-MODDESCRIPTION");
+
         private OptionsKeyBinding optionKeys;
 
         public UserMod()
@@ -49,7 +49,7 @@ namespace ForestBrush
 
                 group.AddSpace(10);
 
-                UIButton button = (UIButton)group.AddButton(Translation.GetTranslation("FOREST-BRUSH-OPTIONS-RESET"), () =>
+                UIButton button = (UIButton)group.AddButton(Translation.Instance.GetTranslation("FOREST-BRUSH-OPTIONS-RESET"), () =>
                 {
                     ForestBrushMod.instance.Settings.Reset();
                     optionKeys.RefreshBindableInputs();
