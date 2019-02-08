@@ -1,38 +1,55 @@
 ﻿using ColossalFramework;
 using ColossalFramework.UI;
 using ForestBrush.TranslationFramework;
+using Harmony;
 using ICities;
 using System;
+using System.Reflection;
 using UnityEngine;
 
 namespace ForestBrush
 {
-    public class UserMod : IUserMod
+    public class UserMod : LoadingExtensionBase, IUserMod
     {
-        public string Name => "Forest Brush";
-        public string Description => Translation.Instance.GetTranslation("FOREST-BRUSH-MODDESCRIPTION");
-
         private OptionsKeyBinding optionKeys;
+        private HarmonyInstance harmony;
+        private readonly string harmonyId = "com.tpb.forestbrush";
 
-        public UserMod()
-        {
-            try
-            {
-                if (GameSettings.FindSettingsFileByName(CGSSerialized.FileName) == null)
-                {
-                    GameSettings.AddSettingsFile(new SettingsFile[] { new SettingsFile() { fileName = CGSSerialized.FileName } });
-                    GameSettings.SaveAll();
-                }
-            }
-            catch (Exception)
-            {
-                Debug.LogWarning("Couldn't find or create the settings file.");
-            }
-        }
+        public string Name => "Forest Brush";
+
+        public string Description => Translation.Instance.GetTranslation("FOREST-BRUSH-MODDESCRIPTION");
 
         public void OnEnabled()
         {
+            if (LoadingManager.exists && LoadingManager.instance.m_loadingComplete)
+            {
+                InstallMod();
+            }
+        }
 
+        public override void OnLevelLoaded(LoadMode mode)
+        {
+            base.OnLevelLoaded(mode);
+
+            if (mode == LoadMode.LoadGame || mode == LoadMode.NewGame || mode == LoadMode.NewGameFromScenario)
+            {
+                InstallMod();
+            }
+        }
+
+        public void OnDisabled()
+        {
+            if (LoadingManager.exists && LoadingManager.instance.m_loadingComplete)
+            {
+                UninstallMod();
+            }
+        }
+
+        public override void OnLevelUnloading()
+        {
+            UninstallMod();
+
+            base.OnLevelUnloading();
         }
 
         public void OnSettingsUI(UIHelperBase helper)
@@ -61,6 +78,35 @@ namespace ForestBrush
             {
                 Debug.LogWarning("OnSettingsUI failure.");
             }
+        }
+
+        void InstallMod()
+        {
+            try
+            {
+                if (GameSettings.FindSettingsFileByName(CGSSerialized.FileName) == null)
+                {
+                    GameSettings.AddSettingsFile(new SettingsFile[] { new SettingsFile() { fileName = CGSSerialized.FileName } });
+                    GameSettings.SaveAll();
+                }
+            }
+            catch (Exception)
+            {
+                Debug.LogWarning("Couldn't find or create the settings file.");
+            }
+
+            harmony = HarmonyInstance.Create(harmonyId);
+            harmony.PatchAll(Assembly.GetExecutingAssembly());
+
+            ForestBrushMod.instance.Initialize();
+        }
+
+        void UninstallMod()
+        {
+            ForestBrushMod.instance.CleanUp();
+
+            harmony.UnpatchAll(harmonyId);
+            harmony = null;
         }
     }
 }
