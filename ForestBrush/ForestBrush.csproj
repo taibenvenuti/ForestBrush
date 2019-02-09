@@ -113,6 +113,7 @@
   <ItemGroup>
     <Content Include="Locale\english.xml">
       <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <EmbeddedResource Include="Resources\OptionsDropboxFocused.png" />
     <EmbeddedResource Include="Resources\SettingsDropbox.png" />
