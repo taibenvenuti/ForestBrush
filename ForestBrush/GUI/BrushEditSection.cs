@@ -113,7 +113,7 @@ namespace ForestBrush.GUI
             renameBrushTextField.relativePosition = new Vector3(width - Constants.UISpacing - renameBrushTextField.width, 560f);
             renameBrushTextField.eventTextChanged += OnRenameBrushTextChanged;
             renameBrushTextField.eventKeyPress += OnRenameBrushKeyPress;
-            renameBrushTextField.eventLostFocus += (c, e) => ForestBrushMod.instance.BrushSettings.Save();
+            renameBrushTextField.eventLostFocus += (c, e) => ForestBrushMod.instance.SaveSettings();
             renameBrushTextField.tooltip = Translation.Instance.GetTranslation("FOREST-BRUSH-RENAME-BRUSH");
         }
 
@@ -210,7 +210,7 @@ namespace ForestBrush.GUI
         private void OnRenameBrushTextChanged(UIComponent component, string value)
         {
             string currentName = ForestBrushMod.instance.BrushTool.Brush.Name;
-            if (ForestBrushMod.instance.Brushes.TryChangeKey(currentName, value))
+            if (ForestBrushMod.instance.Settings.Brushes.TryChangeKey(currentName, value))
             {
                 renameBrushTextField.tooltip = Translation.Instance.GetTranslation("FOREST-BRUSH-RENAME-BRUSH");
                 renameBrushTextField.textColor = new Color32(0, 0, 0, 255);

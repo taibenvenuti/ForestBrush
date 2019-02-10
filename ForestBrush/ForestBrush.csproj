@@ -50,19 +50,19 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Assembly-CSharp">
-      <HintPath>..\..\..\..\Programming\Modding\ReferenceStore\Assembly-CSharp.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Cities_Skylines\Cities_Data\Managed\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="ColossalManaged">
-      <HintPath>..\..\..\..\Programming\Modding\ReferenceStore\ColossalManaged.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Cities_Skylines\Cities_Data\Managed\ColossalManaged.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="ICities">
-      <HintPath>..\..\..\..\Programming\Modding\ReferenceStore\ICities.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Cities_Skylines\Cities_Data\Managed\ICities.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine">
-      <HintPath>..\..\..\..\Programming\Modding\ReferenceStore\UnityEngine.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Cities_Skylines\Cities_Data\Managed\UnityEngine.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System">
@@ -96,10 +96,12 @@
     <Compile Include="ForestBrushMod.cs" />
     <Compile Include="BeginRefactor\ForestTool.cs" />
     <Compile Include="Resources\ResourceLoader.cs" />
+    <Compile Include="Settings.cs" />
+    <Compile Include="Persistence\XmlInputKey.cs" />
+    <Compile Include="Persistence\XmlPersistenceService.cs" />
     <Compile Include="Tree.cs" />
     <Compile Include="Util.cs" />
-    <Compile Include="XMLSerialized.cs" />
-    <Compile Include="CGSSerialized.cs" />
+    <Compile Include="Persistence\XmlSettings.cs" />
     <Compile Include="Tool.cs" />
     <Compile Include="GUI\TreeItem.cs" />
     <Compile Include="GUI\UIFastList.cs" />

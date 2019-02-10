@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 namespace ForestBrush
 {
@@ -18,7 +19,6 @@ namespace ForestBrush
             string name = treeInfo.name;
             if (!Trees.Any(t => t.Name == name))
                 Trees.Add(new Tree(treeInfo));
-            Options.Capture();
         }
 
         public void Remove(TreeInfo treeInfo)
@@ -26,7 +26,6 @@ namespace ForestBrush
             var name = treeInfo.name;
             Tree tree = Trees.Find(t => t.Name == name);
             Trees.Remove(tree);
-            Options.Capture();
         }
 
         /// <summary>
@@ -42,27 +41,39 @@ namespace ForestBrush
                 Tree tree = new Tree(treeInfo);
                 Trees.Add(tree);
             }
-            Options.Capture();
+        }
+
+        public static ForestBrush Default()
+        {
+            return new ForestBrush()
+            {
+                Name = Constants.NewBrushName,
+                Trees = new List<Tree>(),
+                Options = BrushOptions.Default()
+            };
         }
 
         [Serializable]
-        public struct BrushOptions
+        public class BrushOptions
         {
-            public float Size;
-            public float Strength;
-            public float Density;
-            public bool AutoDensity;
-            public bool IsSquare;
-            public OverlayColor OverlayColor;
+            public float Size { get; set; }
+            public float Strength { get; set; }
+            public float Density { get; set; }
+            public bool AutoDensity { get; set; }
+            public bool IsSquare { get; set; }
+            public OverlayColor OverlayColor { get; set; }
 
-            public void Capture()
+            public static BrushOptions Default()
             {
-                Size = ForestBrushMod.instance.Settings.BrushSize;
-                Strength = ForestBrushMod.instance.Settings.BrushStrength;
-                Density = ForestBrushMod.instance.Settings.BrushDensity;
-                AutoDensity = ForestBrushMod.instance.Settings.AutoDensity;
-                IsSquare = ForestBrushMod.instance.Settings.SquareBrush;
-                OverlayColor = ForestBrushMod.instance.BrushSettings.OverlayColor;
+                return new BrushOptions()
+                {
+                    Size = 100f,
+                    Strength = 0.1f,
+                    Density = 1f,
+                    AutoDensity = true,
+                    IsSquare = false,
+                    OverlayColor = new Color32(25, 125, 155, 255)
+                };
             }
         }
     }

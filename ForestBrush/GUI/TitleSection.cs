@@ -48,8 +48,9 @@ namespace ForestBrush.GUI
 
         public void SavePanelPosition()
         {
-            ForestBrushMod.instance.Settings.PanelX.value = parent.absolutePosition.x;
-            ForestBrushMod.instance.Settings.PanelY.value = parent.absolutePosition.y;
+            ForestBrushMod.instance.Settings.PanelPosX = parent.absolutePosition.x;
+            ForestBrushMod.instance.Settings.PanelPosY = parent.absolutePosition.y;
+            ForestBrushMod.instance.SaveSettings();
         }
     }
 }

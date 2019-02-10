@@ -81,17 +81,17 @@ namespace ForestBrush.GUI
             sizeSlider.minValue = 1f;
             sizeSlider.maxValue = ForestBrushMod.instance.BrushTweaker.MaxSize;
             sizeSlider.stepSize = 1f;
-            sizeSlider.value = ForestBrushMod.instance.Settings.BrushSize;
+            sizeSlider.value = ForestBrushMod.instance.Settings.SelectedBrush.Options.Size;
             sizeSlider.scrollWheelAmount = 1f;
             sizeSlider.eventValueChanged += (c, e) =>
             {
-                ForestBrushMod.instance.Settings.BrushSize.value = e;
-                sizeSlider.tooltip = ForestBrushMod.instance.Settings.BrushSize.value.ToString();
+                ForestBrushMod.instance.Settings.SelectedBrush.Options.Size = e;
+                sizeSlider.tooltip = ForestBrushMod.instance.Settings.SelectedBrush.Options.Size.ToString();
                 sizeSlider.RefreshTooltip();
             };
-            sizeSlider.eventMouseUp += (c, e) => ForestBrushMod.instance.BrushTool.Brush.Options.Capture();
+            sizeSlider.eventMouseUp += (c, e) => ForestBrushMod.instance.SaveSettings();
             sizeSlider.backgroundSprite = "OptionsScrollbarTrack";
-            sizeSlider.tooltip = ForestBrushMod.instance.Settings.BrushSize.value.ToString();
+            sizeSlider.tooltip = ForestBrushMod.instance.Settings.SelectedBrush.Options.Size.ToString();
             sizeSlider.pivot = UIPivotPoint.TopLeft;
             sizeSlider.zOrder = 1;
 
@@ -129,16 +129,16 @@ namespace ForestBrush.GUI
             strengthSlider.minValue = 0.01f;
             strengthSlider.maxValue = 1f;
             strengthSlider.stepSize = 0.01f;
-            strengthSlider.value = ForestBrushMod.instance.Settings.BrushStrength;
+            strengthSlider.value = ForestBrushMod.instance.Settings.SelectedBrush.Options.Strength;
             strengthSlider.scrollWheelAmount = 0.01f;
             strengthSlider.tooltip = Math.Round(strengthSlider.value * 100, 1, MidpointRounding.AwayFromZero) + "%";
             strengthSlider.eventValueChanged += (c, p) =>
             {
-                ForestBrushMod.instance.Settings.BrushStrength.value = p;
+                ForestBrushMod.instance.Settings.SelectedBrush.Options.Strength = p;
                 strengthSlider.tooltip = Math.Round(p * 100, 1) + "%";
                 strengthSlider.RefreshTooltip();
             };
-            strengthSlider.eventMouseUp += (c, e) => ForestBrushMod.instance.BrushTool.Brush.Options.Capture();
+            strengthSlider.eventMouseUp += (c, e) => ForestBrushMod.instance.SaveSettings();
             strengthSlider.backgroundSprite = "OptionsScrollbarTrack";
             strengthSlider.zOrder = 1;
             strengthSlider.pivot = UIPivotPoint.TopLeft;
@@ -169,7 +169,7 @@ namespace ForestBrush.GUI
             densityLabel.textAlignment = UIHorizontalAlignment.Left;
             densityLabel.verticalAlignment = UIVerticalAlignment.Middle;
             densityLabel.zOrder = 0;
-            densityLabel.isEnabled = !ForestBrushMod.instance.Settings.AutoDensity;
+            densityLabel.isEnabled = !ForestBrushMod.instance.Settings.SelectedBrush.Options.AutoDensity;
 
             densitySlider = layoutPanelDensity.AddUIComponent<UISlider>();
             densitySlider.size = new Vector2(400f - densityLabel.width - 30f, 5f);
@@ -178,18 +178,18 @@ namespace ForestBrush.GUI
             densitySlider.minValue = 0f;
             densitySlider.maxValue = 16f;
             densitySlider.stepSize = 0.1f;
-            densitySlider.value = 16 - ForestBrushMod.instance.Settings.BrushDensity;
+            densitySlider.value = 16 - ForestBrushMod.instance.Settings.SelectedBrush.Options.Density;
             densitySlider.scrollWheelAmount = 0.1f;
             densitySlider.eventValueChanged += (c, e) =>
             {
-                ForestBrushMod.instance.Settings.BrushDensity.value = 16f - e;
+                ForestBrushMod.instance.Settings.SelectedBrush.Options.Density = 16f - e;
             };
-            densitySlider.eventMouseUp += (c, e) => ForestBrushMod.instance.BrushTool.Brush.Options.Capture();
+            densitySlider.eventMouseUp += (c, e) => ForestBrushMod.instance.SaveSettings();
             densitySlider.backgroundSprite = "OptionsScrollbarTrack";
             densitySlider.zOrder = 1;
             densitySlider.pivot = UIPivotPoint.TopLeft;
             densitySlider.arbitraryPivotOffset = new Vector2(0f, 3f);
-            densitySlider.isEnabled = !ForestBrushMod.instance.Settings.AutoDensity;
+            densitySlider.isEnabled = !ForestBrushMod.instance.Settings.SelectedBrush.Options.AutoDensity;
 
             UISprite thumb1 = densitySlider.AddUIComponent<UISprite>();
             thumb1.atlas = ResourceLoader.GetAtlas("Ingame");
@@ -229,12 +229,12 @@ namespace ForestBrush.GUI
             ((UISprite)autoDensityCheckBox.checkedBoxObject).spriteName = Constants.CheckBoxSpriteChecked;
             autoDensityCheckBox.checkedBoxObject.size = autoDensityCheckBox.size;
             autoDensityCheckBox.checkedBoxObject.relativePosition = Vector3.zero;
-            autoDensityCheckBox.isChecked = ForestBrushMod.instance.Settings.AutoDensity;
+            autoDensityCheckBox.isChecked = ForestBrushMod.instance.Settings.SelectedBrush.Options.AutoDensity;
             autoDensityCheckBox.eventCheckChanged += (c, e) =>
             {
-                ForestBrushMod.instance.Settings.AutoDensity.value = e;
+                ForestBrushMod.instance.Settings.SelectedBrush.Options.AutoDensity = e;
                 densityLabel.isEnabled = densitySlider.isEnabled = !e;
-                ForestBrushMod.instance.BrushTool.Brush.Options.Capture();
+                ForestBrushMod.instance.SaveSettings();
             };
             autoDensityCheckBox.zOrder = 0;
 
@@ -283,11 +283,11 @@ namespace ForestBrush.GUI
             ((UISprite)squareBrushCheckBox.checkedBoxObject).spriteName = Constants.CheckBoxSpriteChecked;
             squareBrushCheckBox.checkedBoxObject.size = squareBrushCheckBox.size;
             squareBrushCheckBox.checkedBoxObject.relativePosition = Vector3.zero;
-            squareBrushCheckBox.isChecked = ForestBrushMod.instance.Settings.SquareBrush;
+            squareBrushCheckBox.isChecked = ForestBrushMod.instance.Settings.SelectedBrush.Options.IsSquare;
             squareBrushCheckBox.eventCheckChanged += (c, e) =>
             {
-                ForestBrushMod.instance.Settings.SquareBrush.value = e;
-                ForestBrushMod.instance.BrushTool.Brush.Options.Capture();
+                ForestBrushMod.instance.Settings.SelectedBrush.Options.IsSquare = e;
+                ForestBrushMod.instance.SaveSettings();
             };
             squareBrushCheckBox.zOrder = 0;
         }
@@ -308,14 +308,14 @@ namespace ForestBrush.GUI
             cF.name = "ForestBrushColorField";
             cF.pickerPosition = UIColorField.ColorPickerPosition.RightBelow;
             cF.eventSelectedColorChanged += EventSelectedColorChangedHandler;
-            cF.selectedColor = ForestBrushMod.instance.BrushSettings.OverlayColor;
+            cF.selectedColor = ForestBrushMod.instance.Settings.SelectedBrush.Options.OverlayColor;
             return cF;
         }
 
         private void EventSelectedColorChangedHandler(UIComponent component, Color value)
         {
-            ForestBrushMod.instance.BrushSettings.OverlayColor = value;
-            ForestBrushMod.instance.BrushSettings.Save();
+            ForestBrushMod.instance.Settings.SelectedBrush.Options.OverlayColor = value;
+            ForestBrushMod.instance.SaveSettings();
         }
 
         public string AutoDensityLabelText => Translation.Instance.GetTranslation("FOREST-BRUSH-BRUSH-OPTIONS-AUTODENSITY");

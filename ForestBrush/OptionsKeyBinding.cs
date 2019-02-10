@@ -2,6 +2,7 @@
 using ColossalFramework.Globalization;
 using ColossalFramework.UI;
 using ForestBrush.TranslationFramework;
+using System;
 using System.Reflection;
 using UnityEngine;
 
@@ -143,6 +144,9 @@ namespace ForestBrush
                 this.m_EditingBinding.value = inputKey;
                 UITextComponent uITextComponent = p.source as UITextComponent;
                 uITextComponent.text = this.m_EditingBinding.ToLocalizedString("KEYNAME");
+
+                ForestBrushMod.instance.SaveSettings();
+
                 this.m_EditingBinding = null;
                 this.m_EditingBindingCategory = string.Empty;
             }

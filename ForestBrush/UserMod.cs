@@ -15,7 +15,7 @@ namespace ForestBrush
         private HarmonyInstance harmony;
         private readonly string harmonyId = "com.tpb.forestbrush";
 
-        public string Name => "Forest Brush";
+        public string Name => Constants.ModName;
 
         public string Description => Translation.Instance.GetTranslation("FOREST-BRUSH-MODDESCRIPTION");
 
@@ -70,6 +70,7 @@ namespace ForestBrush
                 {
                     ForestBrushMod.instance.Settings.Reset();
                     optionKeys.RefreshBindableInputs();
+                    ForestBrushMod.instance.SaveSettings();
                 });
 
                 group.AddSpace(10);
@@ -82,19 +83,6 @@ namespace ForestBrush
 
         void InstallMod()
         {
-            try
-            {
-                if (GameSettings.FindSettingsFileByName(CGSSerialized.FileName) == null)
-                {
-                    GameSettings.AddSettingsFile(new SettingsFile[] { new SettingsFile() { fileName = CGSSerialized.FileName } });
-                    GameSettings.SaveAll();
-                }
-            }
-            catch (Exception)
-            {
-                Debug.LogWarning("Couldn't find or create the settings file.");
-            }
-
             harmony = HarmonyInstance.Create(harmonyId);
             harmony.PatchAll(Assembly.GetExecutingAssembly());
 
