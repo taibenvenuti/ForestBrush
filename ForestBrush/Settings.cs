@@ -117,28 +117,6 @@ namespace ForestBrush
             this.SelectedBrush = GetNextBestBrush();
         }
 
-        public void Reset()
-        {
-            var defaultSettings = Default();
-
-            this.PanelPosX = defaultSettings.PanelPosX;
-            this.PanelPosY = defaultSettings.PanelPosY;
-            this.AddRemoveTreesToBrushOpen = defaultSettings.AddRemoveTreesToBrushOpen;
-            this.BrushOptionsOpen = defaultSettings.BrushOptionsOpen;
-            this.Brushes = defaultSettings.Brushes;
-            this.SelectedBrush = defaultSettings.SelectedBrush;
-            this.Search = defaultSettings.Search;
-            this.ToggleTool = defaultSettings.ToggleTool;
-            this.ToggleSquare = defaultSettings.ToggleSquare;
-            this.ToggleAutoDensity = defaultSettings.ToggleAutoDensity;
-            this.IncreaseSize = defaultSettings.IncreaseSize;
-            this.DecreaseSize = defaultSettings.DecreaseSize;
-            this.IncreaseDensity = defaultSettings.IncreaseDensity;
-            this.DecreaseDensity = defaultSettings.DecreaseDensity;
-            this.IncreaseStrength = defaultSettings.IncreaseStrength;
-            this.DecreaseStrength = defaultSettings.DecreaseStrength;
-        }
-
         private ForestBrush GetSelectedBrush(string brushName)
         {
             var found = Brushes.TryGetValue(brushName, out ForestBrush forestBrush);
@@ -165,6 +143,28 @@ namespace ForestBrush
             {
                 return first;
             }
+        }
+
+        public void Reset()
+        {
+            var defaultSettings = Default();
+
+            this.PanelPosX = defaultSettings.PanelPosX;
+            this.PanelPosY = defaultSettings.PanelPosY;
+            this.AddRemoveTreesToBrushOpen = defaultSettings.AddRemoveTreesToBrushOpen;
+            this.BrushOptionsOpen = defaultSettings.BrushOptionsOpen;
+            this.Brushes = defaultSettings.Brushes;
+            this.SelectedBrush = defaultSettings.SelectedBrush;
+            this.Search = defaultSettings.Search;
+            this.ToggleTool = defaultSettings.ToggleTool;
+            this.ToggleSquare = defaultSettings.ToggleSquare;
+            this.ToggleAutoDensity = defaultSettings.ToggleAutoDensity;
+            this.IncreaseSize = defaultSettings.IncreaseSize;
+            this.DecreaseSize = defaultSettings.DecreaseSize;
+            this.IncreaseDensity = defaultSettings.IncreaseDensity;
+            this.DecreaseDensity = defaultSettings.DecreaseDensity;
+            this.IncreaseStrength = defaultSettings.IncreaseStrength;
+            this.DecreaseStrength = defaultSettings.DecreaseStrength;
         }
     }
 }
