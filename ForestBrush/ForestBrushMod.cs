@@ -13,7 +13,7 @@ namespace ForestBrush
 {           
     public class ForestBrushMod : Singleton<ForestBrushMod>
     {
-        private XmlPersistenceService serializationService;
+        private XmlPersistenceService xmlPersistenceService;
         private Settings settings;
 
         public  class BrushTweaks
@@ -114,9 +114,9 @@ namespace ForestBrush
 
         private GameObject tabStripPage;
 
-        public void PreInitialize(XmlPersistenceService serializationService, Settings settings)
+        public void PreInitialize(XmlPersistenceService xmlPersistenceService, Settings settings)
         {
-            this.serializationService = serializationService;
+            this.xmlPersistenceService = xmlPersistenceService;
             this.settings = settings;
         }
 
@@ -244,7 +244,7 @@ namespace ForestBrush
         {
             if (ForestBrushPanel && Initialized)
             {
-                serializationService = null;
+                xmlPersistenceService = null;
                 Destroy(ForestBrushPanel.gameObject);
                 ForestBrushPanel = null;
             } 
@@ -338,7 +338,7 @@ namespace ForestBrush
 
         public void SaveSettings()
         {
-            serializationService.Save(Settings);
+            xmlPersistenceService.Save(Settings);
         }
     }
 }
