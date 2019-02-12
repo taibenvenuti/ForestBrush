@@ -14,6 +14,7 @@ namespace ForestBrush
     public class ForestBrushMod : Singleton<ForestBrushMod>
     {
         private XmlPersistenceService serializationService;
+        private Settings settings;
 
         public  class BrushTweaks
         {
@@ -78,7 +79,7 @@ namespace ForestBrush
 
         public Dictionary<string, TreeInfo> Trees { get; set; }
 
-        public Settings Settings { get; private set; }
+        public Settings Settings => settings;
 
         private ForestBrushTool brushTool;
         public ForestBrushTool BrushTool
@@ -113,11 +114,14 @@ namespace ForestBrush
 
         private GameObject tabStripPage;
 
+        public void PreInitialize(XmlPersistenceService serializationService, Settings settings)
+        {
+            this.serializationService = serializationService;
+            this.settings = settings;
+        }
+
         internal void Initialize()
         {
-            serializationService = new XmlPersistenceService();
-            Settings = serializationService.Load();
-
             UITabstrip tabstrip = ToolsModifierControl.mainToolbar.component as UITabstrip;
             
             ToggleButton = CreateToggleButton(tabstrip);

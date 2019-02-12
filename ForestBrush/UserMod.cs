@@ -1,5 +1,5 @@
-﻿using ColossalFramework;
-using ColossalFramework.UI;
+﻿using ColossalFramework.UI;
+using ForestBrush.Persistence;
 using ForestBrush.TranslationFramework;
 using Harmony;
 using ICities;
@@ -11,9 +11,14 @@ namespace ForestBrush
 {
     public class UserMod : LoadingExtensionBase, IUserMod
     {
-        private OptionsKeyBinding optionKeys;
-        private HarmonyInstance harmony;
+        //out of game dependencies
+        private XmlPersistenceService xmlPersistenceService;
+        private Settings settings;
+
+        //in game dependecies
         private readonly string harmonyId = "com.tpb.forestbrush";
+        private HarmonyInstance harmony;
+        private bool modInstalled = false;
 
         public string Name => Constants.ModName;
 
@@ -21,10 +26,22 @@ namespace ForestBrush
 
         public void OnEnabled()
         {
+            InstallOutOfGameDependencies();
+
             if (LoadingManager.exists && LoadingManager.instance.m_loadingComplete)
             {
                 InstallMod();
             }
+        }
+
+        public void OnDisabled()
+        {
+            if (LoadingManager.exists && LoadingManager.instance.m_loadingComplete)
+            {
+                UninstallMod();
+            }
+
+            UninstallOutOfGameDependencies();
         }
 
         public override void OnLevelLoaded(LoadMode mode)
@@ -37,19 +54,47 @@ namespace ForestBrush
             }
         }
 
-        public void OnDisabled()
+        public override void OnLevelUnloading()
         {
-            if (LoadingManager.exists && LoadingManager.instance.m_loadingComplete)
+            if (modInstalled)
             {
                 UninstallMod();
             }
-        }
-
-        public override void OnLevelUnloading()
-        {
-            UninstallMod();
 
             base.OnLevelUnloading();
+        }
+
+        void InstallOutOfGameDependencies()
+        {
+            xmlPersistenceService = new XmlPersistenceService();
+            settings = xmlPersistenceService.Load();
+            ForestBrushMod.instance.PreInitialize(xmlPersistenceService, settings);
+        }
+
+        void UninstallOutOfGameDependencies()
+        {
+            xmlPersistenceService = null;
+            settings = null;
+        }
+
+        void InstallMod()
+        {
+            harmony = HarmonyInstance.Create(harmonyId);
+            harmony.PatchAll(Assembly.GetExecutingAssembly());
+
+            ForestBrushMod.instance.Initialize();
+
+            modInstalled = true;
+        }
+
+        void UninstallMod()
+        {
+            ForestBrushMod.instance.CleanUp();
+
+            harmony.UnpatchAll(harmonyId);
+            harmony = null;
+
+            modInstalled = false;
         }
 
         public void OnSettingsUI(UIHelperBase helper)
@@ -62,7 +107,7 @@ namespace ForestBrush
 
                 group.AddSpace(10);
 
-                optionKeys = panel.gameObject.AddComponent<OptionsKeyBinding>();
+                var optionKeys = panel.gameObject.AddComponent<OptionsKeyBinding>();
 
                 group.AddSpace(10);
 
@@ -79,22 +124,6 @@ namespace ForestBrush
             {
                 Debug.LogWarning("OnSettingsUI failure.");
             }
-        }
-
-        void InstallMod()
-        {
-            harmony = HarmonyInstance.Create(harmonyId);
-            harmony.PatchAll(Assembly.GetExecutingAssembly());
-
-            ForestBrushMod.instance.Initialize();
-        }
-
-        void UninstallMod()
-        {
-            ForestBrushMod.instance.CleanUp();
-
-            harmony.UnpatchAll(harmonyId);
-            harmony = null;
         }
     }
 }
