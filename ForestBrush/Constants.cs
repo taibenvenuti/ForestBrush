@@ -4,6 +4,8 @@ namespace ForestBrush
 {
     public class Constants
     {
+        public static readonly string ModName = "Forest Brush";
+
         public static readonly string NewBrushName = "New Brush";
 
         public static readonly Vector2 UIPanelSize = new Vector2(400f, 600f);

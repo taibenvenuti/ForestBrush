@@ -51,7 +51,7 @@ namespace ForestBrush.GUI
             autoLayoutDirection = LayoutDirection.Vertical;
             autoFitChildrenVertically = true;
             autoLayoutPadding = new RectOffset(0, 0, 0, 10);
-            absolutePosition = new Vector3(ForestBrushMod.instance.Settings.PanelX, ForestBrushMod.instance.Settings.PanelY);
+            absolutePosition = new Vector3(ForestBrushMod.instance.Settings.PanelPosX, ForestBrushMod.instance.Settings.PanelPosY);
             atlas = ResourceLoader.GetAtlas("Ingame");
             backgroundSprite = "MenuPanel";
             isInteractive = true;

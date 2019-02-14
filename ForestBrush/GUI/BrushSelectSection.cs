@@ -1,4 +1,5 @@
 ﻿using ColossalFramework.UI;
+using ForestBrush.TranslationFramework;
 using System.Linq;
 using UnityEngine;
 using static ForestBrush.Resources.ResourceLoader;
@@ -33,7 +34,7 @@ namespace ForestBrush.GUI
             SelectBrushDropDown.zOrder = 0;
             SelectBrushDropDown.atlas = GetAtlas("Ingame");
             SelectBrushDropDown.size = new Vector2(300f, 30f);
-            SelectBrushDropDown.items = ForestBrushMod.instance.Brushes.Keys.ToArray();
+            SelectBrushDropDown.items = ForestBrushMod.instance.Settings.Brushes.Keys.ToArray();
             SelectBrushDropDown.listBackground = "StylesDropboxListbox";
             SelectBrushDropDown.itemHeight = (int)Constants.UIButtonHeight;
             SelectBrushDropDown.itemHover = "ListItemHover";
@@ -51,9 +52,9 @@ namespace ForestBrush.GUI
             SelectBrushDropDown.textScale = Constants.UITitleTextScale;
             SelectBrushDropDown.verticalAlignment = UIVerticalAlignment.Middle;
             SelectBrushDropDown.horizontalAlignment = UIHorizontalAlignment.Left;
-            SelectBrushDropDown.selectedIndex = SelectBrushDropDown.items.ToList().FindIndex(i => i == ForestBrushMod.instance.Settings.SelectedBrush) == -1 ? 
+            SelectBrushDropDown.selectedIndex = SelectBrushDropDown.items.ToList().FindIndex(i => i == ForestBrushMod.instance.Settings.SelectedBrush.Name) == -1 ? 
                 0 : 
-                SelectBrushDropDown.items.ToList().FindIndex(i => i == ForestBrushMod.instance.Settings.SelectedBrush);
+                SelectBrushDropDown.items.ToList().FindIndex(i => i == ForestBrushMod.instance.Settings.SelectedBrush.Name);
             SelectBrushDropDown.textFieldPadding = new RectOffset(8, 0, 8, 0);
             SelectBrushDropDown.itemPadding = new RectOffset(10, 0, 8, 0);
             SelectBrushDropDown.triggerButton = SelectBrushDropDown;
@@ -67,7 +68,7 @@ namespace ForestBrush.GUI
 
         private void SetupButtons()
         {
-            toggleEditButton = UIUtilities.CreateSmallButton(this, UserMod.Translation.GetTranslation("FOREST-BRUSH-TOGGLE-EDIT"));
+            toggleEditButton = UIUtilities.CreateSmallButton(this, Translation.Instance.GetTranslation("FOREST-BRUSH-TOGGLE-EDIT"));
             toggleEditButton.zOrder = 1;
             toggleEditButton.atlas = ForestBrushMod.instance.Atlas;
             toggleEditButton.normalBgSprite = SettingsDropbox;
@@ -77,7 +78,7 @@ namespace ForestBrush.GUI
             toggleEditButton.pressedBgSprite = SettingsDropboxPressed;
             toggleEditButton.eventClicked += OnToggleEditClicked;
 
-            toggleOptionsButton = UIUtilities.CreateSmallButton(this, UserMod.Translation.GetTranslation("FOREST-BRUSH-TOGGLE-OPTIONS"));
+            toggleOptionsButton = UIUtilities.CreateSmallButton(this, Translation.Instance.GetTranslation("FOREST-BRUSH-TOGGLE-OPTIONS"));
             toggleOptionsButton.zOrder = 2;
             toggleOptionsButton.atlas = ForestBrushMod.instance.Atlas;
             toggleOptionsButton.normalBgSprite = OptionsDropbox;
@@ -102,9 +103,9 @@ namespace ForestBrush.GUI
 
         internal void UpdateDropDown()
         {
-            SelectBrushDropDown.items = ForestBrushMod.instance.Brushes.Keys.ToArray();
-            int index = SelectBrushDropDown.items.ToList().FindIndex(i => i == ForestBrushMod.instance.Settings.SelectedBrush);
-            Debug.LogWarning($"ItemCount: {ForestBrushMod.instance.Brushes.Keys.Count}, Index: {index}");
+            SelectBrushDropDown.items = ForestBrushMod.instance.Settings.Brushes.Keys.ToArray();
+            int index = SelectBrushDropDown.items.ToList().FindIndex(i => i == ForestBrushMod.instance.Settings.SelectedBrush.Name);
+            Debug.LogWarning($"ItemCount: {ForestBrushMod.instance.Settings.Brushes.Keys.Count}, Index: {index}");
             SelectBrushDropDown.selectedIndex = index < 0 || index > SelectBrushDropDown.items.Length ? 0 : index;
         }
 

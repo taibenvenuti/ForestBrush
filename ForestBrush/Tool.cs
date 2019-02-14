@@ -8,36 +8,22 @@ namespace ForestBrush
 {
     public class ForestBrushTool : MonoBehaviour
     {
-        public ForestBrush Brush { get; set; }
+        public ForestBrush Brush => ForestBrushMod.instance.Settings.SelectedBrush;
 
         private List<TreeInfo> TreeInfos { get; set; } = new List<TreeInfo>();
 
         private TreeInfo Container { get; set; } = ForestBrushMod.instance.Container;
 
-        public Dictionary<string, ForestBrush> Brushes => ForestBrushMod.instance.Brushes;
+        public Dictionary<string, ForestBrush> Brushes => ForestBrushMod.instance.Settings.Brushes;
                
         void Awake()
         {
-            UpdateTool(ForestBrushMod.instance.Settings.SelectedBrush);
+            UpdateTool(ForestBrushMod.instance.Settings.SelectedBrush.Name);
         }
 
         public void UpdateTool(string brushName)
         {
-            if (!Brushes.TryGetValue(brushName, out ForestBrush brush) || brush == null)
-            {
-                bool wasNull = brush == null;
-                
-                brush = new ForestBrush { Name = brushName };
-
-                brush.ReplaceAll(TreeInfos);
-
-                brush.Options.Capture();
-
-                if (wasNull) Brushes[brushName] = brush;
-                else Brushes.Add(brush.Name, brush);
-            }
-
-            Brush = brush;
+            ForestBrushMod.instance.Settings.SelectBrush(brushName);
 
             TreeInfos = new List<TreeInfo>();
 
@@ -51,6 +37,8 @@ namespace ForestBrush
             ForestBrushMod.instance.ForestBrushPanel.LoadBrush(Brush);
 
             Container = CreateBrushPrefab();
+
+            ForestBrushMod.instance.SaveSettings();
         }
 
         private void Add(TreeInfo tree)
@@ -93,30 +81,21 @@ namespace ForestBrush
             }
         }
 
-        internal void SaveAll()
-        {
-            ForestBrushMod.instance.BrushSettings.Save();
-        }
-
         public void New(string brushName)
         {
             if (!Brushes.TryGetValue(brushName, out ForestBrush brush))
             {
-                brush = new ForestBrush()
-                {
-                    Name = brushName,
-                    Options = new ForestBrush.BrushOptions()
-                };
+                brush = ForestBrush.Default();
 
                 brush.ReplaceAll(TreeInfos);
 
                 Brushes.Add(brushName, brush);
 
-                ForestBrushMod.instance.Settings.SelectedBrush.value = brushName;
+                ForestBrushMod.instance.Settings.SelectBrush(brushName);
 
                 ForestBrushMod.instance.ForestBrushPanel.BrushSelectSection.UpdateDropDown();
 
-                ForestBrushMod.instance.BrushSettings.Save();
+                ForestBrushMod.instance.SaveSettings();
             }                
             else UIView.PushModal(NewBrushModal.Instance);
         }
@@ -124,12 +103,12 @@ namespace ForestBrush
         internal void DeleteCurrent()
         {
             Brushes.Remove(Brush.Name);
-            ForestBrushMod.instance.Settings.SelectedBrush.value = "";
+            ForestBrushMod.instance.Settings.SelectNextBestBrush();
             ForestBrushMod.instance.ForestBrushPanel.BrushSelectSection.UpdateDropDown();
             string nextBrush = ForestBrushMod.instance.ForestBrushPanel.BrushSelectSection.SelectBrushDropDown.items.Length <= 0 ? Constants.NewBrushName :
                 ForestBrushMod.instance.ForestBrushPanel.BrushSelectSection.SelectBrushDropDown.selectedValue;
             UpdateTool(nextBrush);
-            SaveAll();
+            ForestBrushMod.instance.SaveSettings();
         }
 
         public TreeInfo CreateBrushPrefab()

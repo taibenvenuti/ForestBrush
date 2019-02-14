@@ -1,38 +1,100 @@
-﻿using ColossalFramework;
-using ColossalFramework.UI;
+﻿using ColossalFramework.UI;
+using ForestBrush.Persistence;
 using ForestBrush.TranslationFramework;
+using Harmony;
 using ICities;
 using System;
+using System.Reflection;
 using UnityEngine;
 
 namespace ForestBrush
 {
-    public class UserMod : IUserMod
+    public class UserMod : LoadingExtensionBase, IUserMod
     {
-        public string Name => "Forest Brush";
-        public string Description => Translation.GetTranslation("FOREST-BRUSH-MODDESCRIPTION");
-        internal static Translation Translation = new Translation();
-        private OptionsKeyBinding optionKeys;
+        //out of game dependencies
+        private XmlPersistenceService xmlPersistenceService;
+        private Settings settings;
 
-        public UserMod()
-        {
-            try
-            {
-                if (GameSettings.FindSettingsFileByName(CGSSerialized.FileName) == null)
-                {
-                    GameSettings.AddSettingsFile(new SettingsFile[] { new SettingsFile() { fileName = CGSSerialized.FileName } });
-                    GameSettings.SaveAll();
-                }
-            }
-            catch (Exception)
-            {
-                Debug.LogWarning("Couldn't find or create the settings file.");
-            }
-        }
+        //in game dependecies
+        private readonly string harmonyId = "com.tpb.forestbrush";
+        private HarmonyInstance harmony;
+        private bool modInstalled = false;
+
+        public string Name => Constants.ModName;
+
+        public string Description => Translation.Instance.GetTranslation("FOREST-BRUSH-MODDESCRIPTION");
 
         public void OnEnabled()
         {
+            InstallOutOfGameDependencies();
 
+            if (LoadingManager.exists && LoadingManager.instance.m_loadingComplete)
+            {
+                InstallMod();
+            }
+        }
+
+        public void OnDisabled()
+        {
+            if (LoadingManager.exists && LoadingManager.instance.m_loadingComplete)
+            {
+                UninstallMod();
+            }
+
+            UninstallOutOfGameDependencies();
+        }
+
+        public override void OnLevelLoaded(LoadMode mode)
+        {
+            base.OnLevelLoaded(mode);
+
+            if (mode == LoadMode.LoadGame || mode == LoadMode.NewGame || mode == LoadMode.NewGameFromScenario)
+            {
+                InstallMod();
+            }
+        }
+
+        public override void OnLevelUnloading()
+        {
+            if (modInstalled)
+            {
+                UninstallMod();
+            }
+
+            base.OnLevelUnloading();
+        }
+
+        void InstallOutOfGameDependencies()
+        {
+            xmlPersistenceService = new XmlPersistenceService();
+            settings = xmlPersistenceService.Load();
+            ForestBrushMod.instance.PreInitialize(xmlPersistenceService, settings);
+        }
+
+        void UninstallOutOfGameDependencies()
+        {
+            xmlPersistenceService = null;
+            settings = null;
+        }
+
+        void InstallMod()
+        {
+            harmony = HarmonyInstance.Create(harmonyId);
+            harmony.PatchAll(Assembly.GetExecutingAssembly());
+
+            ForestBrushMod.instance.Initialize();
+
+            modInstalled = true;
+        }
+
+        void UninstallMod()
+        {
+            ForestBrushMod.instance.CleanUp();
+
+            harmony.UnpatchAll(harmonyId);
+            harmony = null;
+
+            modInstalled = false;
         }
 
         public void OnSettingsUI(UIHelperBase helper)
@@ -45,14 +107,15 @@ namespace ForestBrush
 
                 group.AddSpace(10);
 
-                optionKeys = panel.gameObject.AddComponent<OptionsKeyBinding>();
+                var optionKeys = panel.gameObject.AddComponent<OptionsKeyBinding>();
 
                 group.AddSpace(10);
 
-                UIButton button = (UIButton)group.AddButton(Translation.GetTranslation("FOREST-BRUSH-OPTIONS-RESET"), () =>
+                UIButton button = (UIButton)group.AddButton(Translation.Instance.GetTranslation("FOREST-BRUSH-OPTIONS-RESET"), () =>
                 {
                     ForestBrushMod.instance.Settings.Reset();
                     optionKeys.RefreshBindableInputs();
+                    ForestBrushMod.instance.SaveSettings();
                 });
 
                 group.AddSpace(10);

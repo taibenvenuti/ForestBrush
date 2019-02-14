@@ -1,6 +1,7 @@
 ﻿using ColossalFramework;
 using ColossalFramework.UI;
 using ForestBrush.Resources;
+using ForestBrush.TranslationFramework;
 using UnityEngine;
 
 namespace ForestBrush.GUI
@@ -33,7 +34,7 @@ namespace ForestBrush.GUI
             isInteractive = true;
 
             title = AddUIComponent<UILabel>();
-            title.text = UserMod.Translation.GetTranslation("FOREST-BRUSH-PROMPT-NEW");
+            title.text = Translation.Instance.GetTranslation("FOREST-BRUSH-PROMPT-NEW");
             title.textScale = Constants.UITitleTextScale;
             title.relativePosition = new Vector3((width - title.width) / 2, (Constants.UITitleBarHeight - title.height) / 2);
 
@@ -66,7 +67,7 @@ namespace ForestBrush.GUI
                 else okButton.Enable();
             };
 
-            okButton = UIUtilities.CreateButton(this, UserMod.Translation.GetTranslation("FOREST-BRUSH-PROMPT-OK"));
+            okButton = UIUtilities.CreateButton(this, Translation.Instance.GetTranslation("FOREST-BRUSH-PROMPT-OK"));
             okButton.relativePosition = textField.relativePosition + new Vector3(0f, textField.height + Constants.UISpacing);
             okButton.width = (width - (Constants.UISpacing * 3)) / 2;
             okButton.eventClicked += (c, e) =>
@@ -77,7 +78,7 @@ namespace ForestBrush.GUI
             };
             okButton.Disable();
 
-            cancelButton = UIUtilities.CreateButton(this, UserMod.Translation.GetTranslation("FOREST-BRUSH-PROMPT-CANCEL"));
+            cancelButton = UIUtilities.CreateButton(this, Translation.Instance.GetTranslation("FOREST-BRUSH-PROMPT-CANCEL"));
             cancelButton.relativePosition = okButton.relativePosition + new Vector3(okButton.width + Constants.UISpacing, 0f);
             cancelButton.width = (width - (Constants.UISpacing * 3)) / 2;
             cancelButton.eventClicked += (c, e) =>

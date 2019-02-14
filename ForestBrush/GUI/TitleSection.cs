@@ -1,5 +1,6 @@
 ﻿using ColossalFramework.UI;
 using ForestBrush.Resources;
+using ForestBrush.TranslationFramework;
 using UnityEngine;
 
 namespace ForestBrush.GUI
@@ -25,7 +26,7 @@ namespace ForestBrush.GUI
             icon.size = new Vector2(28f, 32f);
 
             titleLabel = AddUIComponent<UILabel>();
-            titleLabel.text = UserMod.Translation.GetTranslation("FOREST-BRUSH-MODNAME");
+            titleLabel.text = Translation.Instance.GetTranslation("FOREST-BRUSH-MODNAME");
             titleLabel.textScale = Constants.UITitleTextScale;
             titleLabel.relativePosition = new Vector3((width - titleLabel.width) / 2f, (Constants.UITitleBarHeight - titleLabel.height) / 2f);
 
@@ -47,8 +48,9 @@ namespace ForestBrush.GUI
 
         public void SavePanelPosition()
         {
-            ForestBrushMod.instance.Settings.PanelX.value = parent.absolutePosition.x;
-            ForestBrushMod.instance.Settings.PanelY.value = parent.absolutePosition.y;
+            ForestBrushMod.instance.Settings.PanelPosX = parent.absolutePosition.x;
+            ForestBrushMod.instance.Settings.PanelPosY = parent.absolutePosition.y;
+            ForestBrushMod.instance.SaveSettings();
         }
     }
 }

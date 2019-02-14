@@ -5,12 +5,17 @@ using ColossalFramework;
 using ColossalFramework.Globalization;
 using ColossalFramework.UI;
 using ForestBrush.GUI;
+using ForestBrush.Persistence;
+using ForestBrush.TranslationFramework;
 using UnityEngine;
 
 namespace ForestBrush
 {           
     public class ForestBrushMod : Singleton<ForestBrushMod>
     {
+        private XmlPersistenceService xmlPersistenceService;
+        private Settings settings;
+
         public  class BrushTweaks
         {
             public int SizeAddend;
@@ -39,39 +44,6 @@ namespace ForestBrush
             MaxRandomRange = 4.0f,
             maxSize = 1000f
         };
-
-        private CGSSerialized settings;
-        internal CGSSerialized Settings
-        {
-            get
-            {
-                if (settings == null)
-                    settings = new CGSSerialized();
-                return settings;
-            }
-            set
-            {
-                settings = value;
-            }
-
-        }
-
-        private XMLSerialized brushSettings;
-        public XMLSerialized BrushSettings
-        {
-            get
-            {
-                if (brushSettings == null)
-                {
-                    brushSettings = XMLSerialized.Load();
-                }
-                return brushSettings;
-            }
-            set
-            {
-                brushSettings = value;
-            }
-        }
 
         private TreeInfo container;
         internal TreeInfo Container
@@ -107,7 +79,7 @@ namespace ForestBrush
 
         public Dictionary<string, TreeInfo> Trees { get; set; }
 
-        public Dictionary<string, ForestBrush> Brushes { get; set; }
+        public Settings Settings => settings;
 
         private ForestBrushTool brushTool;
         public ForestBrushTool BrushTool
@@ -142,6 +114,12 @@ namespace ForestBrush
 
         private GameObject tabStripPage;
 
+        public void PreInitialize(XmlPersistenceService xmlPersistenceService, Settings settings)
+        {
+            this.xmlPersistenceService = xmlPersistenceService;
+            this.settings = settings;
+        }
+
         internal void Initialize()
         {
             UITabstrip tabstrip = ToolsModifierControl.mainToolbar.component as UITabstrip;
@@ -149,11 +127,9 @@ namespace ForestBrush
             ToggleButton = CreateToggleButton(tabstrip);
 
             ForestBrushPanel = tabStripPage.GetComponent<UIPanel>().AddUIComponent<ForestBrushPanel>();
-            
+
             Trees = LoadTrees();
-
-            Brushes = LoadBrushes();
-
+            
             BrushTool = BrushTool;
 
             ToggleButton.eventClick += OnToggleClick;
@@ -211,7 +187,7 @@ namespace ForestBrush
             };
             if (!locale.Exists(key))
             {
-                locale.AddLocalizedString(key, UserMod.Translation.GetTranslation("FOREST-BRUSH-MODNAME"));
+                locale.AddLocalizedString(key, Translation.Instance.GetTranslation("FOREST-BRUSH-MODNAME"));
             }
             key = new Locale.Key
             {
@@ -220,7 +196,7 @@ namespace ForestBrush
             };
             if (!locale.Exists(key))
             {
-                locale.AddLocalizedString(key, UserMod.Translation.GetTranslation("FOREST-BRUSH-TUTORIAL"));
+                locale.AddLocalizedString(key, Translation.Instance.GetTranslation("FOREST-BRUSH-TUTORIAL"));
             }
         }
 
@@ -268,6 +244,7 @@ namespace ForestBrush
         {
             if (ForestBrushPanel && Initialized)
             {
+                xmlPersistenceService = null;
                 Destroy(ForestBrushPanel.gameObject);
                 ForestBrushPanel = null;
             } 
@@ -292,18 +269,6 @@ namespace ForestBrush
                 trees.Add(tree.name, tree);
             }            
             return trees;
-        }
-
-        public Dictionary<string, ForestBrush> LoadBrushes()
-        {
-            Dictionary<string, ForestBrush> dictionary = new Dictionary<string, ForestBrush>();
-
-            foreach (KeyValuePair<string, ForestBrush> brush in BrushSettings.SavedBrushes)
-            {
-                if (!dictionary.ContainsKey(brush.Key))
-                    dictionary.Add(brush.Key, brush.Value);
-            }
-            return dictionary;
         }
 
         public static string GetName(PrefabInfo prefab)
@@ -369,6 +334,11 @@ namespace ForestBrush
             {
                 Debug.LogWarning("OnGUI failed.");
             }            
+        }
+
+        public void SaveSettings()
+        {
+            xmlPersistenceService.Save(Settings);
         }
     }
 }

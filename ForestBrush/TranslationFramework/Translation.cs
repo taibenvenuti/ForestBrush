@@ -20,7 +20,11 @@ namespace ForestBrush.TranslationFramework
         protected bool _loadLanguageAutomatically = true;
         private string fallbackLanguage = "en";
 
-        public Translation(bool loadLanguageAutomatically = true)
+        private static Translation instance = null;
+
+        public static Translation Instance => instance ?? new Translation();
+
+        private Translation(bool loadLanguageAutomatically = true)
         {
             _loadLanguageAutomatically = loadLanguageAutomatically;
             LocaleManager.eventLocaleChanged += SetCurrentLanguage;
