@@ -14,7 +14,7 @@ namespace ForestBrush
 
         private TreeInfo Container { get; set; } = ForestBrushMod.instance.Container;
 
-        public Dictionary<string, ForestBrush> Brushes => ForestBrushMod.instance.Settings.Brushes;
+        public List<ForestBrush> Brushes => ForestBrushMod.instance.Settings.Brushes;
                
         void Awake()
         {
@@ -34,9 +34,9 @@ namespace ForestBrush
                 TreeInfos.Add(treeInfo);
             }
 
-            ForestBrushMod.instance.ForestBrushPanel.LoadBrush(Brush);
-
             Container = CreateBrushPrefab();
+
+            ForestBrushMod.instance.ForestBrushPanel.LoadBrush(Brush);
 
             ForestBrushMod.instance.SaveSettings();
         }
@@ -83,26 +83,24 @@ namespace ForestBrush
 
         public void New(string brushName)
         {
-            if (!Brushes.TryGetValue(brushName, out ForestBrush brush))
+            if (Brushes.Find(b => b.Name == brushName) == null)
             {
-                brush = ForestBrush.Default();
+                ForestBrush brush = ForestBrush.Default();
+
+                brush.Name = brushName;
 
                 brush.ReplaceAll(TreeInfos);
 
-                Brushes.Add(brushName, brush);
+                Brushes.Add(brush);
 
-                ForestBrushMod.instance.Settings.SelectBrush(brushName);
-
-                ForestBrushMod.instance.ForestBrushPanel.BrushSelectSection.UpdateDropDown();
-
-                ForestBrushMod.instance.SaveSettings();
-            }                
-            else UIView.PushModal(NewBrushModal.Instance);
+                UpdateTool(brushName);
+            }
+            else Debug.LogError("Error creatin new brush. Brush already exists. This shouldn't happen, please contact the mod author.");
         }
 
         internal void DeleteCurrent()
         {
-            Brushes.Remove(Brush.Name);
+            Brushes.Remove(Brush);
             ForestBrushMod.instance.Settings.SelectNextBestBrush();
             ForestBrushMod.instance.ForestBrushPanel.BrushSelectSection.UpdateDropDown();
             string nextBrush = ForestBrushMod.instance.ForestBrushPanel.BrushSelectSection.SelectBrushDropDown.items.Length <= 0 ? Constants.NewBrushName :
@@ -152,6 +150,7 @@ namespace ForestBrush
                 else RemoveAll();
             }
             Container = CreateBrushPrefab();
+            ForestBrushMod.instance.SaveSettings();
         }
     }
 }

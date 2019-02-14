@@ -68,7 +68,9 @@ namespace ForestBrush.GUI
 
         internal void LoadBrush(ForestBrush brush)
         {
-            renameBrushTextField.text = brush.Name;
+            renameBrushTextField.eventTextChanged -= OnRenameBrushTextChanged;
+            renameBrushTextField.text = string.Empty;
+            renameBrushTextField.eventTextChanged += OnRenameBrushTextChanged;
 
             var itemBuffer = TreesList.rows.m_buffer;
 
@@ -180,7 +182,24 @@ namespace ForestBrush.GUI
 
         private void OnNewBrushClicked(UIComponent component, UIMouseEventParameter mouseEventParameter)
         {
-            UIView.PushModal(NewBrushModal.Instance);
+            string name = Constants.NewBrushName;
+            int suffix = 0;
+            while (ForestBrushMod.instance.Settings.Brushes.Find(b => b.Name == name) != null)
+            {
+                name = $"{Constants.NewBrushName}{suffix}";
+                suffix++;
+                if (suffix >= 99999)
+                {
+                    Debug.LogError("Infinite loop detected while trying to generate new name. Please contact the mod author.");
+                    return;
+                }
+            }
+            ForestBrushMod.instance.BrushTool.New(name);
+            renameBrushTextField.eventTextChanged -= OnRenameBrushTextChanged;
+            renameBrushTextField.text = name;
+            renameBrushTextField.Focus();
+            renameBrushTextField.SelectAll();
+            renameBrushTextField.eventTextChanged += OnRenameBrushTextChanged;
         }
 
         private void OnRenameBrushKeyPress(UIComponent component, UIKeyEventParameter parameter)
@@ -204,22 +223,22 @@ namespace ForestBrush.GUI
                 {
                     ForestBrushMod.instance.BrushTool.DeleteCurrent();
                 }
-            });            
+            });
         }
 
-        private void OnRenameBrushTextChanged(UIComponent component, string value)
+        private void OnRenameBrushTextChanged(UIComponent component, string newName)
         {
             string currentName = ForestBrushMod.instance.BrushTool.Brush.Name;
-            if (ForestBrushMod.instance.Settings.Brushes.TryChangeKey(currentName, value))
+            if (ForestBrushMod.instance.Settings.Brushes.Find(b => b.Name == newName) == null)
             {
                 renameBrushTextField.tooltip = Translation.Instance.GetTranslation("FOREST-BRUSH-RENAME-BRUSH");
                 renameBrushTextField.textColor = new Color32(0, 0, 0, 255);
                 UIDropDown brushDropDown = father.BrushSelectSection.SelectBrushDropDown;
-                if (value != brushDropDown.items[brushDropDown.selectedIndex])
+                if (newName != brushDropDown.items[brushDropDown.selectedIndex])
                 {
-                    brushDropDown.items[brushDropDown.selectedIndex] = value;
+                    brushDropDown.items[brushDropDown.selectedIndex] = newName;
                 }
-                ForestBrushMod.instance.BrushTool.Brush.Name = value;
+                ForestBrushMod.instance.BrushTool.Brush.Name = newName;
                 brushDropDown.Focus();
                 renameBrushTextField.Focus();
             }

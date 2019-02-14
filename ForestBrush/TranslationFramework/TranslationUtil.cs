@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Reflection;
-using ColossalFramework;
-using ColossalFramework.Globalization;
 using ColossalFramework.Plugins;
 using ICities;
 
@@ -34,7 +31,7 @@ namespace ForestBrush.TranslationFramework
 
                     }
                 }
-                throw new Exception("Failed to find Customize It! assembly!");
+                throw new Exception("Failed to find Forest Brush assembly!");
             }
         }
     }
