@@ -19,7 +19,7 @@ namespace ForestBrush.Persistence
                 PanelPosY = settings.PanelPosY,
                 AddRemoveTreesToBrushOpen = settings.AddRemoveTreesToBrushOpen,
                 BrushOptionsOpen = settings.BrushOptionsOpen,
-                Brushes = settings.Brushes.Values.ToList(),
+                Brushes = settings.Brushes,
                 SelectedBrush = settings.SelectedBrush.Name,
                 Search = GetXmlInputKey(settings.Search),
                 ToggleTool = GetXmlInputKey(settings.ToggleTool),

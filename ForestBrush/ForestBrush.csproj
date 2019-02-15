@@ -93,7 +93,6 @@
     <Compile Include="OverlayColor.cs" />
     <Compile Include="Patches.cs" />
     <Compile Include="Constants.cs" />
-    <Compile Include="GUI\NewBrushModal.cs" />
     <Compile Include="GUI\UIUtilities.cs" />
     <Compile Include="ForestBrushMod.cs" />
     <Compile Include="BeginRefactor\ForestTool.cs" />
@@ -102,7 +101,6 @@
     <Compile Include="Persistence\XmlInputKey.cs" />
     <Compile Include="Persistence\XmlPersistenceService.cs" />
     <Compile Include="Tree.cs" />
-    <Compile Include="Util.cs" />
     <Compile Include="Persistence\XmlSettings.cs" />
     <Compile Include="Tool.cs" />
     <Compile Include="GUI\TreeItem.cs" />

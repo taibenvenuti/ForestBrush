@@ -41,11 +41,11 @@ namespace ForestBrush
             this.IncreaseStrength = increaseStrength;
             this.DecreaseStrength = decreaseStrength;
 
-            this.Brushes = forestBrushes.ToDictionary(x => x.Name, x => x);
+            this.Brushes = forestBrushes.ToList();
             if (this.Brushes.Count == 0)
             {
                 var defaultBrush = ForestBrush.Default();
-                this.Brushes.Add(defaultBrush.Name, defaultBrush);
+                this.Brushes.Add(defaultBrush);
             }
 
             this.SelectBrush(selectedBrush);
@@ -59,7 +59,7 @@ namespace ForestBrush
 
         public bool BrushOptionsOpen { get; set; }
 
-        public Dictionary<string, ForestBrush> Brushes { get; set; }
+        public List<ForestBrush> Brushes { get; set; }
 
         public ForestBrush SelectedBrush { get; private set; }
 
@@ -119,10 +119,10 @@ namespace ForestBrush
 
         private ForestBrush GetSelectedBrush(string brushName)
         {
-            var found = Brushes.TryGetValue(brushName, out ForestBrush forestBrush);
-            if (found)
+            var brush = Brushes.Find(b => b.Name == brushName);
+            if (brush != null)
             {
-                return forestBrush;
+                return brush;
             }
             else
             {
@@ -132,11 +132,11 @@ namespace ForestBrush
 
         private ForestBrush GetNextBestBrush()
         {
-            var first = Brushes.Values.FirstOrDefault();
+            var first = Brushes.FirstOrDefault();
             if (first == null)
             {
                 var newDefault = ForestBrush.Default();
-                Brushes.Add(newDefault.Name, newDefault);
+                Brushes.Add(newDefault);
                 return newDefault;
             }
             else
