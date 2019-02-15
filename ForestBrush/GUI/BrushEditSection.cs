@@ -233,8 +233,7 @@ namespace ForestBrush.GUI
             string currentName = ForestBrushMod.instance.BrushTool.Brush.Name;
             if (ForestBrushMod.instance.Settings.Brushes.Find(b => b.Name == newName) == null)
             {
-                renameBrushTextField.tooltip = Translation.Instance.GetTranslation("FOREST-BRUSH-RENAME-BRUSH");
-                renameBrushTextField.textColor = new Color32(0, 0, 0, 255);
+                ResetRenameError();
                 UIDropDown brushDropDown = father.BrushSelectSection.SelectBrushDropDown;
                 if (newName != brushDropDown.items[brushDropDown.selectedIndex])
                 {
@@ -246,9 +245,20 @@ namespace ForestBrush.GUI
             }
             else
             {
-                renameBrushTextField.textColor = Color.red;
-                renameBrushTextField.tooltip = Translation.Instance.GetTranslation("FOREST-BRUSH-RENAME-ERROR");
+                SetRenameError();
             }
+        }
+
+        private void SetRenameError()
+        {
+            renameBrushTextField.textColor = Color.red;
+            renameBrushTextField.tooltip = Translation.Instance.GetTranslation("FOREST-BRUSH-RENAME-ERROR");
+        }
+
+        public void ResetRenameError()
+        {
+            renameBrushTextField.textColor = new Color32(0, 0, 0, 255);
+            renameBrushTextField.tooltip = Translation.Instance.GetTranslation("FOREST-BRUSH-RENAME-BRUSH");
         }
 
         private void OnSearchTextChanged(UIComponent component, string text)

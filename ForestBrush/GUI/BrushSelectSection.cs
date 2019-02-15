@@ -114,6 +114,7 @@ namespace ForestBrush.GUI
         {
             var brushName = SelectBrushDropDown.items[index];
             ForestBrushMod.instance.BrushTool.UpdateTool(brushName);
+            father.BrushEditSection.ResetRenameError();
         }
     }
 }
