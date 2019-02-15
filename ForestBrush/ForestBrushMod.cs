@@ -16,6 +16,8 @@ namespace ForestBrush
         private XmlPersistenceService xmlPersistenceService;
         private Settings settings;
 
+        private ToggleButtonComponents toggleButtonComponents;
+
         public  class BrushTweaks
         {
             public int SizeAddend;
@@ -77,26 +79,13 @@ namespace ForestBrush
 
         internal bool IsCurrentTreeContainer => Container != null && ToolsModifierControl.toolController.CurrentTool is TreeTool && ((TreeTool)ToolsModifierControl.toolController?.CurrentTool)?.m_prefab == Container;
 
-        public Dictionary<string, TreeInfo> Trees { get; set; }
+        public Dictionary<string, TreeInfo> Trees { get; private set; }
 
         public Settings Settings => settings;
 
-        private ForestBrushTool brushTool;
-        public ForestBrushTool BrushTool
-        {
-            get
-            {
-                if (brushTool == null)
-                    brushTool = gameObject.AddComponent<ForestBrushTool>();
-                return brushTool;
-            }
-            private set
-            {
-                brushTool = value;
-            }
-        }
+        public ForestBrushTool BrushTool { get; private set; }
 
-        public UIButton ToggleButton { get; private set; }
+        public UIButton ToggleButton => toggleButtonComponents.ToggleButton;
 
         internal ForestBrushPanel ForestBrushPanel { get; private set; }
 
@@ -112,8 +101,6 @@ namespace ForestBrush
 
         private ToolBase lastTool;
 
-        private GameObject tabStripPage;
-
         public void PreInitialize(XmlPersistenceService xmlPersistenceService, Settings settings)
         {
             this.xmlPersistenceService = xmlPersistenceService;
@@ -122,81 +109,109 @@ namespace ForestBrush
 
         internal void Initialize()
         {
-            UITabstrip tabstrip = ToolsModifierControl.mainToolbar.component as UITabstrip;
-            
-            ToggleButton = CreateToggleButton(tabstrip);
-
-            ForestBrushPanel = tabStripPage.GetComponent<UIPanel>().AddUIComponent<ForestBrushPanel>();
-
             Trees = LoadTrees();
-            
-            BrushTool = BrushTool;
 
-            ToggleButton.eventClick += OnToggleClick;
-
-            ForestBrushPanel.eventVisibilityChanged += OnForestBrushPanelVisibilityChanged;
-
-            LocaleManager.eventLocaleChanged += SetTutorialLocale;
-            
+            UITabstrip tabstrip = ToolsModifierControl.mainToolbar.component as UITabstrip;
+            toggleButtonComponents = CreateToggleButtonComponents(tabstrip);
+            ForestBrushPanel = toggleButtonComponents.TabStripPage.GetComponent<UIPanel>().AddUIComponent<ForestBrushPanel>();
+            BrushTool = gameObject.AddComponent<ForestBrushTool>();
             SetTutorialLocale();
+
+            toggleButtonComponents.ToggleButton.eventClick += OnToggleClick;
+            ForestBrushPanel.eventVisibilityChanged += OnForestBrushPanelVisibilityChanged;
+            LocaleManager.eventLocaleChanged += SetTutorialLocale;
 
             Initialized = true;
         }
 
-        private UIButton CreateToggleButton(UITabstrip tabstrip)
+        internal void CleanUp()
         {
-            CreateSeparator(tabstrip);
+            Initialized = false;
 
-            UIButton button;
+            LocaleManager.eventLocaleChanged -= SetTutorialLocale;
+            ForestBrushPanel.eventVisibilityChanged -= OnForestBrushPanelVisibilityChanged;
+            toggleButtonComponents.ToggleButton.eventClick -= OnToggleClick;
 
+            Destroy(BrushTool);
+            Destroy(ForestBrushPanel);
+            DestroyToggleButtonComponents(toggleButtonComponents);
+            toggleButtonComponents = null;
+
+            Trees = null;
+            
+            settings = null;
+            xmlPersistenceService = null;
+
+            Destroy(this);
+        }
+
+        private ToggleButtonComponents CreateToggleButtonComponents(UITabstrip tabstrip)
+        {
+            SeparatorComponents preSeparatorComponents = CreateSeparatorComponents(tabstrip);
+
+            GameObject tabStripPage = UITemplateManager.GetAsGameObject(kEmptyContainer);
             GameObject mainToolbarButtonTemplate = UITemplateManager.GetAsGameObject(kMainToolbarButtonTemplate);
 
-            tabStripPage = UITemplateManager.GetAsGameObject(kEmptyContainer);
+            UIButton toggleButton = tabstrip.AddTab(kToggleButton, mainToolbarButtonTemplate, tabStripPage, new Type[0]) as UIButton;
+            toggleButton.atlas = Atlas;
 
-            button = tabstrip.AddTab(kToggleButton, mainToolbarButtonTemplate, tabStripPage, new Type[0]) as UIButton;
-            button.atlas = Atlas;
+            toggleButton.normalFgSprite = "ForestBrushNormal";
+            toggleButton.disabledFgSprite = "ForestBrushDisabled";
+            toggleButton.focusedFgSprite = "ForestBrushFocused";
+            toggleButton.hoveredFgSprite = "ForestBrushHovered";
+            toggleButton.pressedFgSprite = "ForestBrushPressed";
 
-            button.normalFgSprite = "ForestBrushNormal";
-            button.disabledFgSprite = "ForestBrushDisabled";
-            button.focusedFgSprite = "ForestBrushFocused";
-            button.hoveredFgSprite = "ForestBrushHovered";
-            button.pressedFgSprite = "ForestBrushPressed";
-
-            button.normalBgSprite = "ToolbarIconGroup6Normal";
-            button.disabledBgSprite = "ToolbarIconGroup6Disabled";
-            button.focusedBgSprite = "ToolbarIconGroup6Focused";
-            button.hoveredBgSprite = "ToolbarIconGroup6Hovered";
-            button.pressedBgSprite = "ToolbarIconGroup6Pressed";
+            toggleButton.normalBgSprite = "ToolbarIconGroup6Normal";
+            toggleButton.disabledBgSprite = "ToolbarIconGroup6Disabled";
+            toggleButton.focusedBgSprite = "ToolbarIconGroup6Focused";
+            toggleButton.hoveredBgSprite = "ToolbarIconGroup6Hovered";
+            toggleButton.pressedBgSprite = "ToolbarIconGroup6Pressed";
+            toggleButton.parent.height = 1f;
 
             IncrementObjectIndex();
 
-            button.parent.height = 1f;
+            SeparatorComponents postSeparatorComponents = CreateSeparatorComponents(tabstrip);
 
-            CreateSeparator(tabstrip);
+            return new ToggleButtonComponents(preSeparatorComponents, tabStripPage, mainToolbarButtonTemplate, toggleButton, postSeparatorComponents);
+        }
 
-            return button;
+        private void DestroyToggleButtonComponents(ToggleButtonComponents toggleButtonComponents)
+        {
+            DestroySeparatorComponents(toggleButtonComponents.PostSeparatorComponents);
+
+            DecrementObjectIndex();
+
+            Destroy(toggleButtonComponents.ToggleButton);
+
+            Destroy(toggleButtonComponents.MainToolbarButtonTemplate);
+            Destroy(toggleButtonComponents.TabStripPage);
+
+            DestroySeparatorComponents(toggleButtonComponents.PreSeparatorComponents);
         }
 
         private void SetTutorialLocale()
         {
-            Locale locale = (Locale)typeof(LocaleManager).GetField("m_Locale", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(LocaleManager.instance);
-            Locale.Key key = new Locale.Key
+            Locale locale = (Locale)typeof(LocaleManager).GetField("m_Locale", BindingFlags.Instance | BindingFlags.NonPublic)
+                .GetValue(LocaleManager.instance);
+
+            Locale.Key tutorialAdviserTitleKey = new Locale.Key
             {
                 m_Identifier = "TUTORIAL_ADVISER_TITLE",
                 m_Key = kToggleButton,
             };
-            if (!locale.Exists(key))
+            if (!locale.Exists(tutorialAdviserTitleKey))
             {
-                locale.AddLocalizedString(key, Translation.Instance.GetTranslation("FOREST-BRUSH-MODNAME"));
+                locale.AddLocalizedString(tutorialAdviserTitleKey, Translation.Instance.GetTranslation("FOREST-BRUSH-MODNAME"));
             }
-            key = new Locale.Key
+
+            Locale.Key tutorialAdviserKey = new Locale.Key
             {
                 m_Identifier = "TUTORIAL_ADVISER",
                 m_Key = kToggleButton
             };
-            if (!locale.Exists(key))
+            if (!locale.Exists(tutorialAdviserKey))
             {
-                locale.AddLocalizedString(key, Translation.Instance.GetTranslation("FOREST-BRUSH-TUTORIAL"));
+                locale.AddLocalizedString(tutorialAdviserKey, Translation.Instance.GetTranslation("FOREST-BRUSH-TUTORIAL"));
             }
         }
 
@@ -206,20 +221,34 @@ namespace ForestBrush
             m_ObjectIndex.SetValue(ToolsModifierControl.mainToolbar, (int)m_ObjectIndex.GetValue(ToolsModifierControl.mainToolbar) + 1);
         }
 
-        protected UIComponent CreateSeparator(UITabstrip strip)
+        private void DecrementObjectIndex()
         {
-            UIComponent uicomponent;
-            GameObject asGameObject = UITemplateManager.GetAsGameObject(kMainToolbarSeparatorTemplate);
-            GameObject asGameObject2 = UITemplateManager.GetAsGameObject(kEmptyContainer);
-            uicomponent = strip.AddTab("Separator", asGameObject, asGameObject2, new Type[0]);
-            uicomponent.width *= 0.5f;
-            uicomponent.isEnabled = false;
+            FieldInfo m_ObjectIndex = typeof(MainToolbar).GetField("m_ObjectIndex", BindingFlags.Instance | BindingFlags.NonPublic);
+            m_ObjectIndex.SetValue(ToolsModifierControl.mainToolbar, (int)m_ObjectIndex.GetValue(ToolsModifierControl.mainToolbar) - 1);
+        }
+
+        protected SeparatorComponents CreateSeparatorComponents(UITabstrip strip)
+        {
+            GameObject mainToolbarSeparatorTemplate = UITemplateManager.GetAsGameObject(kMainToolbarSeparatorTemplate);
+            GameObject emptyContainer = UITemplateManager.GetAsGameObject(kEmptyContainer);
+            UIComponent separatorTab = strip.AddTab("Separator", mainToolbarSeparatorTemplate, emptyContainer, new Type[0]);
+            separatorTab.width *= 0.5f;
+            separatorTab.isEnabled = false;
             IncrementObjectIndex();
-            return uicomponent;
+            return new SeparatorComponents(mainToolbarSeparatorTemplate, emptyContainer, separatorTab);
+        }
+
+        protected void DestroySeparatorComponents(SeparatorComponents separatorComponents)
+        {
+            DecrementObjectIndex();
+            Destroy(separatorComponents.SeparatorTab.gameObject);
+            Destroy(separatorComponents.EmptyContainer);
+            Destroy(separatorComponents.MainToolbarSeparatorTemplate);
         }
 
         private void OnForestBrushPanelVisibilityChanged(UIComponent component, bool visible)
         {
+            DebugOutputPanel.AddMessage(ColossalFramework.Plugins.PluginManager.MessageType.Error, visible.ToString());
 
             if (visible)
             {
@@ -238,17 +267,6 @@ namespace ForestBrush
         {
             ForestBrushPanel.BringToFront();
             ForestBrushPanel.isVisible = !ForestBrushPanel.isVisible;
-        }
-
-        internal void CleanUp()
-        {
-            if (ForestBrushPanel && Initialized)
-            {
-                xmlPersistenceService = null;
-                Destroy(ForestBrushPanel.gameObject);
-                ForestBrushPanel = null;
-            } 
-            Initialized = false;
         }
 
         private Dictionary<string, TreeInfo> LoadTrees()
@@ -292,7 +310,7 @@ namespace ForestBrush
 
                     if (Settings.ToggleTool.IsPressed(e))
                     {
-                        ToggleButton.SimulateClick();
+                        toggleButtonComponents.ToggleButton.SimulateClick();
                     }
 
                     if (ForestBrushPanel.isVisible)
