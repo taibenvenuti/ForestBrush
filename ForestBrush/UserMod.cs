@@ -1,9 +1,11 @@
-﻿using ColossalFramework.UI;
+﻿using ColossalFramework;
+using ColossalFramework.UI;
 using ForestBrush.Persistence;
 using ForestBrush.TranslationFramework;
 using Harmony;
 using ICities;
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
 
@@ -66,6 +68,7 @@ namespace ForestBrush
 
         void InstallOutOfGameDependencies()
         {
+            GameSettings.AddSettingsFile(new SettingsFile { fileName = Constants.ModName });
             xmlPersistenceService = new XmlPersistenceService();
             settings = xmlPersistenceService.Load();
             ForestBrushMod.instance.PreInitialize(xmlPersistenceService, settings);
@@ -75,6 +78,9 @@ namespace ForestBrush
         {
             xmlPersistenceService = null;
             settings = null;
+            var settingFiles = (Dictionary<string, SettingsFile>)typeof(GameSettings).GetField("m_SettingsFiles", BindingFlags.NonPublic | BindingFlags.Instance)
+                .GetValue(GameSettings.instance);
+            settingFiles.Remove(Constants.ModName);
         }
 
         void InstallMod()
