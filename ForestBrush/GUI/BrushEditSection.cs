@@ -52,7 +52,7 @@ namespace ForestBrush.GUI
             centerPanel.autoLayoutDirection = LayoutDirection.Vertical;
             centerPanel.autoFitChildrenVertically = true;
             centerPanel.autoLayoutStart = LayoutStart.TopLeft;
-            centerPanel.autoLayoutPadding = new RectOffset(10, 0, 0, 0);            
+            centerPanel.autoLayoutPadding = new RectOffset(10, 0, 0, 0);
 
             bottomPanel = AddUIComponent<UIPanel>();
             bottomPanel.height = 30f;
@@ -69,7 +69,7 @@ namespace ForestBrush.GUI
         internal void LoadBrush(ForestBrush brush)
         {
             renameBrushTextField.eventTextChanged -= OnRenameBrushTextChanged;
-            renameBrushTextField.text = string.Empty;
+            renameBrushTextField.text = brush.Name;
             renameBrushTextField.eventTextChanged += OnRenameBrushTextChanged;
 
             var itemBuffer = TreesList.rows.m_buffer;
@@ -113,9 +113,11 @@ namespace ForestBrush.GUI
             renameBrushTextField.disabledTextColor = new Color32(80, 80, 80, 128);
             renameBrushTextField.color = new Color32(255, 255, 255, 255);
             renameBrushTextField.relativePosition = new Vector3(width - Constants.UISpacing - renameBrushTextField.width, 560f);
+            renameBrushTextField.text = ForestBrushMod.instance.Settings.SelectedBrush.Name;
             renameBrushTextField.eventTextChanged += OnRenameBrushTextChanged;
             renameBrushTextField.eventKeyPress += OnRenameBrushKeyPress;
             renameBrushTextField.eventLostFocus += (c, e) => ForestBrushMod.instance.SaveSettings();
+            renameBrushTextField.eventClicked += (c, e) => renameBrushTextField.SelectAll();
             renameBrushTextField.tooltip = Translation.Instance.GetTranslation("FOREST-BRUSH-RENAME-BRUSH");
         }
 

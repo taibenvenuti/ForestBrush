@@ -51,7 +51,7 @@ namespace ForestBrush
         {
             base.OnLevelLoaded(mode);
 
-            if (mode == LoadMode.LoadGame || mode == LoadMode.NewGame || mode == LoadMode.NewGameFromScenario)
+            if (mode == LoadMode.LoadGame || mode == LoadMode.NewGame || mode == LoadMode.NewGameFromScenario || mode == LoadMode.LoadMap || mode == LoadMode.NewMap)
             {
                 InstallMod();
             }

@@ -248,8 +248,6 @@ namespace ForestBrush
 
         private void OnForestBrushPanelVisibilityChanged(UIComponent component, bool visible)
         {
-            DebugOutputPanel.AddMessage(ColossalFramework.Plugins.PluginManager.MessageType.Error, visible.ToString());
-
             if (visible)
             {
                 lastTool = ToolsModifierControl.toolController.CurrentTool;
