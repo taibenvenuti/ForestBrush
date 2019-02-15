@@ -196,7 +196,7 @@ namespace ForestBrush
                         quad.c = new Vector3(c.x, 0f, c.y);
                         quad.d = new Vector3(d.x, 0f, d.y);
                         Singleton<RenderManager>.instance.OverlayEffect.DrawQuad(cameraInfo, toolColor, quad, ___m_mousePosition.y - 100f, ___m_mousePosition.y + 100f, false, false);
-                    }                        
+                    }
                     else Singleton<RenderManager>.instance.OverlayEffect.DrawCircle(cameraInfo, toolColor, ___m_mousePosition, size * 2, ___m_mousePosition.y - 100f, ___m_mousePosition.y + 100f, false, true);
                 }
                 return false;

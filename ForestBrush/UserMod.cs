@@ -21,6 +21,7 @@ namespace ForestBrush
         private readonly string harmonyId = "com.tpb.forestbrush";
         private HarmonyInstance harmony;
         private bool modInstalled = false;
+        OptionsKeyBinding optionKeys;
 
         public string Name => Constants.ModName;
 
@@ -113,16 +114,7 @@ namespace ForestBrush
 
                 group.AddSpace(10);
 
-                var optionKeys = panel.gameObject.AddComponent<OptionsKeyBinding>();
-
-                group.AddSpace(10);
-
-                UIButton button = (UIButton)group.AddButton(Translation.Instance.GetTranslation("FOREST-BRUSH-OPTIONS-RESET"), () =>
-                {
-                    ForestBrushMod.instance.Settings.Reset();
-                    optionKeys.RefreshBindableInputs();
-                    ForestBrushMod.instance.SaveSettings();
-                });
+                optionKeys = panel.gameObject.AddComponent<OptionsKeyBinding>();
 
                 group.AddSpace(10);
             }

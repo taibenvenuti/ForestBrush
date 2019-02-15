@@ -20,25 +20,7 @@ namespace ForestBrush
 
         private void Awake()
         {
-            AddKeymapping(Translation.Instance.GetTranslation("FOREST-BRUSH-KEYBIND-SEARCH"), ForestBrushMod.instance.Settings.Search);
-
-            AddKeymapping(Translation.Instance.GetTranslation("FOREST-BRUSH-KEYBIND-TOGGLE-TOOL"), ForestBrushMod.instance.Settings.ToggleTool);
-
-            AddKeymapping(Translation.Instance.GetTranslation("FOREST-BRUSH-KEYBIND-TOGGLE-SQUAREBRUSH"), ForestBrushMod.instance.Settings.ToggleSquare);
-
-            AddKeymapping(Translation.Instance.GetTranslation("FOREST-BRUSH-KEYBIND-TOGGLE-AUTODENSITY"), ForestBrushMod.instance.Settings.ToggleAutoDensity);
-
-            AddKeymapping(Translation.Instance.GetTranslation("FOREST-BRUSH-KEYBIND-INCREASE-SIZE"), ForestBrushMod.instance.Settings.IncreaseSize);
-
-            AddKeymapping(Translation.Instance.GetTranslation("FOREST-BRUSH-KEYBIND-DECREASE-SIZE"), ForestBrushMod.instance.Settings.DecreaseSize);
-
-            AddKeymapping(Translation.Instance.GetTranslation("FOREST-BRUSH-KEYBIND-INCREASE-STRENGTH"), ForestBrushMod.instance.Settings.IncreaseStrength);
-
-            AddKeymapping(Translation.Instance.GetTranslation("FOREST-BRUSH-KEYBIND-DECREASE-STRENGTH"), ForestBrushMod.instance.Settings.DecreaseStrength);
-
-            AddKeymapping(Translation.Instance.GetTranslation("FOREST-BRUSH-KEYBIND-INCREASE-DENSITY"), ForestBrushMod.instance.Settings.IncreaseDensity);
-
-            AddKeymapping(Translation.Instance.GetTranslation("FOREST-BRUSH-KEYBIND-DECREASE-DENSITY"), ForestBrushMod.instance.Settings.DecreaseDensity);
+            AddKeymapping("FOREST-BRUSH-KEYBIND-TOGGLE-TOOL", ForestBrushMod.instance.Settings.ToggleTool);
         }
 
         private void AddKeymapping(string label, SavedInputKey savedInputKey)
@@ -51,7 +33,8 @@ namespace ForestBrush
             uIButton.eventKeyDown += new KeyPressHandler(this.OnBindingKeyDown);
             uIButton.eventMouseDown += new MouseEventHandler(this.OnBindingMouseDown);
 
-            uILabel.text = label;
+            uILabel.text = Translation.Instance.GetTranslation(label);
+            uILabel.stringUserData = label;
             uIButton.text = savedInputKey.ToLocalizedString("KEYNAME");
             uIButton.objectUserData = savedInputKey;
         }
@@ -196,7 +179,7 @@ namespace ForestBrush
                 UILabel uILabel = current.Find<UILabel>("Name");
                 if (uILabel != null)
                 {
-                    uILabel.text = Locale.Get("KEYMAPPING", uILabel.stringUserData);
+                    uILabel.text = Translation.Instance.GetTranslation(uILabel.stringUserData);
                 }
             }
         }
@@ -214,19 +197,6 @@ namespace ForestBrush
                 return (InputKey)value;
             }
             return 0;
-        }
-
-        private void RefreshKeyMapping()
-        {
-            foreach (UIComponent current in component.GetComponentsInChildren<UIComponent>())
-            {
-                UITextComponent uITextComponent = current.Find<UITextComponent>("Binding");
-                SavedInputKey savedInputKey = (SavedInputKey)uITextComponent.objectUserData;
-                if (this.m_EditingBinding != savedInputKey)
-                {
-                    uITextComponent.text = savedInputKey.ToLocalizedString("KEYNAME");
-                }
-            }
         }
     }
 }

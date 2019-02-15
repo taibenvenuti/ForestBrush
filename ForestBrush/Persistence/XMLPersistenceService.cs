@@ -21,16 +21,7 @@ namespace ForestBrush.Persistence
                 BrushOptionsOpen = settings.BrushOptionsOpen,
                 Brushes = settings.Brushes,
                 SelectedBrush = settings.SelectedBrush.Name,
-                Search = GetXmlInputKey(settings.Search),
-                ToggleTool = GetXmlInputKey(settings.ToggleTool),
-                ToggleSquare = GetXmlInputKey(settings.ToggleSquare),
-                ToggleAutoDensity = GetXmlInputKey(settings.ToggleAutoDensity),
-                IncreaseSize = GetXmlInputKey(settings.IncreaseSize),
-                DecreaseSize = GetXmlInputKey(settings.DecreaseSize),
-                IncreaseDensity = GetXmlInputKey(settings.IncreaseDensity),
-                DecreaseDensity = GetXmlInputKey(settings.DecreaseDensity),
-                IncreaseStrength = GetXmlInputKey(settings.IncreaseStrength),
-                DecreaseStrength = GetXmlInputKey(settings.DecreaseStrength)
+                ToggleTool = GetXmlInputKey(settings.ToggleTool)
             };
 
             using (var sw = new StreamWriter(configurationPath))
@@ -57,16 +48,7 @@ namespace ForestBrush.Persistence
                     xmlSettings.BrushOptionsOpen,
                     xmlSettings.Brushes,
                     xmlSettings.SelectedBrush,
-                    GetSavedInputKey(xmlSettings.Search),
-                    GetSavedInputKey(xmlSettings.ToggleTool),
-                    GetSavedInputKey(xmlSettings.ToggleSquare),
-                    GetSavedInputKey(xmlSettings.ToggleAutoDensity),
-                    GetSavedInputKey(xmlSettings.IncreaseSize),
-                    GetSavedInputKey(xmlSettings.DecreaseSize),
-                    GetSavedInputKey(xmlSettings.IncreaseDensity),
-                    GetSavedInputKey(xmlSettings.DecreaseDensity),
-                    GetSavedInputKey(xmlSettings.IncreaseStrength),
-                    GetSavedInputKey(xmlSettings.DecreaseStrength)
+                    GetSavedInputKey(xmlSettings.ToggleTool)
                 );
             }
             else

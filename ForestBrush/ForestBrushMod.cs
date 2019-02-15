@@ -258,7 +258,7 @@ namespace ForestBrush
                 tool.m_prefab = Container;
             }
             else if (lastTool != null && lastTool.GetType() != typeof(TreeTool) && ToolsModifierControl.toolController.NextTool == null)
-            {                
+            {
                 lastTool.enabled = true;
             }
         }
@@ -311,39 +311,6 @@ namespace ForestBrush
                     if (Settings.ToggleTool.IsPressed(e))
                     {
                         toggleButtonComponents.ToggleButton.SimulateClick();
-                    }
-
-                    if (ForestBrushPanel.isVisible)
-                    {
-
-                        if (Settings.Search.IsPressed(e))
-                        {
-                            ForestBrushPanel.BrushEditSection.FocusSearchField();
-                        }
-                        if (Settings.ToggleSquare.IsPressed(e))
-                        {
-                            ForestBrushPanel.BrushOptionsSection.squareBrushCheckBox.SimulateClick();
-                        }
-                        if (Settings.ToggleAutoDensity.IsPressed(e))
-                        {
-                            ForestBrushPanel.BrushOptionsSection.autoDensityCheckBox.SimulateClick();
-                        }
-                        if (Settings.IncreaseSize.IsPressed(e))
-                        {
-                            ForestBrushPanel.BrushOptionsSection.sizeSlider.value += 5f;
-                        }
-                        if (Settings.DecreaseSize.IsPressed(e))
-                        {
-                            ForestBrushPanel.BrushOptionsSection.sizeSlider.value -= 5f;
-                        }
-                        if (Settings.IncreaseDensity.IsPressed(e))
-                        {
-                            ForestBrushPanel.BrushOptionsSection.densitySlider.value += 0.1f;
-                        }
-                        if (Settings.DecreaseDensity.IsPressed(e))
-                        {
-                            ForestBrushPanel.BrushOptionsSection.densitySlider.value -= 0.1f;
-                        }
                     }
                 }
                 
