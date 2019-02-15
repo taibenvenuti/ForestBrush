@@ -89,7 +89,6 @@
     <Compile Include="GUI\ImageUtil.cs" />
     <Compile Include="GUI\ToggleButtonComponents.cs" />
     <Compile Include="OptionsKeyBinding.cs" />
-    <Compile Include="OverlayColor.cs" />
     <Compile Include="Patches.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="GUI\UIUtilities.cs" />

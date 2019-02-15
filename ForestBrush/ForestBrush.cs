@@ -61,7 +61,7 @@ namespace ForestBrush
             public float Density { get; set; }
             public bool AutoDensity { get; set; }
             public bool IsSquare { get; set; }
-            public OverlayColor OverlayColor { get; set; }
+            public Color32 OverlayColor { get; set; }
 
             public static BrushOptions Default()
             {
