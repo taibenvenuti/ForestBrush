@@ -117,7 +117,6 @@ namespace ForestBrush.GUI
             renameBrushTextField.eventTextChanged += OnRenameBrushTextChanged;
             renameBrushTextField.eventKeyPress += OnRenameBrushKeyPress;
             renameBrushTextField.eventLostFocus += (c, e) => ForestBrushMod.instance.SaveSettings();
-            renameBrushTextField.eventClicked += (c, e) => renameBrushTextField.SelectAll();
             renameBrushTextField.tooltip = Translation.Instance.GetTranslation("FOREST-BRUSH-RENAME-BRUSH");
         }
 
@@ -231,24 +230,33 @@ namespace ForestBrush.GUI
         private void OnRenameBrushTextChanged(UIComponent component, string newName)
         {
             string currentName = ForestBrushMod.instance.BrushTool.Brush.Name;
-            if (ForestBrushMod.instance.Settings.Brushes.Find(b => b.Name == newName) == null)
+            if (ForestBrushMod.instance.Settings.Brushes.Find(b => b.Name == newName && b.Name != currentName) == null)
             {
-                renameBrushTextField.tooltip = Translation.Instance.GetTranslation("FOREST-BRUSH-RENAME-BRUSH");
-                renameBrushTextField.textColor = new Color32(0, 0, 0, 255);
+                ResetRenameError();
                 UIDropDown brushDropDown = father.BrushSelectSection.SelectBrushDropDown;
                 if (newName != brushDropDown.items[brushDropDown.selectedIndex])
                 {
                     brushDropDown.items[brushDropDown.selectedIndex] = newName;
                 }
                 ForestBrushMod.instance.BrushTool.Brush.Name = newName;
-                brushDropDown.Focus();
-                renameBrushTextField.Focus();
+                brushDropDown.Invalidate();
             }
             else
             {
-                renameBrushTextField.textColor = Color.red;
-                renameBrushTextField.tooltip = Translation.Instance.GetTranslation("FOREST-BRUSH-RENAME-ERROR");
+                SetRenameError();
             }
+        }
+
+        private void SetRenameError()
+        {
+            renameBrushTextField.textColor = Color.red;
+            renameBrushTextField.tooltip = Translation.Instance.GetTranslation("FOREST-BRUSH-RENAME-ERROR");
+        }
+
+        public void ResetRenameError()
+        {
+            renameBrushTextField.textColor = new Color32(0, 0, 0, 255);
+            renameBrushTextField.tooltip = Translation.Instance.GetTranslation("FOREST-BRUSH-RENAME-BRUSH");
         }
 
         private void OnSearchTextChanged(UIComponent component, string text)
