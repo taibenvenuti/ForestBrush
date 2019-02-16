@@ -239,8 +239,7 @@ namespace ForestBrush.GUI
                     brushDropDown.items[brushDropDown.selectedIndex] = newName;
                 }
                 ForestBrushMod.instance.BrushTool.Brush.Name = newName;
-                brushDropDown.Focus();
-                renameBrushTextField.Focus();
+                brushDropDown.Invalidate();
             }
             else
             {
