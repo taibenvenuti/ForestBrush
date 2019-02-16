@@ -171,14 +171,7 @@ namespace ForestBrush.GUI
             SearchTextField.disabledTextColor = new Color32(80, 80, 80, 128);
             SearchTextField.color = new Color32(255, 255, 255, 255);
             SearchTextField.eventTextChanged += OnSearchTextChanged;
-            SearchTextField.eventKeyDown += (c, e) =>
-            {
-                if (e.keycode == KeyCode.Escape)
-                {
-                    SearchTextField.text = "";
-                    SearchTextField.Unfocus();
-                }
-            };
+            SearchTextField.eventLostFocus += SearchTextField_eventLostFocus; ;
         }
 
         private void OnNewBrushClicked(UIComponent component, UIMouseEventParameter mouseEventParameter)
@@ -261,8 +254,19 @@ namespace ForestBrush.GUI
 
         private void OnSearchTextChanged(UIComponent component, string text)
         {
-            string filter = text?.Trim()?.ToLower();
+            FilterTreeList(text);
+        }
+
+        private void SearchTextField_eventLostFocus(UIComponent component, UIFocusEventParameter eventParam)
+        {
+            FilterTreeList(SearchTextField.text);
+        }
+
+        private void FilterTreeList(string filterText)
+        {
             if (TreesList == null || ForestBrushMod.instance.Trees == null) return;
+
+            string filter = filterText?.Trim()?.ToLower();
             var data = ForestBrushMod.instance.Trees.Values.ToList();
             if (!string.IsNullOrEmpty(filter))
             {
