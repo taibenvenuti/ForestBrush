@@ -1,7 +1,6 @@
 ﻿using ColossalFramework;
 using ColossalFramework.IO;
 using System.IO;
-using System.Linq;
 using System.Xml.Serialization;
 
 namespace ForestBrush.Persistence

@@ -3,7 +3,8 @@ using ColossalFramework.UI;
 using UnityEngine;
 
 namespace ForestBrush.GUI
-{//Class by SamsamTS
+{
+    //Class by SamsamTS
     public class ImageUtils
     {
         private static PreviewRenderer m_previewRenderer;

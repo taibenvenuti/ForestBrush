@@ -1,9 +1,6 @@
-﻿using ColossalFramework.Packaging;
-using ColossalFramework.PlatformServices;
-using ColossalFramework.UI;
+﻿using ColossalFramework.UI;
 using ForestBrush.Resources;
 using ForestBrush.TranslationFramework;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -266,8 +263,8 @@ namespace ForestBrush.GUI
 
         private void FilterTreeList(string filterText)
         {
-            if (TreesList == null || ForestBrushMod.instance.Trees == null) return;
-            string[] filters = text?.Trim()?.ToLower().Split(' ');
+            if (TreesList == null || ForestBrushMod.Instance.Trees == null) return;
+            string[] filters = filterText?.Trim()?.ToLower().Split(' ');
             var data = ForestBrushMod.Instance.Trees.Values.ToList();
             if (filters != null && filters.Length > 0 && !string.IsNullOrEmpty(filters[0]))
             {

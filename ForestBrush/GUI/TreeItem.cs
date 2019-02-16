@@ -78,7 +78,7 @@ namespace ForestBrush.GUI
 
         public void Deselect(bool isRowOdd)
         {
-            
+            // Needed for interface
         }
 
         public void Display(object data, bool isRowOdd)
@@ -104,7 +104,7 @@ namespace ForestBrush.GUI
 
         public void Select(bool isRowOdd)
         {
-            
-        }       
+            // Needed of interface
+        }
     }
 }

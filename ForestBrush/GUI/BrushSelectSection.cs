@@ -117,12 +117,12 @@ namespace ForestBrush.GUI
 
         private string[] GetDropdownItems()
         {
-            return ForestBrushMod.instance.Settings.Brushes.Select(b => b.Name).OrderBy(x => x).ToArray();
+            return UserMod.Settings.Brushes.Select(b => b.Name).OrderBy(x => x).ToArray();
         }
 
         private int GetDropdownItemsSelectedIndex()
         {
-            return Array.IndexOf(SelectBrushDropDown.items, ForestBrushMod.instance.Settings.SelectedBrush.Name);
+            return Array.IndexOf(SelectBrushDropDown.items, UserMod.Settings.SelectedBrush.Name);
         }
     }
 }

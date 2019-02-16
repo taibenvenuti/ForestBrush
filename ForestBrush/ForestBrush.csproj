@@ -93,7 +93,6 @@
     <Compile Include="Constants.cs" />
     <Compile Include="GUI\UIUtilities.cs" />
     <Compile Include="ForestBrushMod.cs" />
-    <Compile Include="BeginRefactor\ForestTool.cs" />
     <Compile Include="Resources\ResourceLoader.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="Persistence\XmlInputKey.cs" />
