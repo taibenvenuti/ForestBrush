@@ -34,7 +34,7 @@ namespace ForestBrush.GUI
             SelectBrushDropDown.zOrder = 0;
             SelectBrushDropDown.atlas = GetAtlas("Ingame");
             SelectBrushDropDown.size = new Vector2(300f, 30f);
-            SelectBrushDropDown.items = ForestBrushMod.instance.Settings.Brushes.Select(b => b.Name).ToArray();
+            SelectBrushDropDown.items = ForestBrushMod.instance.Settings.Brushes.Select(b => b.Name).OrderBy(x => x).ToArray();
             SelectBrushDropDown.listBackground = "StylesDropboxListbox";
             SelectBrushDropDown.itemHeight = (int)Constants.UIButtonHeight;
             SelectBrushDropDown.itemHover = "ListItemHover";
@@ -103,7 +103,7 @@ namespace ForestBrush.GUI
 
         internal void UpdateDropDown()
         {
-            SelectBrushDropDown.items = ForestBrushMod.instance.Settings.Brushes.Select(b => b.Name).ToArray();
+            SelectBrushDropDown.items = ForestBrushMod.instance.Settings.Brushes.Select(b => b.Name).OrderBy(x => x).ToArray();
             int index = SelectBrushDropDown.items.ToList().FindIndex(i => i == ForestBrushMod.instance.Settings.SelectedBrush.Name);
             SelectBrushDropDown.eventSelectedIndexChanged -= EventSelectedIndexChanged;
             SelectBrushDropDown.selectedIndex = index < 0 || index > SelectBrushDropDown.items.Length ? 0 : index;
