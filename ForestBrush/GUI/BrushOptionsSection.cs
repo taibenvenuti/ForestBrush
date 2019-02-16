@@ -328,7 +328,7 @@ namespace ForestBrush.GUI
             sizeSlider.tooltip = brush.Options.Size.ToString();
             strengthSlider.value = brush.Options.Strength;
             strengthSlider.tooltip = Math.Round(brush.Options.Strength * 100, 1) + "%";
-            densitySlider.value = brush.Options.Density;
+            densitySlider.value = 16f - brush.Options.Density;
             autoDensityCheckBox.isChecked = brush.Options.AutoDensity;
             colorFieldTemplate.selectedColor = brush.Options.OverlayColor;
             squareBrushCheckBox.isChecked = brush.Options.IsSquare;
