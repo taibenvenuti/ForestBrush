@@ -71,7 +71,7 @@ namespace ForestBrush.GUI
         private void EventIncludeTree(UIComponent component, bool value)
         {
             bool updateAll = false;
-            if (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.LeftCommand) || Input.GetKey(KeyCode.RightControl) || Input.GetKey(KeyCode.RightCommand))
+            if (includeCheckBox.hasFocus && (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.LeftCommand) || Input.GetKey(KeyCode.RightControl) || Input.GetKey(KeyCode.RightCommand)))
                 updateAll = true;
             ForestBrushMod.instance.BrushTool.UpdateTreeList(prefab, value, updateAll);
         }
