@@ -1,6 +1,7 @@
 ﻿using ColossalFramework.UI;
 using ForestBrush.Resources;
 using ForestBrush.TranslationFramework;
+using System;
 using System.Linq;
 using UnityEngine;
 
@@ -34,7 +35,7 @@ namespace ForestBrush.GUI
             SelectBrushDropDown.zOrder = 0;
             SelectBrushDropDown.atlas = ResourceLoader.Atlas;
             SelectBrushDropDown.size = new Vector2(300f, 30f);
-            SelectBrushDropDown.items = UserMod.Settings.Brushes.Select(b => b.Name).ToArray();
+            SelectBrushDropDown.items = GetDropdownItems();           
             SelectBrushDropDown.listBackground = ResourceLoader.StylesDropboxListbox;
             SelectBrushDropDown.itemHeight = (int)Constants.UIButtonHeight;
             SelectBrushDropDown.itemHover = ResourceLoader.ListItemHover;
@@ -52,9 +53,7 @@ namespace ForestBrush.GUI
             SelectBrushDropDown.textScale = Constants.UITitleTextScale;
             SelectBrushDropDown.verticalAlignment = UIVerticalAlignment.Middle;
             SelectBrushDropDown.horizontalAlignment = UIHorizontalAlignment.Left;
-            SelectBrushDropDown.selectedIndex = SelectBrushDropDown.items.ToList().FindIndex(i => i == UserMod.Settings.SelectedBrush.Name) == -1 ? 
-                0 : 
-                SelectBrushDropDown.items.ToList().FindIndex(i => i == UserMod.Settings.SelectedBrush.Name);
+            SelectBrushDropDown.selectedIndex = GetDropdownItemsSelectedIndex();
             SelectBrushDropDown.textFieldPadding = new RectOffset(8, 0, 8, 0);
             SelectBrushDropDown.itemPadding = new RectOffset(10, 0, 8, 0);
             SelectBrushDropDown.triggerButton = SelectBrushDropDown;
@@ -103,10 +102,9 @@ namespace ForestBrush.GUI
 
         internal void UpdateDropDown()
         {
-            SelectBrushDropDown.items = UserMod.Settings.Brushes.Select(b => b.Name).ToArray();
-            int index = SelectBrushDropDown.items.ToList().FindIndex(i => i == UserMod.Settings.SelectedBrush.Name);
+            SelectBrushDropDown.items = GetDropdownItems();
             SelectBrushDropDown.eventSelectedIndexChanged -= EventSelectedIndexChanged;
-            SelectBrushDropDown.selectedIndex = index < 0 || index > SelectBrushDropDown.items.Length ? 0 : index;
+            SelectBrushDropDown.selectedIndex = GetDropdownItemsSelectedIndex();
             SelectBrushDropDown.eventSelectedIndexChanged += EventSelectedIndexChanged;
         }
 
@@ -115,6 +113,16 @@ namespace ForestBrush.GUI
             var brushName = SelectBrushDropDown.items[index];
             ForestBrushMod.Instance.BrushTool.UpdateTool(brushName);
             father.BrushEditSection.ResetRenameError();
+        }
+
+        private string[] GetDropdownItems()
+        {
+            return ForestBrushMod.instance.Settings.Brushes.Select(b => b.Name).OrderBy(x => x).ToArray();
+        }
+
+        private int GetDropdownItemsSelectedIndex()
+        {
+            return Array.IndexOf(SelectBrushDropDown.items, ForestBrushMod.instance.Settings.SelectedBrush.Name);
         }
     }
 }
