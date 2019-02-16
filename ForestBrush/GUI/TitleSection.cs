@@ -20,7 +20,7 @@ namespace ForestBrush.GUI
             height = Constants.UITitleBarHeight;
 
             icon = AddUIComponent<UISprite>();
-            icon.atlas = ForestBrushMod.instance.Atlas;
+            icon.atlas = ForestBrushMod.Instance.Atlas;
             icon.spriteName = ResourceLoader.ForestBrushNormal;
             icon.relativePosition = new Vector3(5f, 5f);
             icon.size = new Vector2(28f, 32f);
@@ -37,20 +37,20 @@ namespace ForestBrush.GUI
             dragHandle.eventMouseUp += (c, e) => SavePanelPosition();
 
             closeButton = AddUIComponent<UIButton>();
-            closeButton.atlas = ResourceLoader.GetAtlas("Ingame");
+            closeButton.atlas = ResourceLoader.Atlas;
             closeButton.size = new Vector2(20f, 20f);
             closeButton.relativePosition = new Vector3(width - closeButton.width - Constants.UISpacing, Constants.UISpacing);
-            closeButton.normalBgSprite = "DeleteLineButton";
-            closeButton.hoveredBgSprite = "DeleteLineButtonHovered";
-            closeButton.pressedBgSprite = "DeleteLineButtonPressed";
-            closeButton.eventClick += (c, p) => ForestBrushMod.instance.ToggleButton.SimulateClick();
+            closeButton.normalBgSprite = ResourceLoader.DeleteLineButton;
+            closeButton.hoveredBgSprite = ResourceLoader.DeleteLineButtonHovered;
+            closeButton.pressedBgSprite = ResourceLoader.DeleteLineButtonPressed;
+            closeButton.eventClick += (c, p) => ForestBrushMod.Instance.ToggleButton.SimulateClick();
         }
 
         public void SavePanelPosition()
         {
-            ForestBrushMod.instance.Settings.PanelPosX = parent.absolutePosition.x;
-            ForestBrushMod.instance.Settings.PanelPosY = parent.absolutePosition.y;
-            ForestBrushMod.instance.SaveSettings();
+            UserMod.Settings.PanelPosX = parent.absolutePosition.x;
+            UserMod.Settings.PanelPosY = parent.absolutePosition.y;
+            UserMod.SaveSettings();
         }
     }
 }

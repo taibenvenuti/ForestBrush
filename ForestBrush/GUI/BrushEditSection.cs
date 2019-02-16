@@ -1,4 +1,6 @@
-﻿using ColossalFramework.UI;
+﻿using ColossalFramework.Packaging;
+using ColossalFramework.PlatformServices;
+using ColossalFramework.UI;
 using ForestBrush.Resources;
 using ForestBrush.TranslationFramework;
 using System;
@@ -98,25 +100,25 @@ namespace ForestBrush.GUI
         {
             renameBrushTextField = topPanel.AddUIComponent<UITextField>();
             renameBrushTextField.zOrder = 0;
-            renameBrushTextField.atlas = ResourceLoader.GetAtlas("Ingame");
+            renameBrushTextField.atlas = ResourceLoader.Atlas;
             renameBrushTextField.size = new Vector2(300f, 30f);
             renameBrushTextField.padding = new RectOffset(6, 6, 6, 6);
             renameBrushTextField.builtinKeyNavigation = true;
             renameBrushTextField.isInteractive = true;
             renameBrushTextField.readOnly = false;
             renameBrushTextField.horizontalAlignment = UIHorizontalAlignment.Center;
-            renameBrushTextField.selectionSprite = "EmptySprite";
+            renameBrushTextField.selectionSprite = ResourceLoader.EmptySprite;
             renameBrushTextField.selectionBackgroundColor = new Color32(0, 172, 234, 255);
-            renameBrushTextField.normalBgSprite = "TextFieldPanelHovered";
-            renameBrushTextField.disabledBgSprite = "TextFieldPanelHovered";
+            renameBrushTextField.normalBgSprite = ResourceLoader.TextFieldPanelHovered;
+            renameBrushTextField.disabledBgSprite = ResourceLoader.TextFieldPanelHovered;
             renameBrushTextField.textColor = new Color32(0, 0, 0, 255);
             renameBrushTextField.disabledTextColor = new Color32(80, 80, 80, 128);
             renameBrushTextField.color = new Color32(255, 255, 255, 255);
             renameBrushTextField.relativePosition = new Vector3(width - Constants.UISpacing - renameBrushTextField.width, 560f);
-            renameBrushTextField.text = ForestBrushMod.instance.Settings.SelectedBrush.Name;
+            renameBrushTextField.text = UserMod.Settings.SelectedBrush.Name;
             renameBrushTextField.eventTextChanged += OnRenameBrushTextChanged;
             renameBrushTextField.eventKeyPress += OnRenameBrushKeyPress;
-            renameBrushTextField.eventLostFocus += (c, e) => ForestBrushMod.instance.SaveSettings();
+            renameBrushTextField.eventLostFocus += (c, e) => UserMod.SaveSettings();
             renameBrushTextField.tooltip = Translation.Instance.GetTranslation("FOREST-BRUSH-RENAME-BRUSH");
         }
 
@@ -155,7 +157,7 @@ namespace ForestBrush.GUI
 
             SearchTextField = bottomPanel.AddUIComponent<UITextField>();
             SearchTextField.zOrder = 1;
-            SearchTextField.atlas = ResourceLoader.GetAtlas("Ingame");
+            SearchTextField.atlas = ResourceLoader.Atlas;
             SearchTextField.size = new Vector2(230f, 30f);
             SearchTextField.relativePosition = new Vector3(160f, 0f);
             SearchTextField.padding = new RectOffset(6, 6, 6, 6);
@@ -163,10 +165,10 @@ namespace ForestBrush.GUI
             SearchTextField.isInteractive = true;
             SearchTextField.readOnly = false;
             SearchTextField.horizontalAlignment = UIHorizontalAlignment.Center;
-            SearchTextField.selectionSprite = "EmptySprite";
+            SearchTextField.selectionSprite = ResourceLoader.EmptySprite;
             SearchTextField.selectionBackgroundColor = new Color32(0, 172, 234, 255);
-            SearchTextField.normalBgSprite = "TextFieldPanelHovered";
-            SearchTextField.disabledBgSprite = "TextFieldPanelHovered";
+            SearchTextField.normalBgSprite = ResourceLoader.TextFieldPanelHovered;
+            SearchTextField.disabledBgSprite = ResourceLoader.TextFieldPanelHovered;
             SearchTextField.textColor = new Color32(0, 0, 0, 255);
             SearchTextField.disabledTextColor = new Color32(80, 80, 80, 128);
             SearchTextField.color = new Color32(255, 255, 255, 255);
@@ -185,7 +187,7 @@ namespace ForestBrush.GUI
         {
             string name = Constants.NewBrushName;
             int suffix = 0;
-            while (ForestBrushMod.instance.Settings.Brushes.Find(b => b.Name == name) != null)
+            while (UserMod.Settings.Brushes.Find(b => b.Name == name) != null)
             {
                 name = $"{Constants.NewBrushName}{suffix}";
                 suffix++;
@@ -195,7 +197,7 @@ namespace ForestBrush.GUI
                     return;
                 }
             }
-            ForestBrushMod.instance.BrushTool.New(name);
+            ForestBrushMod.Instance.BrushTool.New(name);
             renameBrushTextField.eventTextChanged -= OnRenameBrushTextChanged;
             renameBrushTextField.text = name;
             renameBrushTextField.Focus();
@@ -222,15 +224,15 @@ namespace ForestBrush.GUI
             {
                 if (i == 1)
                 {
-                    ForestBrushMod.instance.BrushTool.DeleteCurrent();
+                    ForestBrushMod.Instance.BrushTool.DeleteCurrent();
                 }
             });
         }
 
         private void OnRenameBrushTextChanged(UIComponent component, string newName)
         {
-            string currentName = ForestBrushMod.instance.BrushTool.Brush.Name;
-            if (ForestBrushMod.instance.Settings.Brushes.Find(b => b.Name == newName && b.Name != currentName) == null)
+            string currentName = ForestBrushMod.Instance.BrushTool.Brush.Name;
+            if (UserMod.Settings.Brushes.Find(b => b.Name == newName && b.Name != currentName) == null)
             {
                 ResetRenameError();
                 UIDropDown brushDropDown = father.BrushSelectSection.SelectBrushDropDown;
@@ -238,7 +240,7 @@ namespace ForestBrush.GUI
                 {
                     brushDropDown.items[brushDropDown.selectedIndex] = newName;
                 }
-                ForestBrushMod.instance.BrushTool.Brush.Name = newName;
+                ForestBrushMod.Instance.BrushTool.Brush.Name = newName;
                 brushDropDown.Invalidate();
             }
             else
@@ -261,20 +263,27 @@ namespace ForestBrush.GUI
 
         private void OnSearchTextChanged(UIComponent component, string text)
         {
-            string filter = text?.Trim()?.ToLower();
-            if (TreesList == null || ForestBrushMod.instance.Trees == null) return;
-            var data = ForestBrushMod.instance.Trees.Values.ToList();
-            if (!string.IsNullOrEmpty(filter))
+            string[] filters = text?.Trim()?.ToLower().Split(' ');
+            if (TreesList == null || ForestBrushMod.Instance.Trees == null) return;
+            var data = ForestBrushMod.Instance.Trees.Values.ToList();
+            if (filters != null && filters.Length > 0 && !string.IsNullOrEmpty(filters[0]))
             {
                 var newData = new List<TreeInfo>();
-                for (int i = 0; i < data.Count; i++)
+                for (int i = 0; i < filters.Length; i++)
                 {
-                    var item = data[i];
-                    if (item == null) continue;
-                    var itemSearchableString = (item.GetUncheckedLocalizedTitle() + item.name + item.GetLocalizedDescription()).Replace(" ", "").Replace("_Data", "").Trim().ToLower();
-                    if (itemSearchableString.Contains(filter))
+                    var filter = filters[i];
+                    if (!string.IsNullOrEmpty(filter))
                     {
-                        newData.Add(item);
+                        for (int j = 0; j < data.Count; j++)
+                        {
+                            var item = data[j];
+                            if (item == null) continue;
+                            if (item.GetLocalizedDescription().ToLower().Contains(filter)
+                                || item.GetUncheckedLocalizedTitle().ToLower().Contains(filter))
+                            {
+                                newData.Add(item);
+                            }
+                        }
                     }
                 }
                 data = newData;
@@ -287,7 +296,7 @@ namespace ForestBrush.GUI
 
         private List<TreeInfo> GetAvailableTreesSorted()
         {
-            List<TreeInfo> trees = ForestBrushMod.instance.Trees.Values.ToList();
+            List<TreeInfo> trees = ForestBrushMod.Instance.Trees.Values.ToList();
             trees.Sort((t1, t2) => t1.GetUncheckedLocalizedTitle().CompareTo(t2.GetUncheckedLocalizedTitle()));
             return trees;
         }

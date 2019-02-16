@@ -13,7 +13,7 @@ namespace ForestBrush
     {
         static bool Prefix(ref Texture2D ___m_brush, ref float[] ___m_brushData, ref Vector3 ___m_brushPosition, ref float ___m_brushSize, Texture2D brush, Vector3 brushPosition, float brushSize)
         {
-            if (ForestBrushMod.instance.ForestBrushPanel.isVisible && ForestBrushMod.instance.IsCurrentTreeContainer)
+            if (ForestBrushMod.Instance.ForestBrushPanel.isVisible && ForestBrushMod.Instance.IsCurrentTreeContainer)
             {
                 if (___m_brush != brush)
                 {
@@ -57,12 +57,12 @@ namespace ForestBrush
 
         static bool Prefix(TreeTool __instance, Randomizer ___m_randomizer, Vector3 ___m_mousePosition, bool ___m_mouseLeftDown, bool ___m_mouseRightDown, ToolController ___m_toolController)
         {
-            if (ForestBrushMod.instance.IsCurrentTreeContainer && ForestBrushMod.instance.Container.m_variations.Length == 0) return false;
-            else if (ForestBrushMod.instance.ForestBrushPanel.isVisible && ForestBrushMod.instance.IsCurrentTreeContainer && ___m_mouseLeftDown)
+            if (ForestBrushMod.Instance.IsCurrentTreeContainer && ForestBrushMod.Instance.Container.m_variations.Length == 0) return false;
+            else if (ForestBrushMod.Instance.ForestBrushPanel.isVisible && ForestBrushMod.Instance.IsCurrentTreeContainer && ___m_mouseLeftDown)
             {
                 if (__instance.m_prefab != null)
                 {
-                    int batchSize = (int)__instance.m_brushSize * ForestBrushMod.instance.BrushTweaker.SizeMultiplier + ForestBrushMod.instance.BrushTweaker.SizeAddend;//(int)(((__instance.m_brushSize/10) * (5 - ForestBrushMod.instance.Settings.BrushDensity / 4)) * ForestBrushMod.instance.Settings.BrushStrength);
+                    int batchSize = (int)__instance.m_brushSize * ForestBrushMod.Instance.BrushTweaker.SizeMultiplier + ForestBrushMod.Instance.BrushTweaker.SizeAddend;//(int)(((__instance.m_brushSize/10) * (5 - UserMod.Settings.BrushDensity / 4)) * UserMod.Settings.BrushStrength);
                     
                     for (int i = 0; i < batchSize; i++)
                     {
@@ -70,7 +70,7 @@ namespace ForestBrush
                         var _x = xz.x;
                         var _y = xz.y;
                         var position = ___m_mousePosition + new Vector3(_x, 0f, _y) * (__instance.m_brushSize / 2);
-                        if (ForestBrushMod.instance.Settings.SelectedBrush.Options.IsSquare)
+                        if (UserMod.Settings.SelectedBrush.Options.IsSquare)
                         {
                             var radians = Angle * Mathf.Deg2Rad;
                             var c = Mathf.Cos(radians);
@@ -89,7 +89,7 @@ namespace ForestBrush
                         TreeInfo ___m_treeInfo = __instance.m_prefab.GetVariation(ref ___m_randomizer);
 
                         position.y = Singleton<TerrainManager>.instance.SampleDetailHeight(position, out float f, out float f2);
-                        var spacing = ForestBrushMod.instance.Settings.SelectedBrush.Options.AutoDensity ? ___m_treeInfo.m_generatedInfo.m_size.x / 2 : ForestBrushMod.instance.Settings.SelectedBrush.Options.Density;
+                        var spacing = UserMod.Settings.SelectedBrush.Options.AutoDensity ? ___m_treeInfo.m_generatedInfo.m_size.x / 2 : UserMod.Settings.SelectedBrush.Options.Density;
                         
                         Randomizer randomizer = ___m_randomizer;
                         uint seed = Singleton<TreeManager>.instance.m_trees.NextFreeItem(ref randomizer);
@@ -119,8 +119,8 @@ namespace ForestBrush
                             Singleton<TerrainManager>.instance.HasWater(vector2))
                             continue;
                         var scale = ___m_randomizer.Int32(16);
-                        var str2Rnd = UnityEngine.Random.Range(0.0f, ForestBrushMod.instance.BrushTweaker.MaxRandomRange); 
-                        if (Mathf.PerlinNoise(position.x * scale, position.y * scale) > 0.5 && str2Rnd < ForestBrushMod.instance.Settings.SelectedBrush.Options.Strength)
+                        var str2Rnd = UnityEngine.Random.Range(0.0f, ForestBrushMod.Instance.BrushTweaker.MaxRandomRange); 
+                        if (Mathf.PerlinNoise(position.x * scale, position.y * scale) > 0.5 && str2Rnd < UserMod.Settings.SelectedBrush.Options.Strength)
                         {
                             if (Singleton<TreeManager>.instance.CreateTree(out uint num25, ref ___m_randomizer, ___m_treeInfo, position, false))
                             {
@@ -130,7 +130,7 @@ namespace ForestBrush
                 }
                 return false;
             }
-            else if (ForestBrushMod.instance.ForestBrushPanel.isVisible && ForestBrushMod.instance.IsCurrentTreeContainer && ___m_mouseRightDown && RotationTogglePressed())
+            else if (ForestBrushMod.Instance.ForestBrushPanel.isVisible && ForestBrushMod.Instance.IsCurrentTreeContainer && ___m_mouseRightDown && RotationTogglePressed())
             {
                 return false;
             }
@@ -143,7 +143,7 @@ namespace ForestBrush
     {
         static bool Prefix(TreeTool __instance, ToolController ___m_toolController, ToolBase.ToolErrors ___m_placementErrors, Vector3 ___m_mousePosition, bool ___m_mouseRightDown, Randomizer ___m_randomizer, CameraInfo cameraInfo)
         {
-            if(!ForestBrushMod.instance.ForestBrushPanel.isVisible || !ForestBrushMod.instance.IsCurrentTreeContainer || (___m_mouseRightDown && !ApplyBrushPatch.RotationTogglePressed()))
+            if(!ForestBrushMod.Instance.ForestBrushPanel.isVisible || !ForestBrushMod.Instance.IsCurrentTreeContainer || (___m_mouseRightDown && !ApplyBrushPatch.RotationTogglePressed()))
             {
                 return true;
             }
@@ -153,11 +153,11 @@ namespace ForestBrush
                 if (__instance.m_mode == TreeTool.Mode.Brush && treeInfo != null && !___m_toolController.IsInsideUI && Cursor.visible)
                 {
                     var size = __instance.m_brushSize / 2;
-                    Color toolColor = ForestBrushMod.instance.Settings.SelectedBrush.Options.OverlayColor;
+                    Color toolColor = UserMod.Settings.SelectedBrush.Options.OverlayColor;
                     ___m_toolController.RenderColliding(cameraInfo, toolColor, toolColor, toolColor, toolColor, 0, 0);
                     ToolManager instance = Singleton<ToolManager>.instance;
                     instance.m_drawCallData.m_overlayCalls = instance.m_drawCallData.m_overlayCalls + 1;
-                    if(ForestBrushMod.instance.Settings.SelectedBrush.Options.IsSquare)
+                    if(UserMod.Settings.SelectedBrush.Options.IsSquare)
                     {
                         var Angle = ApplyBrushPatch.Angle;
                         var radians = Angle * Mathf.Deg2Rad;
@@ -209,7 +209,7 @@ namespace ForestBrush
     {
         static bool Prefix(TreeTool __instance, ToolController ___m_toolController, ref bool ___m_mouseLeftDown, ref bool ___m_mouseRightDown, Event e)
         {
-            if (ForestBrushMod.instance.ForestBrushPanel.isVisible && ForestBrushMod.instance.IsCurrentTreeContainer)
+            if (ForestBrushMod.Instance.ForestBrushPanel.isVisible && ForestBrushMod.Instance.IsCurrentTreeContainer)
             {
                 if (!___m_toolController.IsInsideUI && e.type == EventType.MouseDown)
                 {
@@ -268,16 +268,16 @@ namespace ForestBrush
     {
         static void Prefix(ref TreeTool __instance, ToolController ___m_toolController, ref float ___m_brushSize)
         {
-            if (ForestBrushMod.instance.ForestBrushPanel.isVisible && ForestBrushMod.instance.IsCurrentTreeContainer)
+            if (ForestBrushMod.Instance.ForestBrushPanel.isVisible && ForestBrushMod.Instance.IsCurrentTreeContainer)
             {
                 __instance.m_mode = TreeTool.Mode.Brush;
-                ___m_brushSize = ForestBrushMod.instance.Settings.SelectedBrush.Options.Size;
+                ___m_brushSize = UserMod.Settings.SelectedBrush.Options.Size;
             }
         }
 
         static void Postfix(TreeTool __instance, ToolController ___m_toolController)
         {
-            if (ForestBrushMod.instance.ForestBrushPanel.isVisible && ForestBrushMod.instance.IsCurrentTreeContainer)
+            if (ForestBrushMod.Instance.ForestBrushPanel.isVisible && ForestBrushMod.Instance.IsCurrentTreeContainer)
             {
                 if (__instance.m_mode == TreeTool.Mode.Brush && Input.GetKey(KeyCode.Mouse1) && ApplyBrushPatch.RotationTogglePressed())
                 {

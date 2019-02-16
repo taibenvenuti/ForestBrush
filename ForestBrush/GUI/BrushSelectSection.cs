@@ -1,8 +1,8 @@
 ﻿using ColossalFramework.UI;
+using ForestBrush.Resources;
 using ForestBrush.TranslationFramework;
 using System.Linq;
 using UnityEngine;
-using static ForestBrush.Resources.ResourceLoader;
 
 namespace ForestBrush.GUI
 {
@@ -32,15 +32,15 @@ namespace ForestBrush.GUI
         {
             SelectBrushDropDown = AddUIComponent<UIDropDown>();
             SelectBrushDropDown.zOrder = 0;
-            SelectBrushDropDown.atlas = GetAtlas("Ingame");
+            SelectBrushDropDown.atlas = ResourceLoader.Atlas;
             SelectBrushDropDown.size = new Vector2(300f, 30f);
-            SelectBrushDropDown.items = ForestBrushMod.instance.Settings.Brushes.Select(b => b.Name).ToArray();
-            SelectBrushDropDown.listBackground = "StylesDropboxListbox";
+            SelectBrushDropDown.items = UserMod.Settings.Brushes.Select(b => b.Name).ToArray();
+            SelectBrushDropDown.listBackground = ResourceLoader.StylesDropboxListbox;
             SelectBrushDropDown.itemHeight = (int)Constants.UIButtonHeight;
-            SelectBrushDropDown.itemHover = "ListItemHover";
-            SelectBrushDropDown.itemHighlight = "ListItemHighlight";
-            SelectBrushDropDown.normalBgSprite = "CMStylesDropbox";
-            SelectBrushDropDown.hoveredBgSprite = "CMStylesDropboxHovered";
+            SelectBrushDropDown.itemHover = ResourceLoader.ListItemHover;
+            SelectBrushDropDown.itemHighlight = ResourceLoader.ListItemHighlight;
+            SelectBrushDropDown.normalBgSprite = ResourceLoader.CMStylesDropbox;
+            SelectBrushDropDown.hoveredBgSprite = ResourceLoader.CMStylesDropboxHovered;
             SelectBrushDropDown.disabledBgSprite = "";
             SelectBrushDropDown.focusedBgSprite = "";
             SelectBrushDropDown.listWidth = 300;
@@ -52,9 +52,9 @@ namespace ForestBrush.GUI
             SelectBrushDropDown.textScale = Constants.UITitleTextScale;
             SelectBrushDropDown.verticalAlignment = UIVerticalAlignment.Middle;
             SelectBrushDropDown.horizontalAlignment = UIHorizontalAlignment.Left;
-            SelectBrushDropDown.selectedIndex = SelectBrushDropDown.items.ToList().FindIndex(i => i == ForestBrushMod.instance.Settings.SelectedBrush.Name) == -1 ? 
+            SelectBrushDropDown.selectedIndex = SelectBrushDropDown.items.ToList().FindIndex(i => i == UserMod.Settings.SelectedBrush.Name) == -1 ? 
                 0 : 
-                SelectBrushDropDown.items.ToList().FindIndex(i => i == ForestBrushMod.instance.Settings.SelectedBrush.Name);
+                SelectBrushDropDown.items.ToList().FindIndex(i => i == UserMod.Settings.SelectedBrush.Name);
             SelectBrushDropDown.textFieldPadding = new RectOffset(8, 0, 8, 0);
             SelectBrushDropDown.itemPadding = new RectOffset(10, 0, 8, 0);
             SelectBrushDropDown.triggerButton = SelectBrushDropDown;
@@ -70,41 +70,41 @@ namespace ForestBrush.GUI
         {
             toggleEditButton = UIUtilities.CreateSmallButton(this, Translation.Instance.GetTranslation("FOREST-BRUSH-TOGGLE-EDIT"));
             toggleEditButton.zOrder = 1;
-            toggleEditButton.atlas = ForestBrushMod.instance.Atlas;
-            toggleEditButton.normalBgSprite = SettingsDropbox;
-            toggleEditButton.disabledBgSprite = SettingsDropbox;
-            toggleEditButton.hoveredBgSprite = SettingsDropboxHovered;
-            toggleEditButton.focusedBgSprite = SettingsDropbox;
-            toggleEditButton.pressedBgSprite = SettingsDropboxPressed;
+            toggleEditButton.atlas = ForestBrushMod.Instance.Atlas;
+            toggleEditButton.normalBgSprite = ResourceLoader.SettingsDropbox;
+            toggleEditButton.disabledBgSprite = ResourceLoader.SettingsDropbox;
+            toggleEditButton.hoveredBgSprite = ResourceLoader.SettingsDropboxHovered;
+            toggleEditButton.focusedBgSprite = ResourceLoader.SettingsDropbox;
+            toggleEditButton.pressedBgSprite = ResourceLoader.SettingsDropboxPressed;
             toggleEditButton.eventClicked += OnToggleEditClicked;
 
             toggleOptionsButton = UIUtilities.CreateSmallButton(this, Translation.Instance.GetTranslation("FOREST-BRUSH-TOGGLE-OPTIONS"));
             toggleOptionsButton.zOrder = 2;
-            toggleOptionsButton.atlas = ForestBrushMod.instance.Atlas;
-            toggleOptionsButton.normalBgSprite = OptionsDropbox;
-            toggleOptionsButton.disabledBgSprite = OptionsDropbox;
-            toggleOptionsButton.hoveredBgSprite = OptionsDropboxHovered;
-            toggleOptionsButton.focusedBgSprite = OptionsDropbox;
-            toggleOptionsButton.pressedBgSprite = OptionsDropboxPressed;
+            toggleOptionsButton.atlas = ForestBrushMod.Instance.Atlas;
+            toggleOptionsButton.normalBgSprite = ResourceLoader.OptionsDropbox;
+            toggleOptionsButton.disabledBgSprite = ResourceLoader.OptionsDropbox;
+            toggleOptionsButton.hoveredBgSprite = ResourceLoader.OptionsDropboxHovered;
+            toggleOptionsButton.focusedBgSprite = ResourceLoader.OptionsDropbox;
+            toggleOptionsButton.pressedBgSprite = ResourceLoader.OptionsDropboxPressed;
             toggleOptionsButton.eventClicked += OnToggleOptionsClicked; 
         }
 
         private void OnToggleEditClicked(UIComponent component, UIMouseEventParameter eventParam)
         {
             bool editVisible = father.ToggleBrushEdit();
-            toggleEditButton.normalBgSprite = toggleEditButton.focusedBgSprite = editVisible ?  SettingsDropboxPressed : SettingsDropbox;
+            toggleEditButton.normalBgSprite = toggleEditButton.focusedBgSprite = editVisible ? ResourceLoader.SettingsDropboxPressed : ResourceLoader.SettingsDropbox;
         }
 
         private void OnToggleOptionsClicked(UIComponent component, UIMouseEventParameter eventParam)
         {
             bool optionsVisible = father.ToggleBrushOptions();
-            toggleOptionsButton.normalBgSprite = toggleOptionsButton.focusedBgSprite = optionsVisible ? OptionsDropboxPressed : OptionsDropbox;
+            toggleOptionsButton.normalBgSprite = toggleOptionsButton.focusedBgSprite = optionsVisible ? ResourceLoader.OptionsDropboxPressed : ResourceLoader.OptionsDropbox;
         }
 
         internal void UpdateDropDown()
         {
-            SelectBrushDropDown.items = ForestBrushMod.instance.Settings.Brushes.Select(b => b.Name).ToArray();
-            int index = SelectBrushDropDown.items.ToList().FindIndex(i => i == ForestBrushMod.instance.Settings.SelectedBrush.Name);
+            SelectBrushDropDown.items = UserMod.Settings.Brushes.Select(b => b.Name).ToArray();
+            int index = SelectBrushDropDown.items.ToList().FindIndex(i => i == UserMod.Settings.SelectedBrush.Name);
             SelectBrushDropDown.eventSelectedIndexChanged -= EventSelectedIndexChanged;
             SelectBrushDropDown.selectedIndex = index < 0 || index > SelectBrushDropDown.items.Length ? 0 : index;
             SelectBrushDropDown.eventSelectedIndexChanged += EventSelectedIndexChanged;
@@ -113,7 +113,7 @@ namespace ForestBrush.GUI
         private void EventSelectedIndexChanged(UIComponent component, int index)
         {
             var brushName = SelectBrushDropDown.items[index];
-            ForestBrushMod.instance.BrushTool.UpdateTool(brushName);
+            ForestBrushMod.Instance.BrushTool.UpdateTool(brushName);
             father.BrushEditSection.ResetRenameError();
         }
     }
