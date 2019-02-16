@@ -117,7 +117,6 @@ namespace ForestBrush.GUI
             renameBrushTextField.eventTextChanged += OnRenameBrushTextChanged;
             renameBrushTextField.eventKeyPress += OnRenameBrushKeyPress;
             renameBrushTextField.eventLostFocus += (c, e) => ForestBrushMod.instance.SaveSettings();
-            renameBrushTextField.eventClicked += (c, e) => renameBrushTextField.SelectAll();
             renameBrushTextField.tooltip = Translation.Instance.GetTranslation("FOREST-BRUSH-RENAME-BRUSH");
         }
 
