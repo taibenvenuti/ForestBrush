@@ -76,7 +76,7 @@
 //                m_toolController.RenderColliding(cameraInfo, toolColor, toolColor, toolColor, toolColor, 0, 0);
 //                ToolManager instance = Singleton<ToolManager>.instance;
 //                instance.m_drawCallData.m_overlayCalls = instance.m_drawCallData.m_overlayCalls + 1;
-//                if (ForestBrushMod.instance.Settings.SquareBrush)
+//                if (UserMod.Settings.SquareBrush)
 //                {
 //                    var Angle = ApplyBrushPatch.Angle;
 //                    var radians = Angle * Mathf.Deg2Rad;

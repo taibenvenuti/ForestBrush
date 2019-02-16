@@ -9,7 +9,7 @@ namespace ForestBrush.GUI
         public static UIButton CreateButton(UIComponent parentComponent, string text)
         {
             UIButton button = parentComponent.AddUIComponent<UIButton>();
-            button.atlas = ResourceLoader.GetAtlas("Ingame");
+            button.atlas = ResourceLoader.Atlas;
             button.text = text;
             button.width = Constants.UIButtonHeight;
             button.height = Constants.UIButtonHeight;
@@ -17,23 +17,23 @@ namespace ForestBrush.GUI
             button.horizontalAlignment = UIHorizontalAlignment.Center;
             button.textVerticalAlignment = UIVerticalAlignment.Middle;
             button.textScale = Constants.UITitleTextScale;
-            button.normalBgSprite = "ButtonMenu";
-            button.disabledBgSprite = "ButtonMenuDisabled";
-            button.hoveredBgSprite = "ButtonMenuHovered";
-            button.focusedBgSprite = "ButtonMenu";
-            button.pressedBgSprite = "ButtonMenuPressed";
+            button.normalBgSprite = ResourceLoader.ButtonMenu;
+            button.disabledBgSprite = ResourceLoader.ButtonMenuDisabled;
+            button.hoveredBgSprite = ResourceLoader.ButtonMenuHovered;
+            button.focusedBgSprite = ResourceLoader.ButtonMenu;
+            button.pressedBgSprite = ResourceLoader.ButtonMenuPressed;
             return button;
         }
 
         public static UIButton CreateSmallButton(UIComponent parentComponent, string tooltipText)
         {
             UIButton button = parentComponent.AddUIComponent<UIButton>();
-            button.atlas = ResourceLoader.GetAtlas("Ingame");
-            button.normalBgSprite = "OptionsDropboxListbox";
-            button.disabledBgSprite = "OptionsDropboxListbox";
-            button.hoveredBgSprite = "OptionsDropboxListboxHovered";
-            button.focusedBgSprite = "OptionsDropboxListbox";
-            button.pressedBgSprite = "OptionsDropboxListboxPressed";
+            button.atlas = ResourceLoader.Atlas;
+            button.normalBgSprite = ResourceLoader.OptionsDropboxListbox;
+            button.disabledBgSprite = ResourceLoader.OptionsDropboxListbox;
+            button.hoveredBgSprite = ResourceLoader.OptionsDropboxListboxHovered;
+            button.focusedBgSprite = ResourceLoader.OptionsDropboxListbox;
+            button.pressedBgSprite = ResourceLoader.OptionsDropboxListboxPressed;
             button.tooltip = tooltipText;
             button.size = new Vector2(30f, 30f);
             button.textPadding = new RectOffset(0, 0, 3, 0);

@@ -5,20 +5,18 @@ using ColossalFramework;
 using ColossalFramework.Globalization;
 using ColossalFramework.UI;
 using ForestBrush.GUI;
-using ForestBrush.Persistence;
 using ForestBrush.TranslationFramework;
 using UnityEngine;
 
 namespace ForestBrush
-{           
-    public class ForestBrushMod : Singleton<ForestBrushMod>
+{
+    public class ForestBrushMod : MonoBehaviour
     {
-        private XmlPersistenceService xmlPersistenceService;
-        private Settings settings;
+        public static ForestBrushMod Instance;
 
         private ToggleButtonComponents toggleButtonComponents;
 
-        public  class BrushTweaks
+        public class BrushTweaks
         {
             public int SizeAddend;
             public int SizeMultiplier;
@@ -33,7 +31,7 @@ namespace ForestBrush
                 set
                 {
                     maxSize = value;
-                    instance.ForestBrushPanel.BrushOptionsSection.sizeSlider.maxValue = value;
+                    Instance.ForestBrushPanel.BrushOptionsSection.sizeSlider.maxValue = value;
                 }
             }
             public float MinSpacing;
@@ -81,8 +79,6 @@ namespace ForestBrush
 
         public Dictionary<string, TreeInfo> Trees { get; private set; }
 
-        public Settings Settings => settings;
-
         public ForestBrushTool BrushTool { get; private set; }
 
         public UIButton ToggleButton => toggleButtonComponents.ToggleButton;
@@ -100,12 +96,6 @@ namespace ForestBrush
         private static readonly string kToggleButton = "ForestBrushModToggle";
 
         private ToolBase lastTool;
-
-        public void PreInitialize(XmlPersistenceService xmlPersistenceService, Settings settings)
-        {
-            this.xmlPersistenceService = xmlPersistenceService;
-            this.settings = settings;
-        }
 
         internal void Initialize()
         {
@@ -138,11 +128,8 @@ namespace ForestBrush
             toggleButtonComponents = null;
 
             Trees = null;
-            
-            settings = null;
-            xmlPersistenceService = null;
 
-            Destroy(this);
+            Destroy(this.gameObject);
         }
 
         private ToggleButtonComponents CreateToggleButtonComponents(UITabstrip tabstrip)
@@ -306,7 +293,7 @@ namespace ForestBrush
                 {
                     Event e = Event.current;
 
-                    if (Settings.ToggleTool.IsPressed(e))
+                    if (UserMod.Settings.ToggleTool.IsPressed(e))
                     {
                         toggleButtonComponents.ToggleButton.SimulateClick();
                     }
@@ -316,12 +303,7 @@ namespace ForestBrush
             catch (Exception)
             {
                 Debug.LogWarning("OnGUI failed.");
-            }            
-        }
-
-        public void SaveSettings()
-        {
-            xmlPersistenceService.Save(Settings);
+            }
         }
     }
 }

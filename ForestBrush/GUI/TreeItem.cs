@@ -21,7 +21,7 @@ namespace ForestBrush.GUI
 
             //General
             name = info.GetUncheckedLocalizedTitle() + "ListItem"; 
-            atlas = ResourceLoader.GetAtlas("Ingame");
+            atlas = ResourceLoader.Atlas;
             width = parent.width;
             height = Constants.UIItemHeight;
             isVisible = true;
@@ -37,17 +37,17 @@ namespace ForestBrush.GUI
             includeCheckBox = AddUIComponent<UICheckBox>();
             includeCheckBox.size = Constants.UICheckboxSize;
             var sprite = includeCheckBox.AddUIComponent<UISprite>();
-            sprite.atlas =  ResourceLoader.GetAtlas("Ingame");
-            sprite.spriteName = Constants.CheckBoxSpriteUnchecked;
+            sprite.atlas =  ResourceLoader.Atlas;
+            sprite.spriteName = ResourceLoader.CheckBoxSpriteUnchecked;
             sprite.size = includeCheckBox.size;
             sprite.relativePosition = Vector3.zero;
             includeCheckBox.checkedBoxObject = sprite.AddUIComponent<UISprite>();
-            ((UISprite)includeCheckBox.checkedBoxObject).atlas =  ResourceLoader.GetAtlas("Ingame");
-            ((UISprite)includeCheckBox.checkedBoxObject).spriteName = Constants.CheckBoxSpriteChecked;
+            ((UISprite)includeCheckBox.checkedBoxObject).atlas =  ResourceLoader.Atlas;
+            ((UISprite)includeCheckBox.checkedBoxObject).spriteName = ResourceLoader.CheckBoxSpriteChecked;
             includeCheckBox.checkedBoxObject.size = includeCheckBox.size;
             includeCheckBox.checkedBoxObject.relativePosition = Vector3.zero;
             includeCheckBox.eventCheckChanged += EventIncludeTree;
-            includeCheckBox.isChecked = ForestBrushMod.instance.Container.m_variations.Any(v => v.m_finalTree == prefab);
+            includeCheckBox.isChecked = ForestBrushMod.Instance.Container.m_variations.Any(v => v.m_finalTree == prefab);
             includeCheckBox.relativePosition = new Vector3(width - (Constants.UISpacing * 2) - includeCheckBox.width, (height - includeCheckBox.height) / 2);
 
             //Label
@@ -65,7 +65,7 @@ namespace ForestBrush.GUI
 
         public void UpdateCheckbox()
         {
-            includeCheckBox.isChecked = ForestBrushMod.instance.Container.m_variations.Any(v => v.m_finalTree == prefab);
+            includeCheckBox.isChecked = ForestBrushMod.Instance.Container.m_variations.Any(v => v.m_finalTree == prefab);
         }
 
         private void EventIncludeTree(UIComponent component, bool value)
@@ -73,7 +73,7 @@ namespace ForestBrush.GUI
             bool updateAll = false;
             if (includeCheckBox.hasFocus && (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.LeftCommand) || Input.GetKey(KeyCode.RightControl) || Input.GetKey(KeyCode.RightCommand)))
                 updateAll = true;
-            ForestBrushMod.instance.BrushTool.UpdateTreeList(prefab, value, updateAll);
+            ForestBrushMod.Instance.BrushTool.UpdateTreeList(prefab, value, updateAll);
         }
 
         public void Deselect(bool isRowOdd)
@@ -88,12 +88,12 @@ namespace ForestBrush.GUI
             {
                 prefab = data as TreeInfo;
                 Initialize(prefab);
-                includeCheckBox.isChecked = ForestBrushMod.instance.Container.m_variations.Any(v => v.m_finalTree == prefab);
+                includeCheckBox.isChecked = ForestBrushMod.Instance.Container.m_variations.Any(v => v.m_finalTree == prefab);
                 treeNameLabel.text = prefab.GetUncheckedLocalizedTitle();
                 thumbNailSprite.texture = prefab.m_Atlas.sprites.Find(spr => spr.name == prefab.m_Thumbnail).texture;
                 backgroundSprite = "";
                 if (isRowOdd)
-                    backgroundSprite = "ListItemHover";
+                    backgroundSprite = ResourceLoader.ListItemHover;
             }
             catch (System.Exception exception)
             {

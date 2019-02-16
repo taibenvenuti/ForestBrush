@@ -8,19 +8,59 @@ namespace ForestBrush.Resources
     //Class by SamsamTS
     public class ResourceLoader
     {
-
-        internal static readonly string ForestBrushNormal = "ForestBrushNormal";
-        internal static readonly string ForestBrushFocused = "ForestBrushFocused";
-        internal static readonly string ForestBrushHovered = "ForestBrushHovered";
-        internal static readonly string ForestBrushPressed = "ForestBrushPressed";
-        internal static readonly string OptionsDropbox = "OptionsDropbox";
-        internal static readonly string OptionsDropboxHovered = "OptionsDropboxHovered";
-        internal static readonly string OptionsDropboxPressed = "OptionsDropboxPressed";
-        internal static readonly string OptionsDropboxFocused = "OptionsDropboxFocused";
-        internal static readonly string SettingsDropbox = "SettingsDropbox";
-        internal static readonly string SettingsDropboxHovered = "SettingsDropboxHovered";
-        internal static readonly string SettingsDropboxPressed = "SettingsDropboxPressed";
-        internal static readonly string SettingsDropboxFocused = "SettingsDropboxFocused";
+        public static string ForestBrushNormal { get; } =  "ForestBrushNormal";
+        public static string ForestBrushFocused { get; } =  "ForestBrushFocused";
+        public static string ForestBrushHovered { get; } =  "ForestBrushHovered";
+        public static string ForestBrushPressed { get; } =  "ForestBrushPressed";
+        public static string OptionsDropbox { get; } =  "OptionsDropbox";
+        public static string OptionsDropboxHovered { get; } =  "OptionsDropboxHovered";
+        public static string OptionsDropboxPressed { get; } =  "OptionsDropboxPressed";
+        public static string OptionsDropboxFocused { get; } =  "OptionsDropboxFocused";
+        public static string SettingsDropbox { get; } =  "SettingsDropbox";
+        public static string SettingsDropboxHovered { get; } =  "SettingsDropboxHovered";
+        public static string SettingsDropboxPressed { get; } =  "SettingsDropboxPressed";
+        public static string SettingsDropboxFocused { get; } =  "SettingsDropboxFocused";
+        public static string EmptySprite { get; } =  "EmptySprite";
+        public static string ListItemHover { get; } = "ListItemHover";
+        public static string ListItemHighlight { get; } = "ListItemHighlight";
+        public static string MenuPanel { get; } = "MenuPanel";
+        public static string TextFieldPanelHovered { get; } = "TextFieldPanelHovered";
+        public static string OptionsScrollbarTrack{ get; } = "OptionsScrollbarTrack";
+        public static string IconPolicyForest{ get; } = "IconPolicyForest";
+        public static string CheckBoxSpriteUnchecked{ get; } = "AchievementCheckedFalse";
+        public static string CheckBoxSpriteChecked{ get; } = "AchievementCheckedTrue";
+        public static string StylesDropboxListbox{ get; } = "StylesDropboxListbox";
+        public static string CMStylesDropbox{ get; } = "CMStylesDropbox";
+        public static string CMStylesDropboxHovered{ get; } = "CMStylesDropboxHovered";
+        public static string DeleteLineButton{ get; } = "DeleteLineButton";
+        public static string DeleteLineButtonHovered{ get; } = "DeleteLineButtonHovered";
+        public static string DeleteLineButtonPressed{ get; } = "DeleteLineButtonPressed";
+        public static string LevelBarBackground{ get; } = "LevelBarBackground";
+        public static string LevelBarForeground{ get; } = "LevelBarForeground";
+        public static string ButtonMenu{ get; } = "ButtonMenu";
+        public static string ButtonMenuDisabled{ get; } = "ButtonMenuDisabled";
+        public static string ButtonMenuHovered{ get; } = "ButtonMenuHovered";
+        public static string ButtonMenuPressed{ get; } = "ButtonMenuPressed";
+        public static string OptionsDropboxListbox{ get; } = "OptionsDropboxListbox";
+        public static string OptionsDropboxListboxHovered{ get; } = "OptionsDropboxListboxHovered";
+        public static string OptionsDropboxListboxPressed{ get; } = "OptionsDropboxListboxPressed";
+        
+        private static UITextureAtlas atlas;
+        public static UITextureAtlas Atlas
+        {
+            get
+            {
+                if (atlas == null)
+                {
+                    atlas = GetAtlas("Ingame");
+                }
+                return atlas;
+            }
+            private set
+            {
+                atlas = value;
+            }
+        }
 
         public static UITextureAtlas LoadAtlas()
         {
@@ -44,7 +84,7 @@ namespace ForestBrush.Resources
 
             atlas = CreateTextureAtlas("ForestBrushAtlas", spriteNames, "ForestBrush.Resources.");
 
-            UITextureAtlas defaultAtlas = GetAtlas("Ingame");
+            UITextureAtlas defaultAtlas = Atlas;
 
             Texture2D[] textures = new Texture2D[]
             {
@@ -151,8 +191,7 @@ namespace ForestBrush.Resources
                 if (atlases[i].name == name)
                     return atlases[i];
             }
-
-            return UIView.GetAView().defaultAtlas;
+            return UnityEngine.Resources.Load<UITextureAtlas>(string.Concat("Assets/Data/GUI/", name));
         }
 
         public static Texture2D LoadTextureFromAssembly(string path)

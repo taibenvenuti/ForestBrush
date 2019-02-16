@@ -14,14 +14,15 @@ namespace ForestBrush
     public class UserMod : LoadingExtensionBase, IUserMod
     {
         //out of game dependencies
-        private XmlPersistenceService xmlPersistenceService;
-        private Settings settings;
-
+        public static XmlPersistenceService XmlPersistenceService { get; private set; }
+        public static Settings Settings { get; private set; }
+        public static LoadMode LoadMode;
         //in game dependecies
         private readonly string harmonyId = "com.tpb.forestbrush";
         private HarmonyInstance harmony;
         private bool modInstalled = false;
-        OptionsKeyBinding optionKeys;
+        private OptionsKeyBinding optionKeys;
+        private GameObject forestBrushGameObject;
 
         public string Name => Constants.ModName;
 
@@ -47,11 +48,15 @@ namespace ForestBrush
             UninstallOutOfGameDependencies();
         }
 
+        public static bool IsGame = LoadMode == LoadMode.LoadGame || LoadMode == LoadMode.NewGame || LoadMode == LoadMode.NewGameFromScenario;
+        public static bool IsMap = LoadMode == LoadMode.LoadMap || LoadMode == LoadMode.NewMap;
+        public static bool IsTheme = LoadMode == LoadMode.NewTheme || LoadMode == LoadMode.LoadTheme;
+
         public override void OnLevelLoaded(LoadMode mode)
         {
             base.OnLevelLoaded(mode);
-
-            if (mode == LoadMode.LoadGame || mode == LoadMode.NewGame || mode == LoadMode.NewGameFromScenario || mode == LoadMode.LoadMap || mode == LoadMode.NewMap)
+            LoadMode = mode;
+            if (IsGame || IsMap || IsTheme)
             {
                 InstallMod();
             }
@@ -70,15 +75,14 @@ namespace ForestBrush
         void InstallOutOfGameDependencies()
         {
             GameSettings.AddSettingsFile(new SettingsFile { fileName = Constants.ModName });
-            xmlPersistenceService = new XmlPersistenceService();
-            settings = xmlPersistenceService.Load();
-            ForestBrushMod.instance.PreInitialize(xmlPersistenceService, settings);
+            XmlPersistenceService = new XmlPersistenceService();
+            Settings = XmlPersistenceService.Load();
         }
 
         void UninstallOutOfGameDependencies()
         {
-            xmlPersistenceService = null;
-            settings = null;
+            XmlPersistenceService = null;
+            Settings = null;
             var settingFiles = (Dictionary<string, SettingsFile>)typeof(GameSettings).GetField("m_SettingsFiles", BindingFlags.NonPublic | BindingFlags.Instance)
                 .GetValue(GameSettings.instance);
             settingFiles.Remove(Constants.ModName);
@@ -86,21 +90,33 @@ namespace ForestBrush
 
         void InstallMod()
         {
+            if (forestBrushGameObject != null)
+            {
+                UninstallMod();
+            }
+
             harmony = HarmonyInstance.Create(harmonyId);
             harmony.PatchAll(Assembly.GetExecutingAssembly());
-
-            ForestBrushMod.instance.Initialize();
+            forestBrushGameObject = new GameObject("ForestBrush");
+            ForestBrushMod.Instance = forestBrushGameObject.AddComponent<ForestBrushMod>();
+            ForestBrushMod.Instance.Initialize();
 
             modInstalled = true;
         }
 
         void UninstallMod()
         {
-            ForestBrushMod.instance.CleanUp();
-
+            ForestBrushMod.Instance.CleanUp();
             harmony.UnpatchAll(harmonyId);
             harmony = null;
-
+            if (IsMap || IsTheme)
+            {
+                if(Resources.ResourceLoader.Atlas != null) UnityEngine.Resources.UnloadAsset(Resources.ResourceLoader.Atlas);
+            }
+            if (forestBrushGameObject != null)
+            {
+                GameObject.Destroy(forestBrushGameObject);
+            }
             modInstalled = false;
         }
 
@@ -122,6 +138,11 @@ namespace ForestBrush
             {
                 Debug.LogWarning("OnSettingsUI failure.");
             }
+        }
+
+        public static void SaveSettings()
+        {
+            XmlPersistenceService.Save(Settings);
         }
     }
 }

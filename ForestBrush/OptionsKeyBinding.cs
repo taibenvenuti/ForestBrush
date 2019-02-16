@@ -20,7 +20,7 @@ namespace ForestBrush
 
         private void Awake()
         {
-            AddKeymapping("FOREST-BRUSH-KEYBIND-TOGGLE-TOOL", ForestBrushMod.instance.Settings.ToggleTool);
+            AddKeymapping("FOREST-BRUSH-KEYBIND-TOGGLE-TOOL", UserMod.Settings.ToggleTool);
         }
 
         private void AddKeymapping(string label, SavedInputKey savedInputKey)
@@ -128,7 +128,7 @@ namespace ForestBrush
                 UITextComponent uITextComponent = p.source as UITextComponent;
                 uITextComponent.text = this.m_EditingBinding.ToLocalizedString("KEYNAME");
 
-                ForestBrushMod.instance.SaveSettings();
+                UserMod.SaveSettings();
 
                 this.m_EditingBinding = null;
                 this.m_EditingBindingCategory = string.Empty;

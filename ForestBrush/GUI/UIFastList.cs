@@ -543,11 +543,11 @@ namespace ForestBrush.GUI
 
             // Panel 
             m_panel = AddUIComponent<UIPanel>();
-            m_panel.atlas =  ResourceLoader.GetAtlas("Ingame");
+            m_panel.atlas =  ResourceLoader.Atlas;
             m_panel.width = width - 10f;
             m_panel.height = height;
             m_panel.padding = new RectOffset(2, 2, 2, 2);
-            m_panel.backgroundSprite = "LevelBarBackground";
+            m_panel.backgroundSprite = ResourceLoader.LevelBarBackground;
             m_panel.color = m_color;
             m_panel.clipChildren = true;
             m_panel.relativePosition = Vector2.zero;
@@ -564,22 +564,22 @@ namespace ForestBrush.GUI
             m_scrollbar.incrementAmount = 60;
 
             UISlicedSprite tracSprite = m_scrollbar.AddUIComponent<UISlicedSprite>();
-            tracSprite.atlas =  ResourceLoader.GetAtlas("Ingame");
+            tracSprite.atlas =  ResourceLoader.Atlas;
             tracSprite.relativePosition = new Vector3(0 , 0);
             tracSprite.autoSize = true;
             tracSprite.size = tracSprite.parent.size;
             tracSprite.fillDirection = UIFillDirection.Vertical;
-            tracSprite.spriteName = "LevelBarBackground";
+            tracSprite.spriteName = ResourceLoader.LevelBarBackground;
 
             m_scrollbar.trackObject = tracSprite;
 
             UISlicedSprite thumbSprite = tracSprite.AddUIComponent<UISlicedSprite>();
-            thumbSprite.atlas =  ResourceLoader.GetAtlas("Ingame");
+            thumbSprite.atlas =  ResourceLoader.Atlas;
             thumbSprite.relativePosition = Vector2.zero;
             thumbSprite.fillDirection = UIFillDirection.Vertical;
             thumbSprite.autoSize = true;
             thumbSprite.width = 12f;
-            thumbSprite.spriteName = "LevelBarForeground";
+            thumbSprite.spriteName = ResourceLoader.LevelBarForeground;
 
             m_scrollbar.thumbObject = thumbSprite;
 

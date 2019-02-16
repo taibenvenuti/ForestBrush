@@ -14,10 +14,6 @@ namespace ForestBrush
 
         public static readonly Vector2 UIColorFieldSize = new Vector2(20f, 13f);
 
-        public static readonly string CheckBoxSpriteUnchecked = "AchievementCheckedFalse";
-
-        public static readonly string CheckBoxSpriteChecked = "AchievementCheckedTrue";
-
         public const float UIButtonHeight = 30f;
 
         public const float UISpacing = 10f;
@@ -29,7 +25,5 @@ namespace ForestBrush
         public const float UITitleBarHeight = 40f;
 
         public const float UIItemHeight = 60f;
-
-        
     }
 }
