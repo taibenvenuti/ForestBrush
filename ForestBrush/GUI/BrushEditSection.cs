@@ -230,7 +230,7 @@ namespace ForestBrush.GUI
         private void OnRenameBrushTextChanged(UIComponent component, string newName)
         {
             string currentName = ForestBrushMod.instance.BrushTool.Brush.Name;
-            if (ForestBrushMod.instance.Settings.Brushes.Find(b => b.Name == newName) == null)
+            if (ForestBrushMod.instance.Settings.Brushes.Find(b => b.Name == newName && b.Name != currentName) == null)
             {
                 ResetRenameError();
                 UIDropDown brushDropDown = father.BrushSelectSection.SelectBrushDropDown;
