@@ -1,26 +1,24 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Language UniqueName="en" ReadableName="English" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2009/XMLSchema/XMLSchema.xsd">
   <Translations>
-    <Translation ID="FOREST-BRUSH-MODDESCRIPTION" String="Lets you create Tree-Brushes to paint forests!" />
+    <Translation ID="FOREST-BRUSH-MODDESCRIPTION" String="Lets you create, edit, and save mixed tree brushes." />
     <Translation ID="FOREST-BRUSH-MODNAME" String="Forest Brush" />
     <Translation ID="FOREST-BRUSH-BRUSH" String="Brush" />
-    <Translation ID="FOREST-BRUSH-CREATE" String="Create New Brush" />
-    <Translation ID="FOREST-BRUSH-DELETE" String="Delete Current Brush" />
-    <Translation ID="FOREST-BRUSH-SQUARE" String="Enable Square Brush" />
-    <Translation ID="FOREST-BRUSH-SPACING" String="Spacing" />
-    <Translation ID="FOREST-BRUSH-SEARCH" String="Filter" />
-    <Translation ID="FOREST-BRUSH-TOGGLE-EDIT" String="Add/Remove Trees to Brush" />
-    <Translation ID="FOREST-BRUSH-TOGGLE-OPTIONS" String="Brush Options" />
-    <Translation ID="FOREST-BRUSH-BRUSH-OPTIONS-SQUAREBRUSH" String="Square Brush" />
+    <Translation ID="FOREST-BRUSH-CREATE" String="Create new brush" />
+    <Translation ID="FOREST-BRUSH-DELETE" String="Delete current brush" />
+    <Translation ID="FOREST-BRUSH-SQUARE" String="Enable square brush" />
+    <Translation ID="FOREST-BRUSH-SEARCH" String="Search" />
+    <Translation ID="FOREST-BRUSH-PROBABILITY" String="Probability" />
+    <Translation ID="FOREST-BRUSH-TOGGLE-EDIT" String="Toggle Rename/Add/Remove panel" />
+    <Translation ID="FOREST-BRUSH-TOGGLE-OPTIONS" String="Toggle brush options panel" />
+    <Translation ID="FOREST-BRUSH-BRUSH-OPTIONS-SQUAREBRUSH" String="Square brush" />
     <Translation ID="FOREST-BRUSH-BRUSH-OPTIONS-STRENGTH" String="Strength" />
     <Translation ID="FOREST-BRUSH-BRUSH-OPTIONS-DENSITY" String="Density" />
     <Translation ID="FOREST-BRUSH-BRUSH-OPTIONS-SIZE" String="Size" />
     <Translation ID="FOREST-BRUSH-BRUSH-OPTIONS-AUTODENSITY" String="Auto-density" />
-    <Translation ID="FOREST-BRUSH-BRUSH-OPTIONS-OVERLAYCOLOR" String="Overlay Color" />
-    <Translation ID="FOREST-BRUSH-OPTIONS-CONFIRMOVERWRITE" String="Ask before overwriting existing brushes" />
+    <Translation ID="FOREST-BRUSH-BRUSH-OPTIONS-OVERLAYCOLOR" String="Overlay color" />
     <Translation ID="FOREST-BRUSH-OPTIONS-RESET" String="Reset all options to default values" />
     <Translation ID="FOREST-BRUSH-MODAL-WARNING" String="Warning" />
-    <Translation ID="FOREST-BRUSH-MODAL-MESSAGE" String="Message" />
     <Translation ID="FOREST-BRUSH-PROMPT-NEW" String="Brush name" />
     <Translation ID="FOREST-BRUSH-RENAME-BRUSH" String="Use this textfield to rename the current brush." />
     <Translation ID="FOREST-BRUSH-PROMPT-DELETE" String="Are you sure you want to permanently delete this brush?" />
@@ -29,7 +27,16 @@
     <Translation ID="FOREST-BRUSH-PROMPT-NO" String="No" />
     <Translation ID="FOREST-BRUSH-PROMPT-OK" String="OK" />
     <Translation ID="FOREST-BRUSH-PROMPT-CANCEL" String="Cancel" />
-    <Translation ID="FOREST-BRUSH-KEYBIND-TOGGLE-TOOL" String="Toggle Forest Brush tool" />
-    <Translation ID="FOREST-BRUSH-TUTORIAL" String="Thanks for subscribing to Forest Brush.&#10;&#10;Click on the 'tools' button to select the trees for your brush.&#10;Use the checkboxes to add/remove trees to the brush.&#10;Hold down CTRL while clicking on a checkbox to select/deselect all trees.&#10;You can have as many different brushes as you like, just add more with the 'plus' button.&#10;Use the filter to search for specific trees.&#10;&#10;Click on the 'gear' button to edit your brush settings.&#10;Here you can change the size, strength and density of your brush.&#10;&#10;Visit the mod's workshop page for detailed instructions." />
+    <Translation ID="FOREST-BRUSH-KEYBIND-TOGGLE-TOOL" String="Toggle Forest Brush panel" />
+    <Translation ID="FOREST-BRUSH-TUTORIAL" String="
+                 Thanks for subscribing to Forest Brush.&#10;&#10;
+                 Click on the 'tools' button to select the trees for your brush.&#10;
+                 Use the checkboxes to add/remove trees to the brush.&#10;
+                 CTRL + click on a checkbox to select/deselect all trees.&#10;&#10;
+                 You can have as many different brushes as you like, just add more with the 'plus' button.&#10;&#10;
+                 Use the searchbox to find specific trees.&#10;&#10;
+                 Click on the 'gear' button to edit your brush settings.&#10;
+                 Here you can change the size, strength and density of your brush.&#10;
+                 Visit the mod's workshop page for detailed instructions." />
   </Translations>
 </Language>
