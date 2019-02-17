@@ -44,7 +44,7 @@ namespace ForestBrush.Resources
         public static string OptionsDropboxListbox{ get; } = "OptionsDropboxListbox";
         public static string OptionsDropboxListboxHovered{ get; } = "OptionsDropboxListboxHovered";
         public static string OptionsDropboxListboxPressed{ get; } = "OptionsDropboxListboxPressed";
-        
+
         private static UITextureAtlas atlas;
         public static UITextureAtlas Atlas
         {

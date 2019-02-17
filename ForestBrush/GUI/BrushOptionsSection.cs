@@ -242,7 +242,8 @@ namespace ForestBrush.GUI
             };
             autoDensityCheckBox.zOrder = 0;
 
-            if (UserMod.IsGame)
+            var colorField = CreateColorField(layoutPanelAutoDensityColor);
+            if (colorField != null)
             {
                 overlayColorLabel = layoutPanelAutoDensityColor.AddUIComponent<UILabel>();
                 overlayColorLabel.text = OverlayColorLabelText;
@@ -251,8 +252,7 @@ namespace ForestBrush.GUI
                 overlayColorLabel.textAlignment = UIHorizontalAlignment.Left;
                 overlayColorLabel.verticalAlignment = UIVerticalAlignment.Middle;
                 overlayColorLabel.zOrder = 3;
-
-                colorFieldTemplate = CreateColorField(layoutPanelAutoDensityColor);
+                colorFieldTemplate = colorField;
                 colorFieldTemplate.size = Constants.UIColorFieldSize;
                 colorFieldTemplate.zOrder = 2;
             }
@@ -310,13 +310,15 @@ namespace ForestBrush.GUI
                 if (colorFieldTemplate == null) return null;
             }
 
-            UIColorField cF = Instantiate(colorFieldTemplate.gameObject).GetComponent<UIColorField>();
-            parent.AttachUIComponent(cF.gameObject);
-            cF.name = "ForestBrushColorField";
-            cF.pickerPosition = UIColorField.ColorPickerPosition.RightBelow;
-            cF.eventSelectedColorChanged += EventSelectedColorChangedHandler;
-            cF.selectedColor = UserMod.Settings.SelectedBrush.Options.OverlayColor;
-            return cF;
+            UIColorField colorField = Instantiate(colorFieldTemplate.gameObject).GetComponent<UIColorField>();
+            parent.AttachUIComponent(colorField.gameObject);
+            colorField.name = "ForestBrushColorField";
+            colorField.pickerPosition = UIColorField.ColorPickerPosition.RightBelow;
+            colorField.eventSelectedColorChanged += EventSelectedColorChangedHandler;
+            colorField.eventColorPickerOpen += (UIColorField field, UIColorPicker picker, ref bool overridden) => { colorField.triggerButton.isInteractive = false; };
+            colorField.eventColorPickerClose += (UIColorField field, UIColorPicker picker, ref bool overridden) => { colorField.triggerButton.isInteractive = true; };
+            colorField.selectedColor = UserMod.Settings.SelectedBrush.Options.OverlayColor;
+            return colorField;
         }
 
         private void EventSelectedColorChangedHandler(UIComponent component, Color value)
@@ -337,7 +339,7 @@ namespace ForestBrush.GUI
             strengthSlider.tooltip = Math.Round(brush.Options.Strength * 100, 1) + "%";
             densitySlider.value = 16f - brush.Options.Density;
             autoDensityCheckBox.isChecked = brush.Options.AutoDensity;
-            if (UserMod.IsGame) colorFieldTemplate.selectedColor = brush.Options.OverlayColor;
+            if (colorFieldTemplate != null) colorFieldTemplate.selectedColor = brush.Options.OverlayColor;
             squareBrushCheckBox.isChecked = brush.Options.IsSquare;
         }
     }

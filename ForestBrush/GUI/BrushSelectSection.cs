@@ -35,7 +35,7 @@ namespace ForestBrush.GUI
             SelectBrushDropDown.zOrder = 0;
             SelectBrushDropDown.atlas = ResourceLoader.Atlas;
             SelectBrushDropDown.size = new Vector2(300f, 30f);
-            SelectBrushDropDown.items = GetDropdownItems();           
+            SelectBrushDropDown.items = GetDropdownItems();
             SelectBrushDropDown.listBackground = ResourceLoader.StylesDropboxListbox;
             SelectBrushDropDown.itemHeight = (int)Constants.UIButtonHeight;
             SelectBrushDropDown.itemHover = ResourceLoader.ListItemHover;
@@ -58,6 +58,8 @@ namespace ForestBrush.GUI
             SelectBrushDropDown.itemPadding = new RectOffset(10, 0, 8, 0);
             SelectBrushDropDown.triggerButton = SelectBrushDropDown;
             SelectBrushDropDown.eventSelectedIndexChanged += EventSelectedIndexChanged;
+            SelectBrushDropDown.eventDropdownOpen += (UIDropDown dropdown, UIListBox popup, ref bool overridden) => SelectBrushDropDown.triggerButton.isInteractive = false;
+            SelectBrushDropDown.eventDropdownClose += (UIDropDown dropdown, UIListBox popup, ref bool overridden) => SelectBrushDropDown.triggerButton.isInteractive = true;
         }
 
         internal void LoadBrush(ForestBrush brush)

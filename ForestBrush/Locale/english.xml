@@ -30,6 +30,6 @@
     <Translation ID="FOREST-BRUSH-PROMPT-OK" String="OK" />
     <Translation ID="FOREST-BRUSH-PROMPT-CANCEL" String="Cancel" />
     <Translation ID="FOREST-BRUSH-KEYBIND-TOGGLE-TOOL" String="Toggle Forest Brush tool" />
-    <Translation ID="FOREST-BRUSH-TUTORIAL" String="Thanks for subscribing to Forest Brush.&#10;&#10;Click on the 'tools' icon to select the trees for your brush.&#10;Use the checkboxes to add/remove trees to the brush.&#10;Hold down CTRL while clicking on a checkbox to select/deselect all trees.&#10;You can have as many different brushes as you like, just add more with the 'plus' icon.&#10;Use the filter to search for specific trees.&#10;&#10;Click on the 'gear' icon to edit your brush settings.&#10;Here you can change the size, strength and density of your brush.&#10;&#10;Visit the mod's workshop page for detailed instructions." />
+    <Translation ID="FOREST-BRUSH-TUTORIAL" String="Thanks for subscribing to Forest Brush.&#10;&#10;Click on the 'tools' button to select the trees for your brush.&#10;Use the checkboxes to add/remove trees to the brush.&#10;Hold down CTRL while clicking on a checkbox to select/deselect all trees.&#10;You can have as many different brushes as you like, just add more with the 'plus' button.&#10;Use the filter to search for specific trees.&#10;&#10;Click on the 'gear' button to edit your brush settings.&#10;Here you can change the size, strength and density of your brush.&#10;&#10;Visit the mod's workshop page for detailed instructions." />
   </Translations>
 </Language>
