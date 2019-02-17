@@ -7,13 +7,13 @@ namespace ForestBrush
 {
     public class ForestBrushTool : MonoBehaviour
     {
-        public ForestBrush Brush => UserMod.Settings.SelectedBrush;
+        public Brush Brush => UserMod.Settings.SelectedBrush;
 
         private List<TreeInfo> TreeInfos { get; set; } = new List<TreeInfo>();
 
-        private TreeInfo Container { get; set; } = ForestBrushMod.Instance.Container;
+        private TreeInfo Container { get; set; } = ForestBrush.Instance.Container;
 
-        public List<ForestBrush> Brushes => UserMod.Settings.Brushes;
+        public List<Brush> Brushes => UserMod.Settings.Brushes;
 
         void Awake()
         {
@@ -28,14 +28,14 @@ namespace ForestBrush
 
             foreach (var tree in Brush.Trees)
             {
-                if (!ForestBrushMod.Instance.Trees.TryGetValue(tree.Name, out TreeInfo treeInfo)) continue;
+                if (!ForestBrush.Instance.Trees.TryGetValue(tree.Name, out TreeInfo treeInfo)) continue;
                 if (treeInfo == null) continue;
                 TreeInfos.Add(treeInfo);
             }
 
             Container = CreateBrushPrefab();
 
-            ForestBrushMod.Instance.ForestBrushPanel.LoadBrush(Brush);
+            ForestBrush.Instance.ForestBrushPanel.LoadBrush(Brush);
 
             UserMod.SaveSettings();
         }
@@ -56,8 +56,8 @@ namespace ForestBrush
 
         public void RemoveAll()
         {
-            var infoBuffer = ForestBrushMod.Instance.ForestBrushPanel.BrushEditSection.TreesList.rowsData.m_buffer;
-            var itemBuffer = ForestBrushMod.Instance.ForestBrushPanel.BrushEditSection.TreesList.rows.m_buffer;
+            var infoBuffer = ForestBrush.Instance.ForestBrushPanel.BrushEditSection.TreesList.rowsData.m_buffer;
+            var itemBuffer = ForestBrush.Instance.ForestBrushPanel.BrushEditSection.TreesList.rows.m_buffer;
             foreach (TreeInfo tree in infoBuffer)
             {
                 Remove(tree);
@@ -70,10 +70,10 @@ namespace ForestBrush
 
         private void AddAll()
         {
-            var infoBuffer = ForestBrushMod.Instance.ForestBrushPanel.BrushEditSection.TreesList.rowsData.m_buffer.Cast<TreeInfo>().ToList();
-            TreeInfos = ForestBrushMod.Instance.Trees.Values.Where(treeInfo => infoBuffer.Contains(treeInfo)).ToList();
+            var infoBuffer = ForestBrush.Instance.ForestBrushPanel.BrushEditSection.TreesList.rowsData.m_buffer.Cast<TreeInfo>().ToList();
+            TreeInfos = ForestBrush.Instance.Trees.Values.Where(treeInfo => infoBuffer.Contains(treeInfo)).ToList();
             Brush.ReplaceAll(TreeInfos);
-            var itemBuffer = ForestBrushMod.Instance.ForestBrushPanel.BrushEditSection.TreesList.rows.m_buffer;
+            var itemBuffer = ForestBrush.Instance.ForestBrushPanel.BrushEditSection.TreesList.rows.m_buffer;
             foreach (TreeItem item in itemBuffer)
             {
                 item?.ToggleCheckbox(true);
@@ -84,7 +84,7 @@ namespace ForestBrush
         {
             if (Brushes.Find(b => b.Name == brushName) == null)
             {
-                ForestBrush brush = ForestBrush.Default();
+                Brush brush = Brush.Default();
 
                 brush.Name = brushName;
 
@@ -101,9 +101,9 @@ namespace ForestBrush
         {
             Brushes.Remove(Brush);
             UserMod.Settings.SelectNextBestBrush();
-            ForestBrushMod.Instance.ForestBrushPanel.BrushSelectSection.UpdateDropDown();
-            string nextBrush = ForestBrushMod.Instance.ForestBrushPanel.BrushSelectSection.SelectBrushDropDown.items.Length <= 0 ? Constants.NewBrushName :
-                ForestBrushMod.Instance.ForestBrushPanel.BrushSelectSection.SelectBrushDropDown.selectedValue;
+            ForestBrush.Instance.ForestBrushPanel.BrushSelectSection.UpdateDropDown();
+            string nextBrush = ForestBrush.Instance.ForestBrushPanel.BrushSelectSection.SelectBrushDropDown.items.Length <= 0 ? Constants.NewBrushName :
+                ForestBrush.Instance.ForestBrushPanel.BrushSelectSection.SelectBrushDropDown.selectedValue;
             UpdateTool(nextBrush);
             UserMod.SaveSettings();
         }

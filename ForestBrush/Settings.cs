@@ -12,7 +12,7 @@ namespace ForestBrush
             float panelPosY,
             bool addRemoveTreesToBrushOpen,
             bool BrushOptionsOpen,
-            IEnumerable<ForestBrush> forestBrushes,
+            IEnumerable<Brush> forestBrushes,
             string selectedBrush,
             SavedInputKey toggleTool
         )
@@ -26,7 +26,7 @@ namespace ForestBrush
             this.Brushes = forestBrushes.ToList();
             if (this.Brushes.Count == 0)
             {
-                var defaultBrush = ForestBrush.Default();
+                var defaultBrush = Brush.Default();
                 this.Brushes.Add(defaultBrush);
             }
 
@@ -41,22 +41,22 @@ namespace ForestBrush
 
         public bool BrushOptionsOpen { get; set; }
 
-        public List<ForestBrush> Brushes { get; set; }
+        public List<Brush> Brushes { get; set; }
 
-        public ForestBrush SelectedBrush { get; private set; }
+        public Brush SelectedBrush { get; private set; }
 
         public SavedInputKey ToggleTool { get; set; }
 
         public static Settings Default()
         {
-            var defaultBrush = ForestBrush.Default();
+            var defaultBrush = Brush.Default();
 
             return new Settings(
                 200f,
                 100f,
                 false,
                 false,
-                Enumerable.Empty<ForestBrush>(),
+                Enumerable.Empty<Brush>(),
                 string.Empty,
                 new SavedInputKey("toggleTool", Constants.ModName, SavedInputKey.Encode(KeyCode.B, false, false, true), true)
             );
@@ -72,7 +72,7 @@ namespace ForestBrush
             this.SelectedBrush = GetNextBestBrush();
         }
 
-        private ForestBrush GetSelectedBrush(string brushName)
+        private Brush GetSelectedBrush(string brushName)
         {
             var brush = Brushes.Find(b => b.Name == brushName);
             if (brush != null)
@@ -85,12 +85,12 @@ namespace ForestBrush
             }
         }
 
-        private ForestBrush GetNextBestBrush()
+        private Brush GetNextBestBrush()
         {
             var first = Brushes.FirstOrDefault();
             if (first == null)
             {
-                var newDefault = ForestBrush.Default();
+                var newDefault = Brush.Default();
                 Brushes.Add(newDefault);
                 return newDefault;
             }

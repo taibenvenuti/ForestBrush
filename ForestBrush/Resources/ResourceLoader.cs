@@ -56,9 +56,26 @@ namespace ForestBrush.Resources
                 }
                 return atlas;
             }
-            private set
+            set
             {
                 atlas = value;
+            }
+        }
+
+        private static UITextureAtlas forestBrushAtlas;
+        internal static UITextureAtlas ForestBrushAtlas
+        {
+            get
+            {
+                if (forestBrushAtlas == null)
+                {
+                    forestBrushAtlas = LoadAtlas();
+                }
+                return forestBrushAtlas;
+            }
+            set
+            {
+                forestBrushAtlas = value;
             }
         }
 

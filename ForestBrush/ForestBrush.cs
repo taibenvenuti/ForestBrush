@@ -1,79 +1,293 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Reflection;
+using ColossalFramework;
+using ColossalFramework.Globalization;
+using ColossalFramework.UI;
+using ForestBrush.GUI;
+using ForestBrush.TranslationFramework;
 using UnityEngine;
 
 namespace ForestBrush
 {
-    [Serializable]
-    public class ForestBrush
+    public class ForestBrush : MonoBehaviour
     {
-        public string Name { get; set; }
+        public static ForestBrush Instance;
 
-        public List<Tree> Trees { get; set; }
+        private ToggleButtonComponents toggleButtonComponents;
 
-        public BrushOptions Options { get; set; }
-
-        public void Add(TreeInfo treeInfo)
+        public class BrushTweaks
         {
-            string name = treeInfo.name;
-            if (!Trees.Any(t => t.Name == name))
-                Trees.Add(new Tree(treeInfo));
-        }
-
-        public void Remove(TreeInfo treeInfo)
-        {
-            var name = treeInfo.name;
-            Tree tree = Trees.Find(t => t.Name == name);
-            Trees.Remove(tree);
-        }
-
-        /// <summary>
-        /// Replaces all current trees in this brush with the ones provided.
-        /// Also updates the brush options to currently selected options.
-        /// </summary>
-        /// <param name="newTrees">A list of TreeInfo trees to replace the existing ones with.</param>
-        public void ReplaceAll(List<TreeInfo> newTrees)
-        {
-            Trees = new List<Tree>();
-            foreach (var treeInfo in newTrees)
+            public int SizeAddend;
+            public int SizeMultiplier;
+            public float MaxRandomRange;
+            public float maxSize;
+            public float MaxSize
             {
-                Tree tree = new Tree(treeInfo);
-                Trees.Add(tree);
+                get
+                {
+                    return maxSize;
+                }
+                set
+                {
+                    maxSize = value;
+                    Instance.ForestBrushPanel.BrushOptionsSection.sizeSlider.maxValue = value;
+                }
+            }
+            public float MinSpacing;
+        }
+
+        internal BrushTweaks BrushTweaker = new BrushTweaks()
+        {
+            SizeAddend = 10,
+            SizeMultiplier = 7,
+            MaxRandomRange = 4.0f,
+            maxSize = 1000f
+        };
+
+        private TreeInfo container;
+        internal TreeInfo Container
+        {
+            get
+            {
+                if (container == null)
+                {
+                    container = Instantiate(PrefabCollection<TreeInfo>.GetLoaded(0u).gameObject).GetComponent<TreeInfo>();
+                    container.gameObject.transform.parent = gameObject.transform;
+                    container.gameObject.name = "ForestBrushContainer";
+                    container.name = "ForestBrushContainer";
+                    container.m_mesh = null;
+                }
+                return container;
             }
         }
 
-        public static ForestBrush Default()
+        internal bool IsCurrentTreeContainer => Container != null && ToolsModifierControl.toolController.CurrentTool is TreeTool && ((TreeTool)ToolsModifierControl.toolController?.CurrentTool)?.m_prefab == Container;
+
+        public Dictionary<string, TreeInfo> Trees { get; private set; }
+
+        public ForestBrushTool BrushTool { get; private set; }
+
+        public UIButton ToggleButton => toggleButtonComponents.ToggleButton;
+
+        internal ForestBrushPanel ForestBrushPanel { get; private set; }
+
+        internal bool Initialized;
+
+        private static readonly string kEmptyContainer = "EmptyContainer";
+
+        private static readonly string kMainToolbarSeparatorTemplate = "MainToolbarSeparator";
+
+        private static readonly string kMainToolbarButtonTemplate = "MainToolbarButtonTemplate";
+
+        private static readonly string kToggleButton = "ForestBrushModToggle";
+
+        private ToolBase lastTool;
+
+        internal void Initialize()
         {
-            return new ForestBrush()
-            {
-                Name = Constants.NewBrushName,
-                Trees = new List<Tree>(),
-                Options = BrushOptions.Default()
-            };
+            Trees = LoadTrees();
+
+            UITabstrip tabstrip = ToolsModifierControl.mainToolbar.component as UITabstrip;
+            toggleButtonComponents = CreateToggleButtonComponents(tabstrip);
+            ForestBrushPanel = toggleButtonComponents.TabStripPage.GetComponent<UIPanel>().AddUIComponent<ForestBrushPanel>();
+            BrushTool = gameObject.AddComponent<ForestBrushTool>();
+            SetTutorialLocale();
+
+            toggleButtonComponents.ToggleButton.eventClick += OnToggleClick;
+            ForestBrushPanel.eventVisibilityChanged += OnForestBrushPanelVisibilityChanged;
+            LocaleManager.eventLocaleChanged += SetTutorialLocale;
+
+            Initialized = true;
         }
 
-        [Serializable]
-        public class BrushOptions
+        internal void CleanUp()
         {
-            public float Size { get; set; }
-            public float Strength { get; set; }
-            public float Density { get; set; }
-            public bool AutoDensity { get; set; }
-            public bool IsSquare { get; set; }
-            public Color32 OverlayColor { get; set; }
+            Initialized = false;
 
-            public static BrushOptions Default()
+            LocaleManager.eventLocaleChanged -= SetTutorialLocale;
+            ForestBrushPanel.eventVisibilityChanged -= OnForestBrushPanelVisibilityChanged;
+            toggleButtonComponents.ToggleButton.eventClick -= OnToggleClick;
+
+            Destroy(BrushTool.gameObject);
+            Destroy(ForestBrushPanel.gameObject);
+            DestroyToggleButtonComponents(toggleButtonComponents);
+            toggleButtonComponents = null;
+
+            Trees = null;
+        }
+
+        private ToggleButtonComponents CreateToggleButtonComponents(UITabstrip tabstrip)
+        {
+            SeparatorComponents preSeparatorComponents = CreateSeparatorComponents(tabstrip);
+
+            GameObject tabStripPage = UITemplateManager.GetAsGameObject(kEmptyContainer);
+            GameObject mainToolbarButtonTemplate = UITemplateManager.GetAsGameObject(kMainToolbarButtonTemplate);
+
+            UIButton toggleButton = tabstrip.AddTab(kToggleButton, mainToolbarButtonTemplate, tabStripPage, new Type[0]) as UIButton;
+            toggleButton.atlas = Resources.ResourceLoader.ForestBrushAtlas;
+
+            toggleButton.normalFgSprite = "ForestBrushNormal";
+            toggleButton.disabledFgSprite = "ForestBrushDisabled";
+            toggleButton.focusedFgSprite = "ForestBrushFocused";
+            toggleButton.hoveredFgSprite = "ForestBrushHovered";
+            toggleButton.pressedFgSprite = "ForestBrushPressed";
+
+            toggleButton.normalBgSprite = "ToolbarIconGroup6Normal";
+            toggleButton.disabledBgSprite = "ToolbarIconGroup6Disabled";
+            toggleButton.focusedBgSprite = "ToolbarIconGroup6Focused";
+            toggleButton.hoveredBgSprite = "ToolbarIconGroup6Hovered";
+            toggleButton.pressedBgSprite = "ToolbarIconGroup6Pressed";
+            toggleButton.parent.height = 1f;
+
+            IncrementObjectIndex();
+
+            SeparatorComponents postSeparatorComponents = CreateSeparatorComponents(tabstrip);
+
+            return new ToggleButtonComponents(preSeparatorComponents, tabStripPage, mainToolbarButtonTemplate, toggleButton, postSeparatorComponents);
+        }
+
+        private void DestroyToggleButtonComponents(ToggleButtonComponents toggleButtonComponents)
+        {
+            DestroySeparatorComponents(toggleButtonComponents.PostSeparatorComponents);
+
+            DecrementObjectIndex();
+
+            Destroy(toggleButtonComponents.ToggleButton.gameObject);
+
+            Destroy(toggleButtonComponents.MainToolbarButtonTemplate.gameObject);
+            Destroy(toggleButtonComponents.TabStripPage.gameObject);
+
+            DestroySeparatorComponents(toggleButtonComponents.PreSeparatorComponents);
+        }
+
+        private void SetTutorialLocale()
+        {
+            Locale locale = (Locale)typeof(LocaleManager).GetField("m_Locale", BindingFlags.Instance | BindingFlags.NonPublic)
+                .GetValue(LocaleManager.instance);
+
+            Locale.Key tutorialAdviserTitleKey = new Locale.Key
             {
-                return new BrushOptions()
+                m_Identifier = "TUTORIAL_ADVISER_TITLE",
+                m_Key = kToggleButton,
+            };
+            if (!locale.Exists(tutorialAdviserTitleKey))
+            {
+                locale.AddLocalizedString(tutorialAdviserTitleKey, Translation.Instance.GetTranslation("FOREST-BRUSH-MODNAME"));
+            }
+
+            Locale.Key tutorialAdviserKey = new Locale.Key
+            {
+                m_Identifier = "TUTORIAL_ADVISER",
+                m_Key = kToggleButton
+            };
+            if (!locale.Exists(tutorialAdviserKey))
+            {
+                locale.AddLocalizedString(tutorialAdviserKey, Translation.Instance.GetTranslation("FOREST-BRUSH-TUTORIAL"));
+            }
+        }
+
+        private void IncrementObjectIndex()
+        {
+            FieldInfo m_ObjectIndex = typeof(MainToolbar).GetField("m_ObjectIndex", BindingFlags.Instance | BindingFlags.NonPublic);
+            m_ObjectIndex.SetValue(ToolsModifierControl.mainToolbar, (int)m_ObjectIndex.GetValue(ToolsModifierControl.mainToolbar) + 1);
+        }
+
+        private void DecrementObjectIndex()
+        {
+            FieldInfo m_ObjectIndex = typeof(MainToolbar).GetField("m_ObjectIndex", BindingFlags.Instance | BindingFlags.NonPublic);
+            m_ObjectIndex.SetValue(ToolsModifierControl.mainToolbar, (int)m_ObjectIndex.GetValue(ToolsModifierControl.mainToolbar) - 1);
+        }
+
+        protected SeparatorComponents CreateSeparatorComponents(UITabstrip strip)
+        {
+            GameObject mainToolbarSeparatorTemplate = UITemplateManager.GetAsGameObject(kMainToolbarSeparatorTemplate);
+            GameObject emptyContainer = UITemplateManager.GetAsGameObject(kEmptyContainer);
+            UIComponent separatorTab = strip.AddTab("Separator", mainToolbarSeparatorTemplate, emptyContainer, new Type[0]);
+            separatorTab.width *= 0.5f;
+            separatorTab.isEnabled = false;
+            IncrementObjectIndex();
+            return new SeparatorComponents(mainToolbarSeparatorTemplate, emptyContainer, separatorTab);
+        }
+
+        protected void DestroySeparatorComponents(SeparatorComponents separatorComponents)
+        {
+            DecrementObjectIndex();
+            Destroy(separatorComponents.SeparatorTab.gameObject);
+            Destroy(separatorComponents.EmptyContainer.gameObject);
+            Destroy(separatorComponents.MainToolbarSeparatorTemplate.gameObject);
+        }
+
+        private void OnForestBrushPanelVisibilityChanged(UIComponent component, bool visible)
+        {
+            if (visible)
+            {
+                lastTool = ToolsModifierControl.toolController.CurrentTool;
+                TreeTool tool = ToolsModifierControl.GetTool<TreeTool>();
+                ToolsModifierControl.toolController.CurrentTool = tool;
+                tool.m_prefab = Container;
+            }
+            else if (lastTool != null && lastTool.GetType() != typeof(TreeTool) && ToolsModifierControl.toolController.NextTool == null)
+            {
+                lastTool.enabled = true;
+            }
+        }
+
+        private void OnToggleClick(UIComponent component, UIMouseEventParameter eventParam)
+        {
+            ForestBrushPanel.BringToFront();
+            ForestBrushPanel.isVisible = !ForestBrushPanel.isVisible;
+        }
+
+        private Dictionary<string, TreeInfo> LoadTrees()
+        {
+            var trees = new Dictionary<string, TreeInfo>();
+            var treeCount = PrefabCollection<TreeInfo>.LoadedCount();
+            for (uint i = 0; i < treeCount; i++)
+            {
+                var tree = PrefabCollection<TreeInfo>.GetLoaded(i);
+                if (tree == null || tree == Container) continue;
+                if (tree.m_availableIn != ItemClass.Availability.All)
                 {
-                    Size = 100f,
-                    Strength = 0.1f,
-                    Density = 1f,
-                    AutoDensity = true,
-                    IsSquare = false,
-                    OverlayColor = new Color32(25, 125, 155, 255)
-                };
+                    tree.m_availableIn = ItemClass.Availability.All;
+                }
+
+                if (tree.m_Atlas == null || tree.m_Thumbnail.IsNullOrWhiteSpace()) ImageUtils.CreateThumbnailAtlas(GetName(tree), tree);
+
+                trees.Add(tree.name, tree);
+            }            
+            return trees;
+        }
+
+        public static string GetName(PrefabInfo prefab)
+        {
+            string name = prefab.name;
+            if (name.EndsWith("_Data"))
+            {
+                name = name.Substring(0, name.LastIndexOf("_Data"));
+            }
+            return name;
+        }
+
+        public void OnGUI()
+        {
+            try
+            {
+                if (Initialized && !UIView.HasModalInput() &&
+                    (!UIView.HasInputFocus() || (UIView.activeComponent != null)))
+                {
+                    Event e = Event.current;
+
+                    if (UserMod.Settings.ToggleTool.IsPressed(e))
+                    {
+                        toggleButtonComponents.ToggleButton.SimulateClick();
+                    }
+                }
+                
+            }
+            catch (Exception)
+            {
+                Debug.LogWarning("OnGUI failed.");
             }
         }
     }

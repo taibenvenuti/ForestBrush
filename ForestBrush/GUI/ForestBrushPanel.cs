@@ -57,7 +57,7 @@ namespace ForestBrush.GUI
             isInteractive = true;
         }
 
-        internal void LoadBrush(ForestBrush brush)
+        internal void LoadBrush(Brush brush)
         {
             BrushSelectSection?.LoadBrush(brush);
             BrushEditSection?.LoadBrush(brush);

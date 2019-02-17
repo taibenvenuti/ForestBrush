@@ -20,7 +20,7 @@ namespace ForestBrush.GUI
             height = Constants.UITitleBarHeight;
 
             icon = AddUIComponent<UISprite>();
-            icon.atlas = ForestBrushMod.Instance.Atlas;
+            icon.atlas = ResourceLoader.ForestBrushAtlas;
             icon.spriteName = ResourceLoader.ForestBrushNormal;
             icon.relativePosition = new Vector3(5f, 5f);
             icon.size = new Vector2(28f, 32f);
@@ -43,7 +43,7 @@ namespace ForestBrush.GUI
             closeButton.normalBgSprite = ResourceLoader.DeleteLineButton;
             closeButton.hoveredBgSprite = ResourceLoader.DeleteLineButtonHovered;
             closeButton.pressedBgSprite = ResourceLoader.DeleteLineButtonPressed;
-            closeButton.eventClick += (c, p) => ForestBrushMod.Instance.ToggleButton.SimulateClick();
+            closeButton.eventClick += (c, p) => ForestBrush.Instance.ToggleButton.SimulateClick();
         }
 
         public void SavePanelPosition()

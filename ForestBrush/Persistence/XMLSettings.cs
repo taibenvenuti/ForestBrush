@@ -14,7 +14,7 @@ namespace ForestBrush.Persistence
 
         public bool BrushOptionsOpen { get; set; }
 
-        public List<ForestBrush> Brushes { get; set; }
+        public List<Brush> Brushes { get; set; }
 
         public string SelectedBrush { get; set; }
 

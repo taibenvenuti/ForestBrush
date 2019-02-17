@@ -62,7 +62,7 @@ namespace ForestBrush.GUI
             SelectBrushDropDown.eventDropdownClose += (UIDropDown dropdown, UIListBox popup, ref bool overridden) => SelectBrushDropDown.triggerButton.isInteractive = true;
         }
 
-        internal void LoadBrush(ForestBrush brush)
+        internal void LoadBrush(Brush brush)
         {
             UpdateDropDown();
         }
@@ -71,7 +71,7 @@ namespace ForestBrush.GUI
         {
             toggleEditButton = UIUtilities.CreateSmallButton(this, Translation.Instance.GetTranslation("FOREST-BRUSH-TOGGLE-EDIT"));
             toggleEditButton.zOrder = 1;
-            toggleEditButton.atlas = ForestBrushMod.Instance.Atlas;
+            toggleEditButton.atlas = ResourceLoader.ForestBrushAtlas;
             toggleEditButton.normalBgSprite = ResourceLoader.SettingsDropbox;
             toggleEditButton.disabledBgSprite = ResourceLoader.SettingsDropbox;
             toggleEditButton.hoveredBgSprite = ResourceLoader.SettingsDropboxHovered;
@@ -81,7 +81,7 @@ namespace ForestBrush.GUI
 
             toggleOptionsButton = UIUtilities.CreateSmallButton(this, Translation.Instance.GetTranslation("FOREST-BRUSH-TOGGLE-OPTIONS"));
             toggleOptionsButton.zOrder = 2;
-            toggleOptionsButton.atlas = ForestBrushMod.Instance.Atlas;
+            toggleOptionsButton.atlas = ResourceLoader.ForestBrushAtlas;
             toggleOptionsButton.normalBgSprite = ResourceLoader.OptionsDropbox;
             toggleOptionsButton.disabledBgSprite = ResourceLoader.OptionsDropbox;
             toggleOptionsButton.hoveredBgSprite = ResourceLoader.OptionsDropboxHovered;
@@ -113,7 +113,7 @@ namespace ForestBrush.GUI
         private void EventSelectedIndexChanged(UIComponent component, int index)
         {
             var brushName = SelectBrushDropDown.items[index];
-            ForestBrushMod.Instance.BrushTool.UpdateTool(brushName);
+            ForestBrush.Instance.BrushTool.UpdateTool(brushName);
             father.BrushEditSection.ResetRenameError();
         }
 

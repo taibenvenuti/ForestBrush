@@ -94,19 +94,20 @@ namespace ForestBrush
             {
                 UninstallMod();
             }
-
+            if (IsMap || IsTheme) Resources.ResourceLoader.Atlas = Resources.ResourceLoader.Atlas;
+            Resources.ResourceLoader.ForestBrushAtlas = Resources.ResourceLoader.ForestBrushAtlas;
             harmony = HarmonyInstance.Create(harmonyId);
             harmony.PatchAll(Assembly.GetExecutingAssembly());
             forestBrushGameObject = new GameObject("ForestBrush");
-            ForestBrushMod.Instance = forestBrushGameObject.AddComponent<ForestBrushMod>();
-            ForestBrushMod.Instance.Initialize();
+            ForestBrush.Instance = forestBrushGameObject.AddComponent<ForestBrush>();
+            ForestBrush.Instance.Initialize();
 
             modInstalled = true;
         }
 
         void UninstallMod()
         {
-            ForestBrushMod.Instance.CleanUp();
+            ForestBrush.Instance.CleanUp();
             harmony.UnpatchAll(harmonyId);
             harmony = null;
             if (IsMap || IsTheme)

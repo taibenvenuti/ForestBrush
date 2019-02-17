@@ -81,7 +81,7 @@ namespace ForestBrush.GUI
             sizeSlider.color = new Color32(0, 0, 0, 255);
             sizeSlider.disabledColor = new Color32(190, 190, 190, 255);
             sizeSlider.minValue = 1f;
-            sizeSlider.maxValue = ForestBrushMod.Instance.BrushTweaker.MaxSize;
+            sizeSlider.maxValue = ForestBrush.Instance.BrushTweaker.MaxSize;
             sizeSlider.stepSize = 1f;
             sizeSlider.value = UserMod.Settings.SelectedBrush.Options.Size;
             sizeSlider.scrollWheelAmount = 1f;
@@ -331,7 +331,7 @@ namespace ForestBrush.GUI
         public string SquareBrushLabelText => Translation.Instance.GetTranslation("FOREST-BRUSH-BRUSH-OPTIONS-SQUAREBRUSH");
         public string OverlayColorLabelText => Translation.Instance.GetTranslation("FOREST-BRUSH-BRUSH-OPTIONS-OVERLAYCOLOR");
 
-        internal void LoadBrush(ForestBrush brush)
+        internal void LoadBrush(Brush brush)
         {
             sizeSlider.value = brush.Options.Size;
             sizeSlider.tooltip = brush.Options.Size.ToString();

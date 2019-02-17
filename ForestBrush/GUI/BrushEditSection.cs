@@ -65,7 +65,7 @@ namespace ForestBrush.GUI
             Hide();
         }
 
-        internal void LoadBrush(ForestBrush brush)
+        internal void LoadBrush(Brush brush)
         {
             renameBrushTextField.eventTextChanged -= OnRenameBrushTextChanged;
             renameBrushTextField.text = brush.Name;
@@ -187,7 +187,7 @@ namespace ForestBrush.GUI
                     return;
                 }
             }
-            ForestBrushMod.Instance.BrushTool.New(name);
+            ForestBrush.Instance.BrushTool.New(name);
             renameBrushTextField.eventTextChanged -= OnRenameBrushTextChanged;
             renameBrushTextField.text = name;
             renameBrushTextField.Focus();
@@ -214,14 +214,14 @@ namespace ForestBrush.GUI
             {
                 if (i == 1)
                 {
-                    ForestBrushMod.Instance.BrushTool.DeleteCurrent();
+                    ForestBrush.Instance.BrushTool.DeleteCurrent();
                 }
             });
         }
 
         private void OnRenameBrushTextChanged(UIComponent component, string newName)
         {
-            string currentName = ForestBrushMod.Instance.BrushTool.Brush.Name;
+            string currentName = ForestBrush.Instance.BrushTool.Brush.Name;
             if (UserMod.Settings.Brushes.Find(b => b.Name == newName && b.Name != currentName) == null)
             {
                 ResetRenameError();
@@ -230,7 +230,7 @@ namespace ForestBrush.GUI
                 {
                     brushDropDown.items[brushDropDown.selectedIndex] = newName;
                 }
-                ForestBrushMod.Instance.BrushTool.Brush.Name = newName;
+                ForestBrush.Instance.BrushTool.Brush.Name = newName;
                 brushDropDown.Invalidate();
             }
             else
@@ -263,9 +263,9 @@ namespace ForestBrush.GUI
 
         private void FilterTreeList(string filterText)
         {
-            if (TreesList == null || ForestBrushMod.Instance.Trees == null) return;
+            if (TreesList == null || ForestBrush.Instance.Trees == null) return;
             string[] filters = filterText?.Trim()?.ToLower().Split(' ');
-            var data = ForestBrushMod.Instance.Trees.Values.ToList();
+            var data = ForestBrush.Instance.Trees.Values.ToList();
             if (filters != null && filters.Length > 0 && !string.IsNullOrEmpty(filters[0]))
             {
                 var newData = new List<TreeInfo>();
@@ -296,7 +296,7 @@ namespace ForestBrush.GUI
 
         private List<TreeInfo> GetAvailableTreesSorted()
         {
-            List<TreeInfo> trees = ForestBrushMod.Instance.Trees.Values.ToList();
+            List<TreeInfo> trees = ForestBrush.Instance.Trees.Values.ToList();
             trees.Sort((t1, t2) => t1.GetUncheckedLocalizedTitle().CompareTo(t2.GetUncheckedLocalizedTitle()));
             return trees;
         }
