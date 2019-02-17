@@ -1,4 +1,5 @@
-﻿using ColossalFramework.UI;
+﻿using System;
+using ColossalFramework.UI;
 using ForestBrush.Resources;
 using ForestBrush.TranslationFramework;
 using UnityEngine;
@@ -34,7 +35,7 @@ namespace ForestBrush.GUI
             dragHandle.size = new Vector2(width, Constants.UITitleBarHeight);
             dragHandle.relativePosition = Vector3.zero;
             dragHandle.target = parent;
-            dragHandle.eventMouseUp += (c, e) => SavePanelPosition();
+            dragHandle.eventMouseUp += DragHandle_eventMouseUp;
 
             closeButton = AddUIComponent<UIButton>();
             closeButton.atlas = ResourceLoader.Atlas;
@@ -43,7 +44,24 @@ namespace ForestBrush.GUI
             closeButton.normalBgSprite = ResourceLoader.DeleteLineButton;
             closeButton.hoveredBgSprite = ResourceLoader.DeleteLineButtonHovered;
             closeButton.pressedBgSprite = ResourceLoader.DeleteLineButtonPressed;
-            closeButton.eventClick += (c, p) => ForestBrush.Instance.ToggleButton.SimulateClick();
+            closeButton.eventClick += CloseButton_eventClick;
+        }
+
+        public override void OnDestroy()
+        {
+            dragHandle.eventMouseUp -= DragHandle_eventMouseUp;
+            closeButton.eventClick -= CloseButton_eventClick;
+            base.OnDestroy();
+        }
+
+        private void DragHandle_eventMouseUp(UIComponent component, UIMouseEventParameter eventParam)
+        {
+            SavePanelPosition();
+        }
+
+        private void CloseButton_eventClick(UIComponent component, UIMouseEventParameter eventParam)
+        {
+            ForestBrush.Instance.ToggleButton.SimulateClick();
         }
 
         public void SavePanelPosition()

@@ -65,11 +65,36 @@ namespace ForestBrush.GUI
             Hide();
         }
 
+        public override void OnDestroy()
+        {
+            renameBrushTextField.eventTextChanged -= RenameBrushTextField_eventTextChanged;
+            renameBrushTextField.eventKeyPress -= RenameBrushTextField_eventKeyPress;
+            renameBrushTextField.eventLostFocus -= RenameBrushTextField_eventLostFocus;
+            createBrushButton.eventClicked -= CreateBrushButton_eventClicked;
+            deleteBrushButton.eventClicked -= DeleteBrushButton_eventClicked;
+            SearchTextField.eventTextChanged -= SearchTextField_eventTextChanged;
+            SearchTextField.eventLostFocus -= SearchTextField_eventLostFocus;
+            base.OnDestroy();
+        }
+
+        private void RenameBrushTextField_eventLostFocus(UIComponent component, UIFocusEventParameter eventParam)
+        {
+            UserMod.SaveSettings();
+        }
+
+        internal void LocaleChanged()
+        {
+            createBrushButton.tooltip = Translation.Instance.GetTranslation("FOREST-BRUSH-CREATE");
+            deleteBrushButton.tooltip = Translation.Instance.GetTranslation("FOREST-BRUSH-DELETE");
+            renameBrushTextField.tooltip = Translation.Instance.GetTranslation("FOREST-BRUSH-RENAME-BRUSH");
+            searchLabel.text = Translation.Instance.GetTranslation("FOREST-BRUSH-SEARCH");
+        }
+
         internal void LoadBrush(Brush brush)
         {
-            renameBrushTextField.eventTextChanged -= OnRenameBrushTextChanged;
+            renameBrushTextField.eventTextChanged -= RenameBrushTextField_eventTextChanged;
             renameBrushTextField.text = brush.Name;
-            renameBrushTextField.eventTextChanged += OnRenameBrushTextChanged;
+            renameBrushTextField.eventTextChanged += RenameBrushTextField_eventTextChanged;
 
             var itemBuffer = TreesList.rows.m_buffer;
 
@@ -84,13 +109,13 @@ namespace ForestBrush.GUI
             createBrushButton = UIUtilities.CreateSmallButton(topPanel, Translation.Instance.GetTranslation("FOREST-BRUSH-CREATE"));
             createBrushButton.zOrder = 1;
             createBrushButton.text = "+";
-            createBrushButton.eventClicked += OnNewBrushClicked;
+            createBrushButton.eventClicked += CreateBrushButton_eventClicked;
 
             deleteBrushButton = UIUtilities.CreateSmallButton(topPanel, Translation.Instance.GetTranslation("FOREST-BRUSH-DELETE"));
             deleteBrushButton.textPadding = new RectOffset(0, 0, 0, 1);
             deleteBrushButton.zOrder = 2;
             deleteBrushButton.text = "-";
-            deleteBrushButton.eventClicked += OnDeleteBrushClicked;
+            deleteBrushButton.eventClicked += DeleteBrushButton_eventClicked;
         }
 
         private void SetupRenameField()
@@ -113,9 +138,9 @@ namespace ForestBrush.GUI
             renameBrushTextField.color = new Color32(255, 255, 255, 255);
             renameBrushTextField.relativePosition = new Vector3(width - Constants.UISpacing - renameBrushTextField.width, 560f);
             renameBrushTextField.text = UserMod.Settings.SelectedBrush.Name;
-            renameBrushTextField.eventTextChanged += OnRenameBrushTextChanged;
-            renameBrushTextField.eventKeyPress += OnRenameBrushKeyPress;
-            renameBrushTextField.eventLostFocus += (c, e) => UserMod.SaveSettings();
+            renameBrushTextField.eventTextChanged += RenameBrushTextField_eventTextChanged;
+            renameBrushTextField.eventKeyPress += RenameBrushTextField_eventKeyPress;
+            renameBrushTextField.eventLostFocus += RenameBrushTextField_eventLostFocus;
             renameBrushTextField.tooltip = Translation.Instance.GetTranslation("FOREST-BRUSH-RENAME-BRUSH");
         }
 
@@ -169,11 +194,11 @@ namespace ForestBrush.GUI
             SearchTextField.textColor = new Color32(0, 0, 0, 255);
             SearchTextField.disabledTextColor = new Color32(80, 80, 80, 128);
             SearchTextField.color = new Color32(255, 255, 255, 255);
-            SearchTextField.eventTextChanged += OnSearchTextChanged;
-            SearchTextField.eventLostFocus += SearchTextField_eventLostFocus; ;
+            SearchTextField.eventTextChanged += SearchTextField_eventTextChanged;
+            SearchTextField.eventLostFocus += SearchTextField_eventLostFocus;
         }
 
-        private void OnNewBrushClicked(UIComponent component, UIMouseEventParameter mouseEventParameter)
+        private void CreateBrushButton_eventClicked(UIComponent component, UIMouseEventParameter mouseEventParameter)
         {
             string name = Constants.NewBrushName;
             int suffix = 0;
@@ -188,14 +213,14 @@ namespace ForestBrush.GUI
                 }
             }
             ForestBrush.Instance.BrushTool.New(name);
-            renameBrushTextField.eventTextChanged -= OnRenameBrushTextChanged;
+            renameBrushTextField.eventTextChanged -= RenameBrushTextField_eventTextChanged;
             renameBrushTextField.text = name;
             renameBrushTextField.Focus();
             renameBrushTextField.SelectAll();
-            renameBrushTextField.eventTextChanged += OnRenameBrushTextChanged;
+            renameBrushTextField.eventTextChanged += RenameBrushTextField_eventTextChanged;
         }
 
-        private void OnRenameBrushKeyPress(UIComponent component, UIKeyEventParameter parameter)
+        private void RenameBrushTextField_eventKeyPress(UIComponent component, UIKeyEventParameter parameter)
         {
             char ch = parameter.character;
             if (!char.IsControl(ch) && !char.IsWhiteSpace(ch) && !char.IsLetterOrDigit(ch))
@@ -208,7 +233,7 @@ namespace ForestBrush.GUI
             }
         }
 
-        private void OnDeleteBrushClicked(UIComponent component, UIMouseEventParameter mouseEventParameter)
+        private void DeleteBrushButton_eventClicked(UIComponent component, UIMouseEventParameter mouseEventParameter)
         {            
             ConfirmPanel.ShowModal(Translation.Instance.GetTranslation("FOREST-BRUSH-MODAL-WARNING"), Translation.Instance.GetTranslation("FOREST-BRUSH-PROMPT-DELETE"), (d, i) =>
             {
@@ -219,7 +244,7 @@ namespace ForestBrush.GUI
             });
         }
 
-        private void OnRenameBrushTextChanged(UIComponent component, string newName)
+        private void RenameBrushTextField_eventTextChanged(UIComponent component, string newName)
         {
             string currentName = ForestBrush.Instance.BrushTool.Brush.Name;
             if (UserMod.Settings.Brushes.Find(b => b.Name == newName && b.Name != currentName) == null)
@@ -251,7 +276,7 @@ namespace ForestBrush.GUI
             renameBrushTextField.tooltip = Translation.Instance.GetTranslation("FOREST-BRUSH-RENAME-BRUSH");
         }
 
-        private void OnSearchTextChanged(UIComponent component, string text)
+        private void SearchTextField_eventTextChanged(UIComponent component, string text)
         {
             FilterTreeList(text);
         }

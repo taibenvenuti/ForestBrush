@@ -29,6 +29,15 @@ namespace ForestBrush.GUI
             SetupButtons();
         }
 
+        public override void OnDestroy()
+        {
+            SelectBrushDropDown.eventSelectedIndexChanged -= SelectBrushDropDown_eventSelectedIndexChanged;
+            SelectBrushDropDown.eventDropdownOpen -= SelectBrushDropDown_eventDropdownOpen;
+            SelectBrushDropDown.eventDropdownClose -= SelectBrushDropDown_eventDropdownClose;
+            toggleEditButton.eventClicked -= ToggleEditButton_eventClicked;
+            toggleOptionsButton.eventClicked -= ToggleOptionsButton_eventClicked;
+            base.OnDestroy();
+        }
         private void SetupDropDown()
         {
             SelectBrushDropDown = AddUIComponent<UIDropDown>();
@@ -57,9 +66,27 @@ namespace ForestBrush.GUI
             SelectBrushDropDown.textFieldPadding = new RectOffset(8, 0, 8, 0);
             SelectBrushDropDown.itemPadding = new RectOffset(10, 0, 8, 0);
             SelectBrushDropDown.triggerButton = SelectBrushDropDown;
-            SelectBrushDropDown.eventSelectedIndexChanged += EventSelectedIndexChanged;
-            SelectBrushDropDown.eventDropdownOpen += (UIDropDown dropdown, UIListBox popup, ref bool overridden) => SelectBrushDropDown.triggerButton.isInteractive = false;
-            SelectBrushDropDown.eventDropdownClose += (UIDropDown dropdown, UIListBox popup, ref bool overridden) => SelectBrushDropDown.triggerButton.isInteractive = true;
+            SelectBrushDropDown.eventSelectedIndexChanged += SelectBrushDropDown_eventSelectedIndexChanged;
+            SelectBrushDropDown.eventDropdownOpen += SelectBrushDropDown_eventDropdownOpen;
+            SelectBrushDropDown.eventDropdownClose += SelectBrushDropDown_eventDropdownClose;
+            SelectBrushDropDown.tooltip = Translation.Instance.GetTranslation("FOREST-BRUSH-SELECT");
+        }
+
+        private void SelectBrushDropDown_eventDropdownOpen(UIDropDown dropdown, UIListBox popup, ref bool overridden)
+        {
+            SelectBrushDropDown.triggerButton.isInteractive = false;
+        }
+
+        private void SelectBrushDropDown_eventDropdownClose(UIDropDown dropdown, UIListBox popup, ref bool overridden)
+        {
+            SelectBrushDropDown.triggerButton.isInteractive = true;
+        }
+
+        internal void LocaleChanged()
+        {
+            SelectBrushDropDown.tooltip = Translation.Instance.GetTranslation("FOREST-BRUSH-SELECT");
+            toggleEditButton.tooltip = Translation.Instance.GetTranslation("FOREST-BRUSH-TOGGLE-EDIT");
+            toggleOptionsButton.tooltip = Translation.Instance.GetTranslation("FOREST-BRUSH-TOGGLE-OPTIONS");
         }
 
         internal void LoadBrush(Brush brush)
@@ -77,7 +104,7 @@ namespace ForestBrush.GUI
             toggleEditButton.hoveredBgSprite = ResourceLoader.SettingsDropboxHovered;
             toggleEditButton.focusedBgSprite = ResourceLoader.SettingsDropbox;
             toggleEditButton.pressedBgSprite = ResourceLoader.SettingsDropboxPressed;
-            toggleEditButton.eventClicked += OnToggleEditClicked;
+            toggleEditButton.eventClicked += ToggleEditButton_eventClicked;
 
             toggleOptionsButton = UIUtilities.CreateSmallButton(this, Translation.Instance.GetTranslation("FOREST-BRUSH-TOGGLE-OPTIONS"));
             toggleOptionsButton.zOrder = 2;
@@ -87,16 +114,16 @@ namespace ForestBrush.GUI
             toggleOptionsButton.hoveredBgSprite = ResourceLoader.OptionsDropboxHovered;
             toggleOptionsButton.focusedBgSprite = ResourceLoader.OptionsDropbox;
             toggleOptionsButton.pressedBgSprite = ResourceLoader.OptionsDropboxPressed;
-            toggleOptionsButton.eventClicked += OnToggleOptionsClicked; 
+            toggleOptionsButton.eventClicked += ToggleOptionsButton_eventClicked; 
         }
 
-        private void OnToggleEditClicked(UIComponent component, UIMouseEventParameter eventParam)
+        private void ToggleEditButton_eventClicked(UIComponent component, UIMouseEventParameter eventParam)
         {
             bool editVisible = father.ToggleBrushEdit();
             toggleEditButton.normalBgSprite = toggleEditButton.focusedBgSprite = editVisible ? ResourceLoader.SettingsDropboxPressed : ResourceLoader.SettingsDropbox;
         }
 
-        private void OnToggleOptionsClicked(UIComponent component, UIMouseEventParameter eventParam)
+        private void ToggleOptionsButton_eventClicked(UIComponent component, UIMouseEventParameter eventParam)
         {
             bool optionsVisible = father.ToggleBrushOptions();
             toggleOptionsButton.normalBgSprite = toggleOptionsButton.focusedBgSprite = optionsVisible ? ResourceLoader.OptionsDropboxPressed : ResourceLoader.OptionsDropbox;
@@ -105,12 +132,12 @@ namespace ForestBrush.GUI
         internal void UpdateDropDown()
         {
             SelectBrushDropDown.items = GetDropdownItems();
-            SelectBrushDropDown.eventSelectedIndexChanged -= EventSelectedIndexChanged;
+            SelectBrushDropDown.eventSelectedIndexChanged -= SelectBrushDropDown_eventSelectedIndexChanged;
             SelectBrushDropDown.selectedIndex = GetDropdownItemsSelectedIndex();
-            SelectBrushDropDown.eventSelectedIndexChanged += EventSelectedIndexChanged;
+            SelectBrushDropDown.eventSelectedIndexChanged += SelectBrushDropDown_eventSelectedIndexChanged;
         }
 
-        private void EventSelectedIndexChanged(UIComponent component, int index)
+        private void SelectBrushDropDown_eventSelectedIndexChanged(UIComponent component, int index)
         {
             var brushName = SelectBrushDropDown.items[index];
             ForestBrush.Instance.BrushTool.UpdateTool(brushName);

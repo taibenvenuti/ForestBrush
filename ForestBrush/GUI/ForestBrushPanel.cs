@@ -1,4 +1,6 @@
-﻿using ColossalFramework.UI;
+﻿using System;
+using ColossalFramework.Globalization;
+using ColossalFramework.UI;
 using ForestBrush.Resources;
 using UnityEngine;
 
@@ -41,7 +43,21 @@ namespace ForestBrush.GUI
             BrushOptionsSection.zOrder = 3;
             layoutPanelSpace.zOrder = 4;
 
+            LocaleManager.eventLocaleChanged += ForestBrushPanel_eventLocaleChanged;
+
             Hide();
+        }
+
+        public override void OnDestroy()
+        {
+            LocaleManager.eventLocaleChanged -= ForestBrushPanel_eventLocaleChanged;
+            base.OnDestroy();
+        }
+        private void ForestBrushPanel_eventLocaleChanged()
+        {
+            BrushSelectSection.LocaleChanged();
+            BrushEditSection.LocaleChanged();
+            BrushOptionsSection.LocaleChanged();
         }
 
         private void Setup()

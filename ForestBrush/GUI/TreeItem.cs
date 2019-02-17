@@ -20,7 +20,7 @@ namespace ForestBrush.GUI
             prefab = info;
 
             //General
-            name = info.GetUncheckedLocalizedTitle() + "ListItem"; 
+            name = info.GetUncheckedLocalizedTitle() + "ListItem";
             atlas = ResourceLoader.Atlas;
             width = parent.width;
             height = Constants.UIItemHeight;
@@ -46,7 +46,7 @@ namespace ForestBrush.GUI
             ((UISprite)includeCheckBox.checkedBoxObject).spriteName = ResourceLoader.CheckBoxSpriteChecked;
             includeCheckBox.checkedBoxObject.size = includeCheckBox.size;
             includeCheckBox.checkedBoxObject.relativePosition = Vector3.zero;
-            includeCheckBox.eventCheckChanged += EventIncludeTree;
+            includeCheckBox.eventCheckChanged += IncludeCheckBox_eventIncludeTree;
             includeCheckBox.isChecked = ForestBrush.Instance.Container.m_variations.Any(v => v.m_finalTree == prefab);
             includeCheckBox.relativePosition = new Vector3(width - (Constants.UISpacing * 2) - includeCheckBox.width, (height - includeCheckBox.height) / 2);
 
@@ -58,6 +58,11 @@ namespace ForestBrush.GUI
             initialized = true;
         }
 
+        public override void OnDestroy()
+        {
+            includeCheckBox.eventCheckChanged -= IncludeCheckBox_eventIncludeTree;
+            base.OnDestroy();
+        }
         public void ToggleCheckbox(bool value)
         {
             includeCheckBox.isChecked = value;
@@ -68,7 +73,7 @@ namespace ForestBrush.GUI
             includeCheckBox.isChecked = ForestBrush.Instance.Container.m_variations.Any(v => v.m_finalTree == prefab);
         }
 
-        private void EventIncludeTree(UIComponent component, bool value)
+        private void IncludeCheckBox_eventIncludeTree(UIComponent component, bool value)
         {
             bool updateAll = false;
             if (includeCheckBox.hasFocus && (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.LeftCommand) || Input.GetKey(KeyCode.RightControl) || Input.GetKey(KeyCode.RightCommand)))

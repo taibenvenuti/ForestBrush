@@ -45,6 +45,25 @@ namespace ForestBrush.GUI
             Hide();
         }
 
+        public override void OnDestroy()
+        {
+            sizeSlider.eventMouseUp -= SizeSlider_eventMouseUp;
+            sizeSlider.eventValueChanged -= SizeSlider_eventValueChanged;
+            strengthSlider.eventValueChanged -= StrengthSlider_eventValueChanged;
+            strengthSlider.eventMouseUp -= StrengthSlider_eventMouseUp;
+            densitySlider.eventValueChanged -= DensitySlider_eventValueChanged;
+            densitySlider.eventMouseUp -= DensitySlider_eventMouseUp;
+            autoDensityCheckBox.eventCheckChanged -= SutoDensityCheckBox_eventCheckChanged;
+            squareBrushCheckBox.eventCheckChanged -= SquareBrushCheckBox_eventCheckChanged;
+            if (colorFieldTemplate != null)
+            {
+                colorFieldTemplate.eventSelectedColorChanged -= ColorField_eventSelectedColorChangedHandler;
+                colorFieldTemplate.eventColorPickerOpen -= ColorField_eventColorPickerOpen;
+                colorFieldTemplate.eventColorPickerClose -= ColorField_eventColorPickerClose;
+            }
+            base.OnDestroy();
+        }
+
         private void Setup()
         {
             autoLayout = true;
@@ -85,13 +104,8 @@ namespace ForestBrush.GUI
             sizeSlider.stepSize = 1f;
             sizeSlider.value = UserMod.Settings.SelectedBrush.Options.Size;
             sizeSlider.scrollWheelAmount = 1f;
-            sizeSlider.eventValueChanged += (c, e) =>
-            {
-                UserMod.Settings.SelectedBrush.Options.Size = e;
-                sizeSlider.tooltip = UserMod.Settings.SelectedBrush.Options.Size.ToString();
-                sizeSlider.RefreshTooltip();
-            };
-            sizeSlider.eventMouseUp += (c, e) => UserMod.SaveSettings();
+            sizeSlider.eventValueChanged += SizeSlider_eventValueChanged;
+            sizeSlider.eventMouseUp += SizeSlider_eventMouseUp;
             sizeSlider.backgroundSprite = ResourceLoader.OptionsScrollbarTrack;
             sizeSlider.tooltip = UserMod.Settings.SelectedBrush.Options.Size.ToString();
             sizeSlider.pivot = UIPivotPoint.TopLeft;
@@ -102,6 +116,28 @@ namespace ForestBrush.GUI
             thumb.size = new Vector2(20, 20);
             thumb.spriteName = ResourceLoader.IconPolicyForest;
             sizeSlider.thumbObject = thumb;
+        }
+
+        private void SizeSlider_eventMouseUp(UIComponent component, UIMouseEventParameter eventParam)
+        {
+            UserMod.SaveSettings();
+        }
+
+        private void SizeSlider_eventValueChanged(UIComponent component, float value)
+        {
+            UserMod.Settings.SelectedBrush.Options.Size = value;
+            sizeSlider.tooltip = UserMod.Settings.SelectedBrush.Options.Size.ToString();
+            sizeSlider.RefreshTooltip();
+        }
+
+        internal void LocaleChanged()
+        {
+            sizeLabel.text = Translation.Instance.GetTranslation("FOREST-BRUSH-BRUSH-OPTIONS-SIZE");
+            strengthLabel.text = Translation.Instance.GetTranslation("FOREST-BRUSH-BRUSH-OPTIONS-STRENGTH");
+            densityLabel.text = Translation.Instance.GetTranslation("FOREST-BRUSH-BRUSH-OPTIONS-DENSITY");
+            autoDensityLabel.text = AutoDensityLabelText;
+            squareBrushLabel.text = SquareBrushLabelText;
+            if(overlayColorLabel != null) overlayColorLabel.text = OverlayColorLabelText;
         }
 
         private void SetupStrengthPanel()
@@ -135,13 +171,8 @@ namespace ForestBrush.GUI
             strengthSlider.value = UserMod.Settings.SelectedBrush.Options.Strength;
             strengthSlider.scrollWheelAmount = 0.01f;
             strengthSlider.tooltip = Math.Round(strengthSlider.value * 100, 1, MidpointRounding.AwayFromZero) + "%";
-            strengthSlider.eventValueChanged += (c, p) =>
-            {
-                UserMod.Settings.SelectedBrush.Options.Strength = p;
-                strengthSlider.tooltip = Math.Round(p * 100, 1) + "%";
-                strengthSlider.RefreshTooltip();
-            };
-            strengthSlider.eventMouseUp += (c, e) => UserMod.SaveSettings();
+            strengthSlider.eventValueChanged += StrengthSlider_eventValueChanged;
+            strengthSlider.eventMouseUp += StrengthSlider_eventMouseUp;
             strengthSlider.backgroundSprite = ResourceLoader.OptionsScrollbarTrack;
             strengthSlider.zOrder = 1;
             strengthSlider.pivot = UIPivotPoint.TopLeft;
@@ -151,6 +182,18 @@ namespace ForestBrush.GUI
             thumb1.size = new Vector2(20, 20);
             thumb1.spriteName = ResourceLoader.IconPolicyForest;
             strengthSlider.thumbObject = thumb1;
+        }
+
+        private void StrengthSlider_eventMouseUp(UIComponent component, UIMouseEventParameter eventParam)
+        {
+            UserMod.SaveSettings();
+        }
+
+        private void StrengthSlider_eventValueChanged(UIComponent component, float value)
+        {
+            UserMod.Settings.SelectedBrush.Options.Strength = value;
+            strengthSlider.tooltip = Math.Round(value * 100, 1) + "%";
+            strengthSlider.RefreshTooltip();
         }
 
         private void SetupDensityPanel()
@@ -184,11 +227,8 @@ namespace ForestBrush.GUI
             densitySlider.stepSize = 0.1f;
             densitySlider.value = 16 - UserMod.Settings.SelectedBrush.Options.Density;
             densitySlider.scrollWheelAmount = 0.1f;
-            densitySlider.eventValueChanged += (c, e) =>
-            {
-                UserMod.Settings.SelectedBrush.Options.Density = 16f - e;
-            };
-            densitySlider.eventMouseUp += (c, e) => UserMod.SaveSettings();
+            densitySlider.eventValueChanged += DensitySlider_eventValueChanged;
+            densitySlider.eventMouseUp += DensitySlider_eventMouseUp;
             densitySlider.backgroundSprite = ResourceLoader.OptionsScrollbarTrack;
             densitySlider.zOrder = 1;
             densitySlider.pivot = UIPivotPoint.TopLeft;
@@ -202,6 +242,16 @@ namespace ForestBrush.GUI
             densitySlider.thumbObject = thumb1;
         }
 
+        private void DensitySlider_eventMouseUp(UIComponent component, UIMouseEventParameter eventParam)
+        {
+            UserMod.SaveSettings();
+        }
+
+        private void DensitySlider_eventValueChanged(UIComponent component, float value)
+        {
+            UserMod.Settings.SelectedBrush.Options.Density = 16f - value;
+        }
+
         private void SetupAutoDensityPanel()
         {
             layoutPanelAutoDensityColor = AddUIComponent<UIPanel>();
@@ -211,7 +261,7 @@ namespace ForestBrush.GUI
             layoutPanelAutoDensityColor.autoFitChildrenHorizontally = true;
             layoutPanelAutoDensityColor.autoLayoutPadding = new RectOffset(10, 0, 0, 0);
             layoutPanelAutoDensityColor.zOrder = 3;
-            
+
             autoDensityLabel = layoutPanelAutoDensityColor.AddUIComponent<UILabel>();
             autoDensityLabel.text = AutoDensityLabelText;
             autoDensityLabel.textScale = Constants.UITextScale;
@@ -234,12 +284,7 @@ namespace ForestBrush.GUI
             autoDensityCheckBox.checkedBoxObject.size = autoDensityCheckBox.size;
             autoDensityCheckBox.checkedBoxObject.relativePosition = Vector3.zero;
             autoDensityCheckBox.isChecked = UserMod.Settings.SelectedBrush.Options.AutoDensity;
-            autoDensityCheckBox.eventCheckChanged += (c, e) =>
-            {
-                UserMod.Settings.SelectedBrush.Options.AutoDensity = e;
-                densityLabel.isEnabled = densitySlider.isEnabled = !e;
-                UserMod.SaveSettings();
-            };
+            autoDensityCheckBox.eventCheckChanged += SutoDensityCheckBox_eventCheckChanged;
             autoDensityCheckBox.zOrder = 0;
 
             var colorField = CreateColorField(layoutPanelAutoDensityColor);
@@ -256,6 +301,13 @@ namespace ForestBrush.GUI
                 colorFieldTemplate.size = Constants.UIColorFieldSize;
                 colorFieldTemplate.zOrder = 2;
             }
+        }
+
+        private void SutoDensityCheckBox_eventCheckChanged(UIComponent component, bool value)
+        {
+            UserMod.Settings.SelectedBrush.Options.AutoDensity = value;
+            densityLabel.isEnabled = densitySlider.isEnabled = !value;
+            UserMod.SaveSettings();
         }
 
         private void SetupSquareBrushPanel()
@@ -291,12 +343,14 @@ namespace ForestBrush.GUI
             squareBrushCheckBox.checkedBoxObject.size = squareBrushCheckBox.size;
             squareBrushCheckBox.checkedBoxObject.relativePosition = Vector3.zero;
             squareBrushCheckBox.isChecked = UserMod.Settings.SelectedBrush.Options.IsSquare;
-            squareBrushCheckBox.eventCheckChanged += (c, e) =>
-            {
-                UserMod.Settings.SelectedBrush.Options.IsSquare = e;
-                UserMod.SaveSettings();
-            };
+            squareBrushCheckBox.eventCheckChanged += SquareBrushCheckBox_eventCheckChanged;
             squareBrushCheckBox.zOrder = 0;
+        }
+
+        private void SquareBrushCheckBox_eventCheckChanged(UIComponent component, bool value)
+        {
+            UserMod.Settings.SelectedBrush.Options.IsSquare = value;
+            UserMod.SaveSettings();
         }
 
         private UIColorField CreateColorField(UIComponent parent)
@@ -314,14 +368,24 @@ namespace ForestBrush.GUI
             parent.AttachUIComponent(colorField.gameObject);
             colorField.name = "ForestBrushColorField";
             colorField.pickerPosition = UIColorField.ColorPickerPosition.RightBelow;
-            colorField.eventSelectedColorChanged += EventSelectedColorChangedHandler;
-            colorField.eventColorPickerOpen += (UIColorField field, UIColorPicker picker, ref bool overridden) => { colorField.triggerButton.isInteractive = false; };
-            colorField.eventColorPickerClose += (UIColorField field, UIColorPicker picker, ref bool overridden) => { colorField.triggerButton.isInteractive = true; };
+            colorField.eventSelectedColorChanged += ColorField_eventSelectedColorChangedHandler;
+            colorField.eventColorPickerOpen += ColorField_eventColorPickerOpen;
+            colorField.eventColorPickerClose += ColorField_eventColorPickerClose;
             colorField.selectedColor = UserMod.Settings.SelectedBrush.Options.OverlayColor;
             return colorField;
         }
 
-        private void EventSelectedColorChangedHandler(UIComponent component, Color value)
+        private void ColorField_eventColorPickerClose(UIColorField colorField, UIColorPicker popup, ref bool overridden)
+        {
+            colorField.triggerButton.isInteractive = false;
+        }
+
+        private void ColorField_eventColorPickerOpen(UIColorField colorField, UIColorPicker popup, ref bool overridden)
+        {
+            colorField.triggerButton.isInteractive = true;
+        }
+
+        private void ColorField_eventSelectedColorChangedHandler(UIComponent component, Color value)
         {
             UserMod.Settings.SelectedBrush.Options.OverlayColor = value;
             UserMod.SaveSettings();
