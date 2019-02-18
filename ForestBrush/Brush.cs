@@ -38,7 +38,7 @@ namespace ForestBrush
             Trees = new List<Tree>();
             for (int i = 0; i < newTrees.Count; i++)
             {
-                if (i < 99)
+                if (i < 100)
                 {
                     Tree tree = new Tree(newTrees[i]);
                     Trees.Add(tree);

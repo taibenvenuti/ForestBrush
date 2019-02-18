@@ -77,20 +77,29 @@ namespace ForestBrush
         private void AddAll()
         {
             var infoBuffer = ForestBrush.Instance.ForestBrushPanel.BrushEditSection.TreesList.rowsData.m_buffer.Cast<TreeInfo>().ToList();
-            TreeInfos = ForestBrush.Instance.Trees.Values.Where(treeInfo => infoBuffer.Contains(treeInfo)).ToList();
-            Brush.ReplaceAll(TreeInfos);
-            var itemBuffer = ForestBrush.Instance.ForestBrushPanel.BrushEditSection.TreesList.rows.m_buffer;
-            for (int i = 0; i < itemBuffer.Length; i++)
+            List<TreeInfo> treeInfos = new List<TreeInfo>();
+            foreach (var tree in infoBuffer)
             {
-                if (i > 99)
+                if(treeInfos.Count == 100)
                 {
                     UIView.library.ShowModal<ExceptionPanel>("ExceptionPanel").SetMessage(
                      Translation.Instance.GetTranslation("FOREST-BRUSH-MODAL-LIMITREACHED-TITLE"),
                      Translation.Instance.GetTranslation("FOREST-BRUSH-MODAL-LIMITREACHED-MESSAGE-ALL"),
                      false);
-                    return;
+                    break;
                 }
-                ((TreeItem)itemBuffer[i]).ToggleCheckbox(true);
+                treeInfos.Add(tree);
+            }
+            TreeInfos = treeInfos;
+
+            Brush.ReplaceAll(TreeInfos);
+
+            var itemBuffer = ForestBrush.Instance.ForestBrushPanel.BrushEditSection.TreesList.rows.m_buffer;
+
+            for (int i = 0; i < itemBuffer.Length; i++)
+            {
+                TreeItem treeItem = itemBuffer[i] as TreeItem;
+                if(TreeInfos.Contains(treeItem.Prefab)) treeItem.ToggleCheckbox(true);
             }
         }
 
@@ -108,7 +117,7 @@ namespace ForestBrush
 
                 UpdateTool(brushName);
             }
-            else Debug.LogError("Error creatin new brush. Brush already exists. This shouldn't happen, please contact the mod author.");
+            else Debug.LogError("Error creating new brush. Brush already exists. This shouldn't happen, please contact the mod author.");
         }
 
         internal void DeleteCurrent()
@@ -124,14 +133,14 @@ namespace ForestBrush
 
         public TreeInfo CreateBrushPrefab(List<Tree> trees)
         {
-            var probabilities = probabilityCalculator.Calculate(trees);
             var variations = new TreeInfo.Variation[TreeInfos.Count];
             if (TreeInfos.Count == 0)
             {
                 Container.m_variations = variations;
                 return Container;
             }
-            for (int i = 0; i < TreeInfos.Count; i++)
+            var probabilities = probabilityCalculator.Calculate(trees);
+            for (int i = 0; i < probabilities.Count; i++)
             {
                 var variation = new TreeInfo.Variation();
                 variation.m_tree = variation.m_finalTree = TreeInfos[i];
@@ -147,15 +156,15 @@ namespace ForestBrush
             return Container;
         }
 
-        private int GetProbability(int treeIndex)
+        public void UpdateBrushPrefabProbabilities()
         {
-            float probabilitySum = 0;
-            for (int i = 0; i < TreeInfos.Count; i++)
+            if (TreeInfos.Count == 0) return;
+            var probabilities = probabilityCalculator.Calculate(Brush.Trees);
+            for (int i = 0; i < probabilities.Count; i++)
             {
-                probabilitySum += Brush.Trees[i].Probability;
+                var variation = Container.m_variations[i];
+                variation.m_probability = probabilities[i].FloorProbability;
             }
-            float probability = Brush.Trees[treeIndex].Probability / probabilitySum;
-            return Mathf.RoundToInt(probability * 100);
         }
 
         internal void UpdateTreeList(TreeInfo treeInfo, bool value, bool updateAll)

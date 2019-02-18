@@ -310,7 +310,7 @@ namespace ForestBrush.GUI
                             if (item.GetLocalizedDescription().ToLower().Contains(filter)
                                 || item.GetUncheckedLocalizedTitle().ToLower().Contains(filter))
                             {
-                                newData.Add(item);
+                                if(!newData.Contains(item))newData.Add(item);
                             }
                         }
                     }

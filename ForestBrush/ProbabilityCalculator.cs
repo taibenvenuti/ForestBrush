@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ForestBrush
 {
@@ -75,7 +76,7 @@ namespace ForestBrush
 
                 if (biggestErrorIndex == -1)
                 {
-                    throw new Exception("fuck!");
+                    throw new Exception("Biggest Error Index was -1");
                 }
 
                 var currentItem = result[biggestErrorIndex];
