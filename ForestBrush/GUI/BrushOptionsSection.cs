@@ -106,7 +106,7 @@ namespace ForestBrush.GUI
             sizeSlider.scrollWheelAmount = 1f;
             sizeSlider.eventValueChanged += SizeSlider_eventValueChanged;
             sizeSlider.eventMouseUp += SizeSlider_eventMouseUp;
-            sizeSlider.backgroundSprite = ResourceLoader.OptionsScrollbarTrack;
+            sizeSlider.backgroundSprite = ResourceLoader.WhiteRect;
             sizeSlider.tooltip = UserMod.Settings.SelectedBrush.Options.Size.ToString();
             sizeSlider.pivot = UIPivotPoint.TopLeft;
             sizeSlider.zOrder = 1;
@@ -173,7 +173,7 @@ namespace ForestBrush.GUI
             strengthSlider.tooltip = Math.Round(strengthSlider.value * 100, 1, MidpointRounding.AwayFromZero) + "%";
             strengthSlider.eventValueChanged += StrengthSlider_eventValueChanged;
             strengthSlider.eventMouseUp += StrengthSlider_eventMouseUp;
-            strengthSlider.backgroundSprite = ResourceLoader.OptionsScrollbarTrack;
+            strengthSlider.backgroundSprite = ResourceLoader.WhiteRect;
             strengthSlider.zOrder = 1;
             strengthSlider.pivot = UIPivotPoint.TopLeft;
 
@@ -229,7 +229,7 @@ namespace ForestBrush.GUI
             densitySlider.scrollWheelAmount = 0.1f;
             densitySlider.eventValueChanged += DensitySlider_eventValueChanged;
             densitySlider.eventMouseUp += DensitySlider_eventMouseUp;
-            densitySlider.backgroundSprite = ResourceLoader.OptionsScrollbarTrack;
+            densitySlider.backgroundSprite = ResourceLoader.WhiteRect;
             densitySlider.zOrder = 1;
             densitySlider.pivot = UIPivotPoint.TopLeft;
             densitySlider.arbitraryPivotOffset = new Vector2(0f, 3f);

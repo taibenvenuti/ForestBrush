@@ -1,4 +1,6 @@
-﻿using ForestBrush.GUI;
+﻿using ColossalFramework.UI;
+using ForestBrush.GUI;
+using ForestBrush.TranslationFramework;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -74,9 +76,17 @@ namespace ForestBrush
             TreeInfos = ForestBrush.Instance.Trees.Values.Where(treeInfo => infoBuffer.Contains(treeInfo)).ToList();
             Brush.ReplaceAll(TreeInfos);
             var itemBuffer = ForestBrush.Instance.ForestBrushPanel.BrushEditSection.TreesList.rows.m_buffer;
-            foreach (TreeItem item in itemBuffer)
+            for (int i = 0; i < itemBuffer.Length; i++)
             {
-                item?.ToggleCheckbox(true);
+                if (i > 99)
+                {
+                    UIView.library.ShowModal<ExceptionPanel>("ExceptionPanel").SetMessage(
+                     Translation.Instance.GetTranslation("FOREST-BRUSH-MODAL-LIMITREACHED-TITLE"),
+                     Translation.Instance.GetTranslation("FOREST-BRUSH-MODAL-LIMITREACHED-MESSAGE-ALL"),
+                     false);
+                    return;
+                }
+                ((TreeItem)itemBuffer[i]).ToggleCheckbox(true);
             }
         }
 
@@ -120,23 +130,34 @@ namespace ForestBrush
             {
                 var variation = new TreeInfo.Variation();
                 variation.m_tree = variation.m_finalTree = TreeInfos[i];
-                variation.m_probability = 100 / TreeInfos.Count;
+                variation.m_probability = GetProbability(i);
                 variations[i] = variation;
             }
-            int index = 0;
-            int remainder = 100 % TreeInfos.Count;
-            while(remainder > 0)
-            {
-                variations[index].m_probability++;
-                index++;
-                remainder--;
-                if(remainder > 0 && index == TreeInfos.Count)
-                {
-                    index = 0;
-                }
-            }
+            //int index = 0;
+            //int remainder = 100 % TreeInfos.Count;
+            //while(remainder > 0)
+            //{
+            //    variations[index].m_probability++;
+            //    index++;
+            //    remainder--;
+            //    if(remainder > 0 && index == TreeInfos.Count)
+            //    {
+            //        index = 0;
+            //    }
+            //}
             Container.m_variations = variations;
             return Container;
+        }
+
+        private int GetProbability(int treeIndex)
+        {
+            float probabilitySum = 0;
+            for (int i = 0; i < TreeInfos.Count; i++)
+            {
+                probabilitySum += Brush.Trees[i].Probability;
+            }
+            float probability = Brush.Trees[treeIndex].Probability / probabilitySum;
+            return Mathf.RoundToInt(probability * 100);
         }
 
         internal void UpdateTreeList(TreeInfo treeInfo, bool value, bool updateAll)

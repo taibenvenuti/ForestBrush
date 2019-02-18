@@ -20,6 +20,9 @@
     <Translation ID="FOREST-BRUSH-BRUSH-OPTIONS-OVERLAYCOLOR" String="Color del pincel" />
     <Translation ID="FOREST-BRUSH-OPTIONS-RESET" String="Reinicia las opciones predeterminadas" />
     <Translation ID="FOREST-BRUSH-MODAL-WARNING" String="Advertencia" />
+    <Translation ID="FOREST-BRUSH-MODAL-LIMITREACHED-TITLE" String="Limite de árboles alcanzado" />
+    <Translation ID="FOREST-BRUSH-MODAL-LIMITREACHED-MESSAGE-ONE" String="Haz alcanzado el limite de 100 arboles por pincel. Porfavor remueve algunos árboles para agregar más." />
+    <Translation ID="FOREST-BRUSH-MODAL-LIMITREACHED-MESSAGE-ALL" String="Haz alcanzado el limite de 100 arboles por pincel. Algunos árboles no fueron agregados. Porfavor remueve algunos árboles para agregar más." />
     <Translation ID="FOREST-BRUSH-PROMPT-NEW" String="Nombre del pincel" />
     <Translation ID="FOREST-BRUSH-RENAME-BRUSH" String="Usa este campo para renombrar el pincel" />
     <Translation ID="FOREST-BRUSH-PROMPT-DELETE" String="Deseas realmente eliminar este pincel?" />

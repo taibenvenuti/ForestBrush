@@ -25,7 +25,8 @@ namespace ForestBrush.Resources
         public static string ListItemHighlight { get; } = "ListItemHighlight";
         public static string MenuPanel { get; } = "MenuPanel";
         public static string TextFieldPanelHovered { get; } = "TextFieldPanelHovered";
-        public static string OptionsScrollbarTrack{ get; } = "OptionsScrollbarTrack";
+        public static string WhiteRect{ get; } = "WhiteRect";
+        public static string TextFieldPanel { get; internal set; } = "TextFieldPanel";
         public static string IconPolicyForest{ get; } = "IconPolicyForest";
         public static string CheckBoxSpriteUnchecked{ get; } = "AchievementCheckedFalse";
         public static string CheckBoxSpriteChecked{ get; } = "AchievementCheckedTrue";
