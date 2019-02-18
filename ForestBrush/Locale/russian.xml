@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Language UniqueName="ru" ReadableName="Русский" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2009/XMLSchema/XMLSchema.xsd">
+  <Translations>
+    <Translation ID="FOREST-BRUSH-MODDESCRIPTION" String="Позволяет создавать, изменять и сохранять кисти с несколькими деревьями." />
+    <Translation ID="FOREST-BRUSH-MODNAME" String="Кисть Для Леса" />
+    <Translation ID="FOREST-BRUSH-BRUSH" String="Кисть" />
+    <Translation ID="FOREST-BRUSH-SELECT" String="Выбрать кисть" />
+    <Translation ID="FOREST-BRUSH-CREATE" String="Создать новую кисть" />
+    <Translation ID="FOREST-BRUSH-DELETE" String="Удалить текущую кисть" />
+    <Translation ID="FOREST-BRUSH-SQUARE" String="Включить квадратную кисть" />
+    <Translation ID="FOREST-BRUSH-SEARCH" String="Поиск" />
+    <Translation ID="FOREST-BRUSH-PROBABILITY" String="Частота" />
+    <Translation ID="FOREST-BRUSH-TOGGLE-EDIT" String="Переключить панель 'Деревья'" />
+    <Translation ID="FOREST-BRUSH-TOGGLE-OPTIONS" String="Переключить панель 'Настройки кисти'" />
+    <Translation ID="FOREST-BRUSH-BRUSH-OPTIONS-SQUAREBRUSH" String="Квадратная кисть" />
+    <Translation ID="FOREST-BRUSH-BRUSH-OPTIONS-STRENGTH" String="Сила" />
+    <Translation ID="FOREST-BRUSH-BRUSH-OPTIONS-DENSITY" String="Плотность" />
+    <Translation ID="FOREST-BRUSH-BRUSH-OPTIONS-SIZE" String="Размер" />
+    <Translation ID="FOREST-BRUSH-BRUSH-OPTIONS-AUTODENSITY" String="Авто-плотность" />
+    <Translation ID="FOREST-BRUSH-BRUSH-OPTIONS-OVERLAYCOLOR" String="Цвет подсветки" />
+    <Translation ID="FOREST-BRUSH-OPTIONS-RESET" String="Сбросить все настройки по умолчанию" />
+    <Translation ID="FOREST-BRUSH-MODAL-WARNING" String="Внимание" />
+    <Translation ID="FOREST-BRUSH-PROMPT-NEW" String="Название кисти" />
+    <Translation ID="FOREST-BRUSH-RENAME-BRUSH" String="Используйте это текстовое поле, чтобы переименовать текущую кисть." />
+    <Translation ID="FOREST-BRUSH-PROMPT-DELETE" String="Вы уверены, что хотите навсегда удалить эту кисть?" />
+    <Translation ID="FOREST-BRUSH-RENAME-ERROR" String="Другая кисть с таким именем уже существует." />
+    <Translation ID="FOREST-BRUSH-PROMPT-YES" String="Да" />
+    <Translation ID="FOREST-BRUSH-PROMPT-NO" String="Нет" />
+    <Translation ID="FOREST-BRUSH-PROMPT-OK" String="ОК" />
+    <Translation ID="FOREST-BRUSH-PROMPT-CANCEL" String="Отмена" />
+    <Translation ID="FOREST-BRUSH-KEYBIND-TOGGLE-TOOL" String="Переключить панель Кисть Для Леса" />
+    <Translation ID="FOREST-BRUSH-TUTORIAL" String="
+Спасибо, что подписались на Кисть Для Леса.&#10;&#10;
+Нажмите на кнопку 'инструменты', чтобы выбрать деревья для вашей кисти.&#10;
+Используйте флажки, чтобы добавлять деревья к кисти или удалять их.&#10;
+CTRL + ЛКМ на флажок для добавления/удаления всех деревьев.&#10;&#10;
+Кистей может быть сколько угодно, просто добавьте новые с помощью кнопки 'плюс'.&#10;&#10;
+Используйте строку поиска, чтобы найти конкретные деревья.&#10;&#10;
+Нажмите на кнопку 'шестеренка', чтобы изменить настройки кисти.&#10;
+Здесь вы можете изменить размер, силу и плотность кисти.&#10;
+Для подробных инструкций посетите страницу мода в Мастерской." />
+  </Translations>
+</Language>
