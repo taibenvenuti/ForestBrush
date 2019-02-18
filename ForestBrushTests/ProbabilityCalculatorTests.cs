@@ -326,7 +326,7 @@ namespace ForestBrushTests
 
             calculateAction.Should()
                 .Throw<Exception>()
-                .WithMessage("Too many trees!");
+                .WithMessage("Tree count must be lower or equal to 100.");
         }
     }
 }

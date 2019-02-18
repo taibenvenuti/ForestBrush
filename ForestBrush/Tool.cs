@@ -7,6 +7,8 @@ namespace ForestBrush
 {
     public class ForestBrushTool : MonoBehaviour
     {
+        private ProbabilityCalculator probabilityCalculator;
+
         public Brush Brush => UserMod.Settings.SelectedBrush;
 
         private List<TreeInfo> TreeInfos { get; set; } = new List<TreeInfo>();
@@ -17,6 +19,8 @@ namespace ForestBrush
 
         void Awake()
         {
+            probabilityCalculator = new ProbabilityCalculator();
+
             UpdateTool(UserMod.Settings.SelectedBrush.Name);
         }
 
@@ -33,7 +37,7 @@ namespace ForestBrush
                 TreeInfos.Add(treeInfo);
             }
 
-            Container = CreateBrushPrefab();
+            Container = CreateBrushPrefab(Brush.Trees);
 
             ForestBrush.Instance.ForestBrushPanel.LoadBrush(Brush);
 
@@ -108,8 +112,9 @@ namespace ForestBrush
             UserMod.SaveSettings();
         }
 
-        public TreeInfo CreateBrushPrefab()
-        {   
+        public TreeInfo CreateBrushPrefab(List<Tree> trees)
+        {
+            var probabilities = probabilityCalculator.Calculate(trees);
             var variations = new TreeInfo.Variation[TreeInfos.Count];
             if (TreeInfos.Count == 0)
             {
@@ -120,7 +125,12 @@ namespace ForestBrush
             {
                 var variation = new TreeInfo.Variation();
                 variation.m_tree = variation.m_finalTree = TreeInfos[i];
-                variation.m_probability = 100 / TreeInfos.Count;
+                variation.m_probability = probabilities[i].FloorProbability;
+                //TODO not sure if going over the index is a good idea.
+                //The calculate method should preserve indizes, but still its kinda risky.
+                //alternative to use probabilities.Find(x => x.Name == TreeInfos[i].name); but that is slower
+                //another alternative is to return a Dictionary from the Calculate method, but that makes the Calculate method a little more awkward.
+
                 variations[i] = variation;
             }
             int index = 0;
@@ -148,7 +158,7 @@ namespace ForestBrush
                 if (value) AddAll();
                 else RemoveAll();
             }
-            Container = CreateBrushPrefab();
+            Container = CreateBrushPrefab(Brush.Trees);
             UserMod.SaveSettings();
         }
     }
