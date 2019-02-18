@@ -93,6 +93,8 @@
     <Compile Include="Constants.cs" />
     <Compile Include="GUI\UIUtilities.cs" />
     <Compile Include="ForestBrush.cs" />
+    <Compile Include="TreeProbability.cs" />
+    <Compile Include="ProbabilityCalculator.cs" />
     <Compile Include="Resources\ResourceLoader.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="Persistence\XmlInputKey.cs" />
@@ -110,7 +112,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Locale\german.xml" />
+    <Content Include="Locale\german.xml">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Locale\spanish.xml">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
