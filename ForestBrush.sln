@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.27428.2037
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ForestBrush", "ForestBrush\ForestBrush.csproj", "{1854380F-9601-4430-BC59-92A580B22FF4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ForestBrushTests", "ForestBrushTests\ForestBrushTests.csproj", "{DEBEC196-F770-40DE-9C62-E7C9DA671DD1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{1854380F-9601-4430-BC59-92A580B22FF4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1854380F-9601-4430-BC59-92A580B22FF4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1854380F-9601-4430-BC59-92A580B22FF4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DEBEC196-F770-40DE-9C62-E7C9DA671DD1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DEBEC196-F770-40DE-9C62-E7C9DA671DD1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DEBEC196-F770-40DE-9C62-E7C9DA671DD1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DEBEC196-F770-40DE-9C62-E7C9DA671DD1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
