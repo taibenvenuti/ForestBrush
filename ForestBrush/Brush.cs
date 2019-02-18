@@ -36,10 +36,13 @@ namespace ForestBrush
         public void ReplaceAll(List<TreeInfo> newTrees)
         {
             Trees = new List<Tree>();
-            foreach (var treeInfo in newTrees)
+            for (int i = 0; i < newTrees.Count; i++)
             {
-                Tree tree = new Tree(treeInfo);
-                Trees.Add(tree);
+                if (i < 99)
+                {
+                    Tree tree = new Tree(newTrees[i]);
+                    Trees.Add(tree);
+                }
             }
         }
 

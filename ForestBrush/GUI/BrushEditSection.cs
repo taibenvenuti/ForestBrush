@@ -88,6 +88,10 @@ namespace ForestBrush.GUI
             deleteBrushButton.tooltip = Translation.Instance.GetTranslation("FOREST-BRUSH-DELETE");
             renameBrushTextField.tooltip = Translation.Instance.GetTranslation("FOREST-BRUSH-RENAME-BRUSH");
             searchLabel.text = Translation.Instance.GetTranslation("FOREST-BRUSH-SEARCH");
+            foreach (TreeItem item in TreesList.rowsData.m_buffer)
+            {
+                item?.LocaleChanged();
+            }
         }
 
         internal void LoadBrush(Brush brush)

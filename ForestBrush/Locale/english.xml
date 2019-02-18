@@ -20,6 +20,9 @@
     <Translation ID="FOREST-BRUSH-BRUSH-OPTIONS-OVERLAYCOLOR" String="Overlay color" />
     <Translation ID="FOREST-BRUSH-OPTIONS-RESET" String="Reset all options to default values" />
     <Translation ID="FOREST-BRUSH-MODAL-WARNING" String="Warning" />
+    <Translation ID="FOREST-BRUSH-MODAL-LIMITREACHED-TITLE" String="Tree limit reached" />
+    <Translation ID="FOREST-BRUSH-MODAL-LIMITREACHED-MESSAGE-ONE" String="You've reached the 100 tree limit for this brush. Please remove some trees to add more." />
+    <Translation ID="FOREST-BRUSH-MODAL-LIMITREACHED-MESSAGE-ALL" String="You've reached the 100 tree limit for this brush. Some trees were not added. Please remove some trees to add more." />
     <Translation ID="FOREST-BRUSH-PROMPT-NEW" String="Brush name" />
     <Translation ID="FOREST-BRUSH-RENAME-BRUSH" String="Use this textfield to rename the current brush." />
     <Translation ID="FOREST-BRUSH-PROMPT-DELETE" String="Are you sure you want to permanently delete this brush?" />

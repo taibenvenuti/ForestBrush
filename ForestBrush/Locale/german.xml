@@ -4,6 +4,7 @@
     <Translation ID="FOREST-BRUSH-MODDESCRIPTION" String="Ermöglicht dir Pinsel mit verschiedenen Bäumen zu erstellen, zu editieren und zu speichern." />
     <Translation ID="FOREST-BRUSH-MODNAME" String="Wald Pinsel" />
     <Translation ID="FOREST-BRUSH-BRUSH" String="Pinsel" />
+    <Translation ID="FOREST-BRUSH-SELECT" String="Pinsel auswählen" />
     <Translation ID="FOREST-BRUSH-CREATE" String="Erstelle neuen Pinsel" />
     <Translation ID="FOREST-BRUSH-DELETE" String="Lösche aktuellen Pinsel" />
     <Translation ID="FOREST-BRUSH-SQUARE" String="Aktiviere quadratischen Pinsel" />
