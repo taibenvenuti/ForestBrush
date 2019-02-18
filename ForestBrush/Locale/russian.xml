@@ -2,7 +2,7 @@
 <Language UniqueName="ru" ReadableName="Русский" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2009/XMLSchema/XMLSchema.xsd">
   <Translations>
     <Translation ID="FOREST-BRUSH-MODDESCRIPTION" String="Позволяет создавать, изменять и сохранять кисти с несколькими деревьями." />
-    <Translation ID="FOREST-BRUSH-MODNAME" String="Кисть Для Леса" />
+    <Translation ID="FOREST-BRUSH-MODNAME" String="Forest Brush" />
     <Translation ID="FOREST-BRUSH-BRUSH" String="Кисть" />
     <Translation ID="FOREST-BRUSH-SELECT" String="Выбрать кисть" />
     <Translation ID="FOREST-BRUSH-CREATE" String="Создать новую кисть" />
