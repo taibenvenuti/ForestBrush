@@ -10,6 +10,18 @@ namespace ForestBrushTests
     public class ProbabilityCalculatorTests
     {
         [Fact]
+        public void Calculate_NoTree_SouldReturnEmptyList()
+        {
+            var trees = new List<Tree>();
+            var expected = new List<TreeProbability>();
+            var sut = new ProbabilityCalculator();
+
+            var result = sut.Calculate(trees);
+
+            result.Should().BeEquivalentTo(expected);
+        }
+
+        [Fact]
         public void Calculate_OneTree_SouldBe100Percent()
         {
             var trees = new List<Tree>()
