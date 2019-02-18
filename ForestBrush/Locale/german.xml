@@ -9,14 +9,14 @@
     <Translation ID="FOREST-BRUSH-SQUARE" String="Aktiviere quadratischen Pinsel" />
     <Translation ID="FOREST-BRUSH-SEARCH" String="Suche" />
     <Translation ID="FOREST-BRUSH-PROBABILITY" String="Wahrscheinlichkeit" />
-    <Translation ID="FOREST-BRUSH-TOGGLE-EDIT" String="Baum Panel anzeigen/verstecken" />
-    <Translation ID="FOREST-BRUSH-TOGGLE-OPTIONS" String="Pinseloptionen Panel anzeigen/verstecken" />
+    <Translation ID="FOREST-BRUSH-TOGGLE-EDIT" String="Baumliste anzeigen/verstecken" />
+    <Translation ID="FOREST-BRUSH-TOGGLE-OPTIONS" String="Pinseloptionen anzeigen/verstecken" />
     <Translation ID="FOREST-BRUSH-BRUSH-OPTIONS-SQUAREBRUSH" String="Quadratischer Pinsel" />
     <Translation ID="FOREST-BRUSH-BRUSH-OPTIONS-STRENGTH" String="Stärke" />
     <Translation ID="FOREST-BRUSH-BRUSH-OPTIONS-DENSITY" String="Dichte" />
     <Translation ID="FOREST-BRUSH-BRUSH-OPTIONS-SIZE" String="Größe" />
     <Translation ID="FOREST-BRUSH-BRUSH-OPTIONS-AUTODENSITY" String="Auto-Dichte" />
-    <Translation ID="FOREST-BRUSH-BRUSH-OPTIONS-OVERLAYCOLOR" String="Piselfarbe" />
+    <Translation ID="FOREST-BRUSH-BRUSH-OPTIONS-OVERLAYCOLOR" String="Pinselfarbe" />
     <Translation ID="FOREST-BRUSH-OPTIONS-RESET" String="Alle Einstellungen zurücksetzen" />
     <Translation ID="FOREST-BRUSH-MODAL-WARNING" String="Warnung" />
     <Translation ID="FOREST-BRUSH-PROMPT-NEW" String="Pinselname" />
@@ -29,9 +29,9 @@
     <Translation ID="FOREST-BRUSH-PROMPT-CANCEL" String="Abbrechen" />
     <Translation ID="FOREST-BRUSH-KEYBIND-TOGGLE-TOOL" String="Waldpinsel Panel anzeigen/verstecken" />
     <Translation ID="FOREST-BRUSH-TUTORIAL" String="
-                 Danke dafür, dass du die Wald Pinsel Mod abboniert hast.&#10;&#10;
+                 Danke dafür, dass du die Wald Pinsel Mod abonniert hast.&#10;&#10;
                  Klicke auf die Werkzeugtaste um Bäume für deinen Pinsel auszuwählen.&#10;
-                 Nutze die Kontrollkästchen um Bäume dem Pinsel hinzuzufügen oder vom Pinsel zu entfernen.&#10;
+                 Nutze die Kontrollkästchen, um dem Pinsel Bäume hinzuzufügen oder zu entfernen.&#10;
                  Strg + Klick auf ein Kontrollkästchen um alle Bäume auszuwählen oder die Auswahl aufzuheben.&#10;&#10;
                  Du kannst soviele verschiedene Pinsel haben wie du magst, klicke auf die Plustaste um weitere Pinsel zu erstellen.&#10;&#10;
                  Nutze das Suchfeld um bestimmte Bäume zu finden.&#10;&#10;
