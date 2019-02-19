@@ -13,6 +13,11 @@ namespace ForestBrush
         /// <returns>A list of the trees with probabilities.</returns>
         public List<TreeProbability> Calculate(List<Tree> trees)
         {
+            if (trees.Count == 0)
+            {
+                return new List<TreeProbability>();
+            }
+
             if (trees.Count > 100)
             {
                 throw new Exception("Tree count must be lower or equal to 100.");
