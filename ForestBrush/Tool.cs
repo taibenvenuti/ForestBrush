@@ -13,7 +13,7 @@ namespace ForestBrush
 
         public Brush Brush => UserMod.Settings.SelectedBrush;
 
-        private List<TreeInfo> TreeInfos { get; set; } = new List<TreeInfo>();
+        internal List<TreeInfo> TreeInfos { get; set; } = new List<TreeInfo>();
 
         private TreeInfo Container { get; set; } = ForestBrush.Instance.Container;
 

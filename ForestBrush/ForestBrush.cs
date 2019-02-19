@@ -21,6 +21,8 @@ namespace ForestBrush
             public int SizeAddend;
             public int SizeMultiplier;
             public float MaxRandomRange;
+            public float MinSpacing;
+            public float Clearance;
             public float maxSize;
             public float MaxSize
             {
@@ -34,7 +36,6 @@ namespace ForestBrush
                     Instance.ForestBrushPanel.BrushOptionsSection.sizeSlider.maxValue = value;
                 }
             }
-            public float MinSpacing;
         }
 
         internal BrushTweaks BrushTweaker = new BrushTweaks()
@@ -42,6 +43,7 @@ namespace ForestBrush
             SizeAddend = 10,
             SizeMultiplier = 7,
             MaxRandomRange = 4.0f,
+            Clearance = 4.5f,
             maxSize = 1000f
         };
 
@@ -83,6 +85,8 @@ namespace ForestBrush
         private static readonly string kToggleButton = "ForestBrushModToggle";
 
         private ToolBase lastTool;
+
+        private Texture2D lastBrush;
 
         internal void Initialize()
         {
@@ -220,16 +224,22 @@ namespace ForestBrush
 
         private void OnForestBrushPanelVisibilityChanged(UIComponent component, bool visible)
         {
+            TreeTool tool = ToolsModifierControl.GetTool<TreeTool>();
+
             if (visible)
             {
+                ForestBrushPanel.ClampToScreen();
                 lastTool = ToolsModifierControl.toolController.CurrentTool;
-                TreeTool tool = ToolsModifierControl.GetTool<TreeTool>();
                 ToolsModifierControl.toolController.CurrentTool = tool;
                 tool.m_prefab = Container;
+                lastBrush = tool.m_brush;
+                tool.m_brush = ToolsModifierControl.toolController.m_brushes[3];
             }
-            else if (lastTool != null && lastTool.GetType() != typeof(TreeTool) && ToolsModifierControl.toolController.NextTool == null)
+            else
             {
-                lastTool.enabled = true;
+                if (lastTool != null && lastTool.GetType() != typeof(TreeTool) && ToolsModifierControl.toolController.NextTool == null)
+                    lastTool.enabled = true;
+                tool.m_brush = lastBrush;
             }
         }
 

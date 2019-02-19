@@ -3,6 +3,7 @@ using ColossalFramework.Math;
 using Harmony;
 using System;
 using System.Collections;
+using System.Reflection;
 using UnityEngine;
 using static RenderManager;
 
@@ -55,15 +56,21 @@ namespace ForestBrush
             return (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl) || Input.GetKey(KeyCode.LeftCommand) || Input.GetKey(KeyCode.RightCommand));
         }
 
+        internal static bool DeleteAllTogglePressed()
+        {
+            return (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift));
+        }
+
         static bool Prefix(TreeTool __instance, Randomizer ___m_randomizer, Vector3 ___m_mousePosition, bool ___m_mouseLeftDown, bool ___m_mouseRightDown, ToolController ___m_toolController)
         {
-            if (ForestBrush.Instance.IsCurrentTreeContainer && ForestBrush.Instance.Container.m_variations.Length == 0) return false;
-            else if (ForestBrush.Instance.ForestBrushPanel.isVisible && ForestBrush.Instance.IsCurrentTreeContainer && ___m_mouseLeftDown)
+            if (!ForestBrush.Instance.IsCurrentTreeContainer || !ForestBrush.Instance.ForestBrushPanel.isVisible) return true;
+            else if (ForestBrush.Instance.Container.m_variations.Length == 0) return false;
+            else if (___m_mouseLeftDown || (___m_mouseRightDown && !RotationTogglePressed() && !DeleteAllTogglePressed()))
             {
                 if (__instance.m_prefab != null)
                 {
-                    int batchSize = (int)__instance.m_brushSize * ForestBrush.Instance.BrushTweaker.SizeMultiplier + ForestBrush.Instance.BrushTweaker.SizeAddend;//(int)(((__instance.m_brushSize/10) * (5 - UserMod.Settings.BrushDensity / 4)) * UserMod.Settings.BrushStrength);
-                    
+                    int batchSize = (int)__instance.m_brushSize * ForestBrush.Instance.BrushTweaker.SizeMultiplier + ForestBrush.Instance.BrushTweaker.SizeAddend;
+                    ToolBase.RaycastInput input = new ToolBase.RaycastInput();
                     for (int i = 0; i < batchSize; i++)
                     {
                         var xz = UnityEngine.Random.insideUnitCircle;
@@ -96,7 +103,7 @@ namespace ForestBrush
                         Randomizer randomizer2 = new Randomizer(seed);
                         float num22 = ___m_treeInfo.m_minScale + (float)randomizer2.Int32(10000u) * (___m_treeInfo.m_maxScale - ___m_treeInfo.m_minScale) * 0.0001f;
                         float num23 = ___m_treeInfo.m_generatedInfo.m_size.y * num22;
-                        float num24 = 4.5f;
+                        float num24 = ForestBrush.Instance.BrushTweaker.Clearance;
                         Vector2 vector2 = VectorUtils.XZ(position);
                         Quad2 quad = default(Quad2);
                         quad.a = vector2 + new Vector2(-num24, -num24);
@@ -112,29 +119,64 @@ namespace ForestBrush
                         float maxY = ___m_mousePosition.y + num23;
                         ItemClass.CollisionType collisionType = ItemClass.CollisionType.Terrain;
 
-                        if (Singleton<PropManager>.instance.OverlapQuad(quad, y, maxY, collisionType, 0, 0) ||
-                            Singleton<TreeManager>.instance.OverlapQuad(quad2, y, maxY, collisionType, 0, 0u)||
-                            Singleton<NetManager>.instance.OverlapQuad(quad, y, maxY, collisionType, ___m_treeInfo.m_class.m_layer, 0, 0, 0) ||
-                            Singleton<BuildingManager>.instance.OverlapQuad(quad, y, maxY, collisionType, ___m_treeInfo.m_class.m_layer, 0, 0, 0) ||
-                            Singleton<TerrainManager>.instance.HasWater(vector2))
+                        if (___m_mouseLeftDown
+                            && (Singleton<PropManager>.instance.OverlapQuad(quad, y, maxY, collisionType, 0, 0)
+                                || Singleton<TreeManager>.instance.OverlapQuad(quad2, y, maxY, collisionType, 0, 0u)
+                                || Singleton<NetManager>.instance.OverlapQuad(quad, y, maxY, collisionType, ___m_treeInfo.m_class.m_layer, 0, 0, 0)
+                                || Singleton<BuildingManager>.instance.OverlapQuad(quad, y, maxY, collisionType, ___m_treeInfo.m_class.m_layer, 0, 0, 0)
+                                || (Singleton<TerrainManager>.instance.HasWater(vector2)
+                                    && !Input.GetKey(KeyCode.LeftAlt) 
+                                    && !Input.GetKey(KeyCode.LeftAlt))))
                             continue;
                         var scale = ___m_randomizer.Int32(16);
                         var str2Rnd = UnityEngine.Random.Range(0.0f, ForestBrush.Instance.BrushTweaker.MaxRandomRange); 
                         if (Mathf.PerlinNoise(position.x * scale, position.y * scale) > 0.5 && str2Rnd < UserMod.Settings.SelectedBrush.Options.Strength)
                         {
-                            if (Singleton<TreeManager>.instance.CreateTree(out uint num25, ref ___m_randomizer, ___m_treeInfo, position, false))
+                            if (___m_mouseLeftDown)
                             {
+                                if (Singleton<TreeManager>.instance.CreateTree(out uint num25, ref ___m_randomizer, ___m_treeInfo, position, false))
+                                {
+                                    // Tree created
+                                }
+                            }
+                            else if (___m_mouseRightDown)
+                            {
+                                Vector3 screenPoint = Camera.main.WorldToScreenPoint(position);
+                                Ray ray = Camera.main.ScreenPointToRay(screenPoint);
+                                input.m_ray = ray;
+                                input.m_length = Camera.main.farClipPlane;
+                                input.m_rayRight = Camera.main.transform.TransformDirection(Vector3.right);
+                                if(RayCast(input, out ToolBase.RaycastOutput output))
+                                {
+                                    uint tree = output.m_treeInstance;
+                                    if (tree == 0) continue;
+                                    TreeInfo treeInfo = TreeManager.instance.m_trees.m_buffer[tree].Info;
+                                    if (ForestBrush.Instance.BrushTool.TreeInfos.Contains(treeInfo))
+                                        TreeManager.instance.ReleaseTree(tree);
+                                }
                             }
                         }
                     }
                 }
                 return false;
             }
-            else if (ForestBrush.Instance.ForestBrushPanel.isVisible && ForestBrush.Instance.IsCurrentTreeContainer && ___m_mouseRightDown && RotationTogglePressed())
+            else if (___m_mouseRightDown && RotationTogglePressed())
             {
                 return false;
             }
             return true;
+        }
+
+        static bool RayCast(ToolBase.RaycastInput input, out ToolBase.RaycastOutput output)
+        {
+            MethodInfo methodInfo = AccessTools.Method(typeof(ToolBase), "RayCast");
+            object[] parameters = new object[] { input, null };
+            object result = methodInfo.Invoke(null, parameters);
+            bool boolResult = (bool)result;
+            if (boolResult)
+                output = (ToolBase.RaycastOutput)parameters[1];
+            else output = default(ToolBase.RaycastOutput);
+            return boolResult;
         }
     }
 
@@ -143,7 +185,7 @@ namespace ForestBrush
     {
         static bool Prefix(TreeTool __instance, ToolController ___m_toolController, ToolBase.ToolErrors ___m_placementErrors, Vector3 ___m_mousePosition, bool ___m_mouseRightDown, Randomizer ___m_randomizer, CameraInfo cameraInfo)
         {
-            if(!ForestBrush.Instance.ForestBrushPanel.isVisible || !ForestBrush.Instance.IsCurrentTreeContainer || (___m_mouseRightDown && !ApplyBrushPatch.RotationTogglePressed()))
+            if(!ForestBrush.Instance.ForestBrushPanel.isVisible || !ForestBrush.Instance.IsCurrentTreeContainer )
             {
                 return true;
             }
