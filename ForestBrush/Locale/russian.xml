@@ -20,6 +20,9 @@
     <Translation ID="FOREST-BRUSH-BRUSH-OPTIONS-OVERLAYCOLOR" String="Цвет подсветки" />
     <Translation ID="FOREST-BRUSH-OPTIONS-RESET" String="Сбросить все настройки по умолчанию" />
     <Translation ID="FOREST-BRUSH-MODAL-WARNING" String="Внимание" />
+    <Translation ID="FOREST-BRUSH-MODAL-LIMITREACHED-TITLE" String="Tree limit reached" />
+    <Translation ID="FOREST-BRUSH-MODAL-LIMITREACHED-MESSAGE-ONE" String="You've reached the 100 tree limit for this brush. Please remove some trees to add more." />
+    <Translation ID="FOREST-BRUSH-MODAL-LIMITREACHED-MESSAGE-ALL" String="You've reached the 100 tree limit for this brush. Some trees were not added. Please remove some trees to add more." />
     <Translation ID="FOREST-BRUSH-PROMPT-NEW" String="Название кисти" />
     <Translation ID="FOREST-BRUSH-RENAME-BRUSH" String="Используйте это текстовое поле, чтобы переименовать текущую кисть." />
     <Translation ID="FOREST-BRUSH-PROMPT-DELETE" String="Вы уверены, что хотите навсегда удалить эту кисть?" />
