@@ -19,6 +19,15 @@
     <Translation ID="FOREST-BRUSH-BRUSH-OPTIONS-AUTODENSITY" String="Auto-densidad" />
     <Translation ID="FOREST-BRUSH-BRUSH-OPTIONS-OVERLAYCOLOR" String="Color del pincel" />
     <Translation ID="FOREST-BRUSH-OPTIONS-RESET" String="Reinicia las opciones predeterminadas" />
+    <Translation ID="FOREST-BRUSH-OPTIONS-SHOWMESHDATA" String="Mostrar informacion sobre malla y textura" />
+    <Translation ID="FOREST-BRUSH-DATA-NAME" String="Nombre" />
+    <Translation ID="FOREST-BRUSH-DATA-AUTHOR" String="Autor" />
+    <Translation ID="FOREST-BRUSH-DATA-MESH" String="Malla" />
+    <Translation ID="FOREST-BRUSH-DATA-MESHNOTREADABLE" String="Ilegible" />
+    <Translation ID="FOREST-BRUSH-DATA-TRIANGLES" String="Triangulos" />
+    <Translation ID="FOREST-BRUSH-DATA-TEXTURE" String="Textura" />
+    <Translation ID="FOREST-BRUSH-DATA-PIXELS" String="px" />
+    <Translation ID="FOREST-BRUSH-OPTIONS-SORTING" String="Ordenar lista de árboles por" />
     <Translation ID="FOREST-BRUSH-MODAL-WARNING" String="Advertencia" />
     <Translation ID="FOREST-BRUSH-MODAL-LIMITREACHED-TITLE" String="Limite de árboles alcanzado" />
     <Translation ID="FOREST-BRUSH-MODAL-LIMITREACHED-MESSAGE-ONE" String="Haz alcanzado el limite de 100 arboles por pincel. Porfavor remueve algunos árboles para agregar más." />

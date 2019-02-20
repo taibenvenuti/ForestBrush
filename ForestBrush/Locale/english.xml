@@ -19,6 +19,15 @@
     <Translation ID="FOREST-BRUSH-BRUSH-OPTIONS-AUTODENSITY" String="Auto-density" />
     <Translation ID="FOREST-BRUSH-BRUSH-OPTIONS-OVERLAYCOLOR" String="Overlay color" />
     <Translation ID="FOREST-BRUSH-OPTIONS-RESET" String="Reset all options to default values" />
+    <Translation ID="FOREST-BRUSH-OPTIONS-SHOWMESHDATA" String="Show tree mesh and texture data" />
+    <Translation ID="FOREST-BRUSH-DATA-NAME" String="Name" />
+    <Translation ID="FOREST-BRUSH-DATA-AUTHOR" String="Author" />
+    <Translation ID="FOREST-BRUSH-DATA-MESH" String="Mesh" />
+    <Translation ID="FOREST-BRUSH-DATA-MESHNOTREADABLE" String="Unreadable" />
+    <Translation ID="FOREST-BRUSH-DATA-TRIANGLES" String="Triangles" />
+    <Translation ID="FOREST-BRUSH-DATA-TEXTURE" String="Texture" />
+    <Translation ID="FOREST-BRUSH-DATA-PIXELS" String="px" />
+    <Translation ID="FOREST-BRUSH-OPTIONS-SORTING" String="Sort trees list by" />
     <Translation ID="FOREST-BRUSH-MODAL-WARNING" String="Warning" />
     <Translation ID="FOREST-BRUSH-MODAL-LIMITREACHED-TITLE" String="Tree limit reached" />
     <Translation ID="FOREST-BRUSH-MODAL-LIMITREACHED-MESSAGE-ONE" String="You've reached the 100 tree limit for this brush. Please remove some trees to add more." />

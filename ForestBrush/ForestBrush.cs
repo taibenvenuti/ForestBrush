@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Reflection;
 using ColossalFramework;
 using ColossalFramework.Globalization;
+using ColossalFramework.Packaging;
+using ColossalFramework.PlatformServices;
 using ColossalFramework.UI;
 using ForestBrush.GUI;
 using ForestBrush.TranslationFramework;
@@ -23,6 +25,7 @@ namespace ForestBrush
             public float MaxRandomRange;
             public float MinSpacing;
             public float Clearance;
+            public int EraserBatchSize;
             public float maxSize;
             public float MaxSize
             {
@@ -44,7 +47,8 @@ namespace ForestBrush
             SizeMultiplier = 7,
             MaxRandomRange = 4.0f,
             Clearance = 4.5f,
-            maxSize = 1000f
+            maxSize = 1000f,
+            EraserBatchSize = 512
         };
 
         private TreeInfo container;
@@ -68,6 +72,10 @@ namespace ForestBrush
 
         public Dictionary<string, TreeInfo> Trees { get; private set; }
 
+        public Dictionary<string, TreeMeshData> TreesMeshData { get; private set; }
+
+        public Dictionary<string, string> TreeAuthors { get; private set; }
+
         public ForestBrushTool BrushTool { get; private set; }
 
         public UIButton ToggleButton => toggleButtonComponents.ToggleButton;
@@ -75,6 +83,8 @@ namespace ForestBrush
         internal ForestBrushPanel ForestBrushPanel { get; private set; }
 
         internal bool Initialized;
+
+        internal bool Active => IsCurrentTreeContainer && ForestBrushPanel.isVisible;
 
         private static readonly string kEmptyContainer = "EmptyContainer";
 
@@ -90,7 +100,7 @@ namespace ForestBrush
 
         internal void Initialize()
         {
-            Trees = LoadTrees();
+            LoadTrees();
 
             UITabstrip tabstrip = ToolsModifierControl.mainToolbar.component as UITabstrip;
             toggleButtonComponents = CreateToggleButtonComponents(tabstrip);
@@ -117,7 +127,7 @@ namespace ForestBrush
             Destroy(ForestBrushPanel.gameObject);
             DestroyToggleButtonComponents(toggleButtonComponents);
             toggleButtonComponents = null;
-
+            TreesMeshData = null;
             Trees = null;
         }
 
@@ -249,9 +259,10 @@ namespace ForestBrush
             ForestBrushPanel.isVisible = !ForestBrushPanel.isVisible;
         }
 
-        private Dictionary<string, TreeInfo> LoadTrees()
+        private void LoadTrees()
         {
-            var trees = new Dictionary<string, TreeInfo>();
+            Trees = new Dictionary<string, TreeInfo>();
+            TreesMeshData = new Dictionary<string, TreeMeshData>();
             var treeCount = PrefabCollection<TreeInfo>.LoadedCount();
             for (uint i = 0; i < treeCount; i++)
             {
@@ -264,9 +275,31 @@ namespace ForestBrush
 
                 if (tree.m_Atlas == null || tree.m_Thumbnail.IsNullOrWhiteSpace()) ImageUtils.CreateThumbnailAtlas(GetName(tree), tree);
 
-                trees.Add(tree.name, tree);
-            }            
-            return trees;
+                Trees.Add(tree.name, tree);
+                TreesMeshData.Add(tree.name, new TreeMeshData(tree));
+            }
+            LoadTreeAuthors();
+        }
+
+        private void LoadTreeAuthors()
+        {
+            TreeAuthors = new Dictionary<string, string>();
+            foreach (Package.Asset current in PackageManager.FilterAssets(new Package.AssetType[] { UserAssetType.CustomAssetMetaData }))
+            {
+                PublishedFileId id = current.package.GetPublishedFileID();
+                if (UInt64.TryParse(current.package.packageName, out ulong steamid))
+                {
+                    string prefabName = string.Concat(steamid, ".", current.package.packageMainAsset, "_Data");
+                    if (!TreeAuthors.ContainsKey(prefabName) && !current.package.packageAuthor.IsNullOrWhiteSpace())
+                    {
+                        if (UInt64.TryParse(current.package.packageAuthor.Substring("steamid:".Length), out ulong authorID))
+                        {
+                            string author = new Friend(new UserID(authorID)).personaName;
+                            TreeAuthors.Add(prefabName, author);
+                        }
+                    }
+                }
+            }
         }
 
         public static string GetName(PrefabInfo prefab)

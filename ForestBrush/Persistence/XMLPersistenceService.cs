@@ -18,6 +18,8 @@ namespace ForestBrush.Persistence
                 PanelPosY = settings.PanelPosY,
                 AddRemoveTreesToBrushOpen = settings.AddRemoveTreesToBrushOpen,
                 BrushOptionsOpen = settings.BrushOptionsOpen,
+                ShowTreeMeshData = settings.ShowTreeMeshData,
+                Sorting = settings.Sorting,
                 Brushes = settings.Brushes,
                 SelectedBrush = settings.SelectedBrush.Name,
                 ToggleTool = GetXmlInputKey(settings.ToggleTool)
@@ -45,6 +47,8 @@ namespace ForestBrush.Persistence
                     xmlSettings.PanelPosY,
                     xmlSettings.AddRemoveTreesToBrushOpen,
                     xmlSettings.BrushOptionsOpen,
+                    xmlSettings.ShowTreeMeshData,
+                    xmlSettings.Sorting,
                     xmlSettings.Brushes,
                     xmlSettings.SelectedBrush,
                     GetSavedInputKey(xmlSettings.ToggleTool)

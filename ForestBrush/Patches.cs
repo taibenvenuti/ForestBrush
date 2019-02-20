@@ -14,12 +14,12 @@ namespace ForestBrush
     {
         static bool Prefix(ref Texture2D ___m_brush, ref float[] ___m_brushData, ref Vector3 ___m_brushPosition, ref float ___m_brushSize, Texture2D brush, Vector3 brushPosition, float brushSize)
         {
-            if (ForestBrush.Instance.ForestBrushPanel.isVisible && ForestBrush.Instance.IsCurrentTreeContainer)
+            if (ForestBrush.Instance.Active)
             {
                 if (___m_brush != brush)
                 {
                     ___m_brush = brush;
-                    
+
                     for (int i = 0; i < 64; i++)
                     {
                         for (int j = 0; j < 64; j++)
@@ -30,11 +30,11 @@ namespace ForestBrush
                             }
                             catch (Exception)
                             {
-                                
+
                             }
                         }
                     }
-                    
+
                 }
                 ___m_brushPosition = brushPosition;
                 ___m_brushSize = brushSize;
@@ -63,13 +63,14 @@ namespace ForestBrush
 
         static bool Prefix(TreeTool __instance, Randomizer ___m_randomizer, Vector3 ___m_mousePosition, bool ___m_mouseLeftDown, bool ___m_mouseRightDown, ToolController ___m_toolController)
         {
-            if (!ForestBrush.Instance.IsCurrentTreeContainer || !ForestBrush.Instance.ForestBrushPanel.isVisible) return true;
+            if (!ForestBrush.Instance.Active) return true;
             else if (ForestBrush.Instance.Container.m_variations.Length == 0) return false;
-            else if (___m_mouseLeftDown || (___m_mouseRightDown && !RotationTogglePressed() && !DeleteAllTogglePressed()))
+            else if (___m_mouseLeftDown && !DeleteAllTogglePressed() || (___m_mouseRightDown && !RotationTogglePressed() && !DeleteAllTogglePressed()))
             {
                 if (__instance.m_prefab != null)
                 {
                     int batchSize = (int)__instance.m_brushSize * ForestBrush.Instance.BrushTweaker.SizeMultiplier + ForestBrush.Instance.BrushTweaker.SizeAddend;
+                    if (___m_mouseRightDown) batchSize *= 2;
                     ToolBase.RaycastInput input = new ToolBase.RaycastInput();
                     for (int i = 0; i < batchSize; i++)
                     {
@@ -97,7 +98,7 @@ namespace ForestBrush
 
                         position.y = Singleton<TerrainManager>.instance.SampleDetailHeight(position, out float f, out float f2);
                         var spacing = UserMod.Settings.SelectedBrush.Options.AutoDensity ? ___m_treeInfo.m_generatedInfo.m_size.x / 2 : UserMod.Settings.SelectedBrush.Options.Density;
-                        
+
                         Randomizer randomizer = ___m_randomizer;
                         uint seed = Singleton<TreeManager>.instance.m_trees.NextFreeItem(ref randomizer);
                         Randomizer randomizer2 = new Randomizer(seed);
@@ -125,11 +126,11 @@ namespace ForestBrush
                                 || Singleton<NetManager>.instance.OverlapQuad(quad, y, maxY, collisionType, ___m_treeInfo.m_class.m_layer, 0, 0, 0)
                                 || Singleton<BuildingManager>.instance.OverlapQuad(quad, y, maxY, collisionType, ___m_treeInfo.m_class.m_layer, 0, 0, 0)
                                 || (Singleton<TerrainManager>.instance.HasWater(vector2)
-                                    && !Input.GetKey(KeyCode.LeftAlt) 
+                                    && !Input.GetKey(KeyCode.LeftAlt)
                                     && !Input.GetKey(KeyCode.LeftAlt))))
                             continue;
                         var scale = ___m_randomizer.Int32(16);
-                        var str2Rnd = UnityEngine.Random.Range(0.0f, ForestBrush.Instance.BrushTweaker.MaxRandomRange); 
+                        var str2Rnd = UnityEngine.Random.Range(0.0f, ForestBrush.Instance.BrushTweaker.MaxRandomRange);
                         if (Mathf.PerlinNoise(position.x * scale, position.y * scale) > 0.5 && str2Rnd < UserMod.Settings.SelectedBrush.Options.Strength)
                         {
                             if (___m_mouseLeftDown)
@@ -146,7 +147,7 @@ namespace ForestBrush
                                 input.m_ray = ray;
                                 input.m_length = Camera.main.farClipPlane;
                                 input.m_rayRight = Camera.main.transform.TransformDirection(Vector3.right);
-                                if(RayCast(input, out ToolBase.RaycastOutput output))
+                                if (RayCast(input, out ToolBase.RaycastOutput output))
                                 {
                                     uint tree = output.m_treeInstance;
                                     if (tree == 0) continue;
@@ -160,7 +161,7 @@ namespace ForestBrush
                 }
                 return false;
             }
-            else if (___m_mouseRightDown && RotationTogglePressed())
+            else if ((___m_mouseRightDown && RotationTogglePressed() || ___m_mouseLeftDown && DeleteAllTogglePressed()))
             {
                 return false;
             }
@@ -185,7 +186,7 @@ namespace ForestBrush
     {
         static bool Prefix(TreeTool __instance, ToolController ___m_toolController, ToolBase.ToolErrors ___m_placementErrors, Vector3 ___m_mousePosition, bool ___m_mouseRightDown, Randomizer ___m_randomizer, CameraInfo cameraInfo)
         {
-            if(!ForestBrush.Instance.ForestBrushPanel.isVisible || !ForestBrush.Instance.IsCurrentTreeContainer )
+            if (!ForestBrush.Instance.Active || ApplyBrushPatch.DeleteAllTogglePressed())
             {
                 return true;
             }
@@ -199,7 +200,7 @@ namespace ForestBrush
                     ___m_toolController.RenderColliding(cameraInfo, toolColor, toolColor, toolColor, toolColor, 0, 0);
                     ToolManager instance = Singleton<ToolManager>.instance;
                     instance.m_drawCallData.m_overlayCalls = instance.m_drawCallData.m_overlayCalls + 1;
-                    if(UserMod.Settings.SelectedBrush.Options.IsSquare)
+                    if (UserMod.Settings.SelectedBrush.Options.IsSquare)
                     {
                         var Angle = ApplyBrushPatch.Angle;
                         var radians = Angle * Mathf.Deg2Rad;
@@ -208,7 +209,7 @@ namespace ForestBrush
 
                         Quad3 quad = default(Quad3);
                         Vector2 xz = VectorUtils.XZ(___m_mousePosition);
-                        
+
                         var a = xz + new Vector2(-size, -size);
                         var aT = a - xz;
                         a.x = aT.x * cos - aT.y * sin;
@@ -251,7 +252,7 @@ namespace ForestBrush
     {
         static bool Prefix(TreeTool __instance, ToolController ___m_toolController, ref bool ___m_mouseLeftDown, ref bool ___m_mouseRightDown, Event e)
         {
-            if (ForestBrush.Instance.ForestBrushPanel.isVisible && ForestBrush.Instance.IsCurrentTreeContainer)
+            if (ForestBrush.Instance.Active)
             {
                 if (!___m_toolController.IsInsideUI && e.type == EventType.MouseDown)
                 {
@@ -310,7 +311,7 @@ namespace ForestBrush
     {
         static void Prefix(ref TreeTool __instance, ToolController ___m_toolController, ref float ___m_brushSize)
         {
-            if (ForestBrush.Instance.ForestBrushPanel.isVisible && ForestBrush.Instance.IsCurrentTreeContainer)
+            if (ForestBrush.Instance.Active)
             {
                 __instance.m_mode = TreeTool.Mode.Brush;
                 ___m_brushSize = UserMod.Settings.SelectedBrush.Options.Size;
@@ -319,7 +320,7 @@ namespace ForestBrush
 
         static void Postfix(TreeTool __instance, ToolController ___m_toolController)
         {
-            if (ForestBrush.Instance.ForestBrushPanel.isVisible && ForestBrush.Instance.IsCurrentTreeContainer)
+            if (ForestBrush.Instance.Active)
             {
                 if (__instance.m_mode == TreeTool.Mode.Brush && Input.GetKey(KeyCode.Mouse1) && ApplyBrushPatch.RotationTogglePressed())
                 {

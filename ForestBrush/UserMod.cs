@@ -131,6 +131,26 @@ namespace ForestBrush
 
                 group.AddSpace(10);
 
+                group.AddDropdown(Translation.Instance.GetTranslation("FOREST-BRUSH-OPTIONS-SORTING"), 
+                                  new string[] 
+                                  {
+                                      Translation.Instance.GetTranslation("FOREST-BRUSH-DATA-NAME"),
+                                      Translation.Instance.GetTranslation("FOREST-BRUSH-DATA-AUTHOR"),
+                                      Translation.Instance.GetTranslation("FOREST-BRUSH-DATA-TEXTURE"),
+                                      Translation.Instance.GetTranslation("FOREST-BRUSH-DATA-TRIANGLES")
+                                  }, 
+                                  (int)Settings.Sorting, 
+                                  (index) => 
+                                  {
+                                      Settings.Sorting = (TreeSorting)index; SaveSettings();
+                                  });
+
+                group.AddSpace(10);
+
+                group.AddCheckbox(Translation.Instance.GetTranslation("FOREST-BRUSH-OPTIONS-SHOWMESHDATA"), Settings.ShowTreeMeshData, (b) => { Settings.ShowTreeMeshData = b; SaveSettings(); });
+
+                group.AddSpace(10);
+
                 optionKeys = panel.gameObject.AddComponent<OptionsKeyBinding>();
 
                 group.AddSpace(10);

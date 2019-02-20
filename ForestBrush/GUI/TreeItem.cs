@@ -26,6 +26,8 @@ namespace ForestBrush.GUI
             height = Constants.UIItemHeight;
             isVisible = true;
             isInteractive = true;
+            tooltipBox.GetComponent<UILabel>().textAlignment = UIHorizontalAlignment.Left;
+            GenerateTooltip(info);
 
             //Thumbnail
             thumbNailSprite = AddUIComponent<UITextureSprite>();
@@ -37,12 +39,12 @@ namespace ForestBrush.GUI
             includeCheckBox = AddUIComponent<UICheckBox>();
             includeCheckBox.size = Constants.UICheckboxSize + new Vector2(3f, 3f);
             var sprite = includeCheckBox.AddUIComponent<UISprite>();
-            sprite.atlas =  ResourceLoader.Atlas;
+            sprite.atlas = ResourceLoader.Atlas;
             sprite.spriteName = ResourceLoader.CheckBoxSpriteUnchecked;
             sprite.size = includeCheckBox.size;
             sprite.relativePosition = Vector3.zero;
             includeCheckBox.checkedBoxObject = sprite.AddUIComponent<UISprite>();
-            ((UISprite)includeCheckBox.checkedBoxObject).atlas =  ResourceLoader.Atlas;
+            ((UISprite)includeCheckBox.checkedBoxObject).atlas = ResourceLoader.Atlas;
             ((UISprite)includeCheckBox.checkedBoxObject).spriteName = ResourceLoader.CheckBoxSpriteChecked;
             includeCheckBox.checkedBoxObject.size = includeCheckBox.size;
             includeCheckBox.checkedBoxObject.relativePosition = Vector3.zero;
@@ -113,6 +115,21 @@ namespace ForestBrush.GUI
             initialized = true;
         }
 
+        public void GenerateTooltip(TreeInfo info)
+        {
+            if (!UserMod.Settings.ShowTreeMeshData) tooltip = "";
+            else if (ForestBrush.Instance.TreesMeshData.TryGetValue(info.name, out TreeMeshData meshData))
+            {
+                if (meshData == null) return;
+
+                if (ForestBrush.Instance.TreeAuthors.TryGetValue(Prefab.name, out string author))
+                    author = string.Concat(Translation.Instance.GetTranslation("FOREST-BRUSH-DATA-AUTHOR"), ": ", author);
+                string trisString = string.Concat(Translation.Instance.GetTranslation("FOREST-BRUSH-DATA-MESH"), ": ", meshData.triangles.ToString() == "0" ? Translation.Instance.GetTranslation("FOREST-BRUSH-DATA-MESHNOTREADABLE") : string.Concat(meshData.triangles.ToString(), " ", Translation.Instance.GetTranslation("FOREST-BRUSH-DATA-TRIANGLES")));
+                string textureString = string.Concat(Translation.Instance.GetTranslation("FOREST-BRUSH-DATA-TEXTURE"),  ": ", meshData.textureSize.x, "x", meshData.textureSize.y, Translation.Instance.GetTranslation("FOREST-BRUSH-DATA-PIXELS"));
+                tooltip = string.Concat(!string.IsNullOrEmpty(author) ? string.Concat(author, "\n") : "", textureString, "\n", trisString);
+            }
+        }
+
         private void ProbabilityTextField_eventGotFocus(UIComponent component, UIFocusEventParameter eventParam)
         {
             probabilityTextField.SelectAll();
@@ -121,6 +138,7 @@ namespace ForestBrush.GUI
         internal void LocaleChanged()
         {
             probabilityTextField.tooltip = Translation.Instance.GetTranslation("FOREST-BRUSH-PROBABILITY");
+            GenerateTooltip(Prefab);
         }
 
         private void ProbabilityTextField_eventLostFocus(UIComponent component, UIFocusEventParameter eventParam)
@@ -170,10 +188,10 @@ namespace ForestBrush.GUI
 
         private void ProbabilitySlider_eventValueChanged(UIComponent component, float value)
         {
+            tooltipBox.isVisible = false;
             probabilityTextField.eventTextChanged -= ProbabilityTextField_eventTextChanged;
             probabilityTextField.text = value.ToString();
             probabilityTextField.eventTextChanged += ProbabilityTextField_eventTextChanged;
-
         }
 
         private void ProbabilitySlider_eventMouseUp(UIComponent component, UIMouseEventParameter eventParam)
@@ -274,6 +292,7 @@ namespace ForestBrush.GUI
                 probabilityTextField.text = probabilityTextField.isEnabled ? GetProbability(Prefab).ToString() : 0.ToString();
                 probabilitySlider.isEnabled = includeCheckBox.isChecked;
                 probabilitySlider.value = GetProbability(Prefab);
+                GenerateTooltip(Prefab);
                 backgroundSprite = "";
                 if (isRowOdd)
                 {

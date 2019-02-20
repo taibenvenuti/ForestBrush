@@ -14,6 +14,10 @@ namespace ForestBrush.Persistence
 
         public bool BrushOptionsOpen { get; set; }
 
+        public bool ShowTreeMeshData { get; set; }
+
+        public TreeSorting Sorting { get; set; }
+
         public List<Brush> Brushes { get; set; }
 
         public string SelectedBrush { get; set; }
