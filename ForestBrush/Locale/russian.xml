@@ -19,19 +19,19 @@
     <Translation ID="FOREST-BRUSH-BRUSH-OPTIONS-AUTODENSITY" String="Авто-плотность" />
     <Translation ID="FOREST-BRUSH-BRUSH-OPTIONS-OVERLAYCOLOR" String="Цвет подсветки" />
     <Translation ID="FOREST-BRUSH-OPTIONS-RESET" String="Сбросить все настройки по умолчанию" />
-    <Translation ID="FOREST-BRUSH-OPTIONS-SHOWMESHDATA" String="Show tree mesh and texture data" />
-    <Translation ID="FOREST-BRUSH-DATA-NAME" String="Name" />
-    <Translation ID="FOREST-BRUSH-DATA-AUTHOR" String="Author" />
-    <Translation ID="FOREST-BRUSH-DATA-MESH" String="Mesh" />
-    <Translation ID="FOREST-BRUSH-DATA-MESHNOTREADABLE" String="Unreadable" />
-    <Translation ID="FOREST-BRUSH-DATA-TRIANGLES" String="Triangles" />
-    <Translation ID="FOREST-BRUSH-DATA-TEXTURE" String="Texture" />
-    <Translation ID="FOREST-BRUSH-DATA-PIXELS" String="px" />
-    <Translation ID="FOREST-BRUSH-OPTIONS-SORTING" String="Sort trees list by" />
+    <Translation ID="FOREST-BRUSH-OPTIONS-SHOWMESHDATA" String="Показать данные о моделях и текстурах деревьев" />
+    <Translation ID="FOREST-BRUSH-DATA-NAME" String="Название" />
+    <Translation ID="FOREST-BRUSH-DATA-AUTHOR" String="Автор" />
+    <Translation ID="FOREST-BRUSH-DATA-MESH" String="Модель" />
+    <Translation ID="FOREST-BRUSH-DATA-MESHNOTREADABLE" String="Ошибка чтения" />
+    <Translation ID="FOREST-BRUSH-DATA-TRIANGLES" String="Полигоны" />
+    <Translation ID="FOREST-BRUSH-DATA-TEXTURE" String="Текстура" />
+    <Translation ID="FOREST-BRUSH-DATA-PIXELS" String="пикс" />
+    <Translation ID="FOREST-BRUSH-OPTIONS-SORTING" String="Сортировка деревьев по" />
     <Translation ID="FOREST-BRUSH-MODAL-WARNING" String="Внимание" />
-    <Translation ID="FOREST-BRUSH-MODAL-LIMITREACHED-TITLE" String="Tree limit reached" />
-    <Translation ID="FOREST-BRUSH-MODAL-LIMITREACHED-MESSAGE-ONE" String="You've reached the 100 tree limit for this brush. Please remove some trees to add more." />
-    <Translation ID="FOREST-BRUSH-MODAL-LIMITREACHED-MESSAGE-ALL" String="You've reached the 100 tree limit for this brush. Some trees were not added. Please remove some trees to add more." />
+    <Translation ID="FOREST-BRUSH-MODAL-LIMITREACHED-TITLE" String="Достигнут предел деревьев" />
+    <Translation ID="FOREST-BRUSH-MODAL-LIMITREACHED-MESSAGE-ONE" String="Вы достигли предела в 100 деревьев для этой кисти. Пожалуйста, удалите некоторые деревья, чтобы добавить ещё." />
+    <Translation ID="FOREST-BRUSH-MODAL-LIMITREACHED-MESSAGE-ALL" String="You've reached the 100 tree limit for this brush. Некоторые деревья не были добавлены. Пожалуйста, удалите некоторые деревья, чтобы добавить ещё." />
     <Translation ID="FOREST-BRUSH-PROMPT-NEW" String="Название кисти" />
     <Translation ID="FOREST-BRUSH-RENAME-BRUSH" String="Используйте это текстовое поле, чтобы переименовать текущую кисть." />
     <Translation ID="FOREST-BRUSH-PROMPT-DELETE" String="Вы уверены, что хотите навсегда удалить эту кисть?" />
