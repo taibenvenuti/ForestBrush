@@ -11,7 +11,7 @@ namespace ForestBrush
 
     public static class SortingExtension
     {
-        public static int CompareTo(this TreeInfo info, object obj, TreeSorting sorting, bool ascendingSort = false)
+        public static int CompareTo(this TreeInfo info, object obj, TreeSorting sorting, bool ascendingSort = true)
         {
             TreeInfo a, b;
 

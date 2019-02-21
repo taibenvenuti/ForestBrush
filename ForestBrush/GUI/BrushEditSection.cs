@@ -20,13 +20,15 @@ namespace ForestBrush.GUI
         internal UIFastList TreesList;
         UILabel searchLabel;
         UITextField SearchTextField;
-
+        internal Filtering Filtering;
 
         public override void Start()
         {
             base.Start();
             father = (ForestBrushPanel)parent;
             selectBrushDropDown = father.BrushSelectSection.SelectBrushDropDown;
+
+            Filtering = new Filtering();
 
             width = father.width;
             autoLayout = true;
@@ -282,12 +284,22 @@ namespace ForestBrush.GUI
 
         private void SearchTextField_eventTextChanged(UIComponent component, string text)
         {
-            FilterTreeList(text);
+            Filtering.FilterTreeListExclusive(text);
         }
 
         private void SearchTextField_eventLostFocus(UIComponent component, UIFocusEventParameter eventParam)
         {
-            FilterTreeList(SearchTextField.text);
+            Filtering.FilterTreeListExclusive(SearchTextField.text);
+        }
+
+        private bool IsTextureFilter(string filter)
+        {
+            return filter.Length > 2 && filter.Substring(filter.Length - 2).ToLower() == "px";
+        }
+
+        private bool IsTriangleFilter(string filter)
+        {
+            return filter.Length > 4 && filter.Substring(filter.Length - 4).ToLower() == "tris";
         }
 
         private void FilterTreeList(string filterText)
@@ -307,6 +319,7 @@ namespace ForestBrush.GUI
                 bool trisCountFilter = false;
                 int textureSize = 0;
                 int trisCount = 0;
+
                 for (int i = 0; i < filters.Length; i++)
                 {
                     string filter = filters[i];
@@ -317,9 +330,9 @@ namespace ForestBrush.GUI
                         textureSizeFilter = filter.Length > 2 && filter.Substring(filter.Length - 2).ToLower() == "px";
                         trisCountFilter = filter.Length > 4 && filter.Substring(filter.Length - 4).ToLower() == "tris";
                         if (textureSizeFilter && int.TryParse(filter.Substring(0, filter.Length - 2), out int size))
-                            textureSize = size;
+                            if (size > textureSize) textureSize = size;
                         if (trisCountFilter && int.TryParse(filter.Substring(0, filter.Length - 4), out int count))
-                            trisCount = count;
+                            if (count > trisCount) trisCount = count;
                     }
                 }
                 for (int i = 0; i < filters.Length; i++)
@@ -334,9 +347,9 @@ namespace ForestBrush.GUI
                             string itemTitle = item.GetUncheckedLocalizedTitle().ToLower();
                             bool itemHasData = treeMeshData.TryGetValue(item.name, out TreeMeshData itemData);
                             bool itemHasAuthor = treeAuthors.TryGetValue(item.name, out string itemAuthor);
-                            if((textureSizeFilter && itemHasData && textureSize > 0 && (itemData.textureSize.x <= textureSize && itemData.textureSize.y <= textureSize))
-                            || (trisCountFilter && itemHasData && trisCount > 0  && (itemData.triangles <= trisCount))
-                            || (showNotBrushTree && !brushTrees.Contains(item)) 
+                            if ((textureSizeFilter && itemHasData && textureSize > 0 && (itemData.textureSize.x <= textureSize && itemData.textureSize.y <= textureSize))
+                            || (trisCountFilter && itemHasData && trisCount > 0 && (itemData.triangles <= trisCount))
+                            || (showNotBrushTree && !brushTrees.Contains(item))
                             || (showBrushTree && brushTrees.Contains(item))
                             || (itemHasAuthor && itemAuthor.ToLower().Contains(filter))
                             || (itemTitle.Contains(filter)))
@@ -353,7 +366,6 @@ namespace ForestBrush.GUI
             TreesList.rowsData.m_size = data.Count;
             TreesList.DisplayAt(0f);
         }
-
         private List<TreeInfo> GetAvailableTreesSorted()
         {
             List<TreeInfo> trees = ForestBrush.Instance.Trees.Values.ToList();

@@ -1,0 +1,195 @@
+﻿
+using System.Collections.Generic;
+using System.Linq;
+
+namespace ForestBrush
+{
+    public enum Filter
+    {
+        None = -1,
+        Texture,
+        Tris,
+        InBrush,
+        NotInBrush,
+        Author,
+        String,
+        Count
+    }
+
+    public class Filtering
+    {
+        public Filtering()
+        {
+            Trees = ForestBrush.Instance.Trees.Values.ToList();
+        }
+
+        readonly List<TreeInfo> Trees;
+
+        List<TreeInfo>[] filteredData;
+        List<TreeInfo>[] FilteredData
+        {
+            get
+            {
+                if (filteredData == null)
+                {
+                    filteredData = new List<TreeInfo>[(int)Filter.Count + 1];
+                    for (int i = 0; i < filteredData.Length; i++)
+                    {
+                        filteredData[i] = new List<TreeInfo>();
+                    }
+                }
+                return filteredData;
+            }
+        }
+
+        List<TreeInfo> data;
+        List<TreeInfo> Data
+        {
+            get
+            {
+                if (data == null)
+                {
+                    data = new List<TreeInfo>();
+                }
+                return data;
+            }
+        }
+
+        bool[] _hasMatch;
+        bool[] hasMatch
+        {
+            get
+            {
+                if (_hasMatch == null)
+                {
+                    _hasMatch = new bool[(int)Filter.Count];
+                }
+                return _hasMatch;
+            }
+        }
+
+        bool IsMatch(Filter filter, TreeInfo tree)
+        {
+            bool isMatch = true;
+            for (int i = 0; i < (int)Filter.Count; i++)
+            {
+                for (int j = 0; j < (int)Filter.Count; j++)
+                {
+                    if (hasMatch[i] && FilteredData[i].Contains(tree) && hasMatch[j] && !FilteredData[j].Contains(tree))
+                        isMatch = false;
+                }
+            }
+            return isMatch;
+        }
+
+        void AddItem(Filter filter, TreeInfo item)
+        {
+            if (!FilteredData[(int)filter].Contains(item))
+            {
+                FilteredData[(int)filter].Add(item);
+                if(filter != Filter.Count) hasMatch[(int)filter] = true;
+            }
+        }
+
+        private void ClearFilteredData()
+        {
+            for (int i = 0; i < FilteredData.Length; i++)
+            {
+                FilteredData[i].Clear();
+            }
+            Data.Clear();
+            _hasMatch = null;
+        }
+
+        public void FilterTreeListExclusive(string filterText)
+        {
+            if (Trees == null) return;
+            ClearFilteredData();
+            string[] filters = filterText?.Trim()?.ToLower().Split(' ');
+            var data = ForestBrush.Instance.Trees.Values.ToList();
+            if (filters != null && filters.Length > 0 && !string.IsNullOrEmpty(filters[0]))
+            {
+                var brushTrees = ForestBrush.Instance.BrushTool.TreeInfos;
+                var treeAuthors = ForestBrush.Instance.TreeAuthors;
+                var treeMeshData = ForestBrush.Instance.TreesMeshData;
+
+                for (int i = 0; i < filters.Length; i++)
+                {
+                    string filter = filters[i];
+                    if (!string.IsNullOrEmpty(filter))
+                    {
+                        int textureSize = 0;
+                        int trisCount = 0;
+                        bool isInBrushFilter = filter.Contains("+");
+                        bool isNotInBrushFilter = filter.Contains("-");
+                        bool isTextureSizeFilter = filter.Length > 2 && filter.Substring(filter.Length - 2).ToLower() == "px";
+                        bool isTrisCountFilter = filter.Length > 4 && filter.Substring(filter.Length - 4).ToLower() == "tris";
+
+                        if (isTextureSizeFilter && int.TryParse(filter.Substring(0, filter.Length - 2), out int size))
+                            if (size > textureSize) textureSize = size;
+                        if (isTrisCountFilter && int.TryParse(filter.Substring(0, filter.Length - 4), out int count))
+                            if (count > trisCount) trisCount = count;
+
+                        for (int j = 0; j < data.Count; j++)
+                        {
+                            TreeInfo item = data[j];
+                            if (item == null) continue;
+                            string itemTitle = item.GetUncheckedLocalizedTitle().ToLower();
+                            bool itemHasData = treeMeshData.TryGetValue(item.name, out TreeMeshData itemData);
+                            bool itemHasAuthor = treeAuthors.TryGetValue(item.name, out string itemAuthor);
+
+                            bool isTextureMatch = itemHasData && isTextureSizeFilter && textureSize > 0 && (itemData.textureSize.x <= textureSize && itemData.textureSize.y <= textureSize);
+                            bool isTrisMatch = isTrisCountFilter && itemHasData && trisCount > 0 && (itemData.triangles <= trisCount);
+                            bool isNotInBrushMatch = isNotInBrushFilter && !brushTrees.Contains(item);
+                            bool isInBrushMatch = isInBrushFilter && brushTrees.Contains(item);
+                            bool isAuthorMatch = itemHasAuthor && itemAuthor.ToLower().Contains(filter);
+                            bool isStringMatch = itemTitle.Contains(filter);
+
+                            if (isTextureMatch)
+                            {
+                                AddItem(Filter.Texture, item);
+                            }
+                            if (isTrisMatch)
+                            {
+                                AddItem(Filter.Tris, item);
+                            }
+                            if (isNotInBrushMatch)
+                            {
+                                AddItem(Filter.NotInBrush, item);
+                            }
+                            if (isInBrushMatch)
+                            {
+                                AddItem(Filter.InBrush, item);
+                            }
+                            if (isAuthorMatch)
+                            {
+                                AddItem(Filter.Author, item);
+                            }
+                            if (isStringMatch)
+                            {
+                                AddItem(Filter.String, item);
+                            }
+                            if (isTextureMatch || isTrisMatch || isNotInBrushMatch || isInBrushMatch || isAuthorMatch || isStringMatch)
+                            {
+                                AddItem(Filter.Count, item);
+                            }
+                        }
+                    }
+                }
+                foreach (var tree in FilteredData[(int)Filter.Count])
+                {
+                    for (int i = 0; i < (int)Filter.Count; i++)
+                    {
+                        if (IsMatch((Filter)i, tree) && !Data.Contains(tree))
+                            Data.Add(tree);
+                    }
+                }
+                data = Data;
+            }
+            data.Sort((t1, t2) => t1.CompareTo(t2, UserMod.Settings.Sorting));
+            ForestBrush.Instance.ForestBrushPanel.BrushEditSection.TreesList.rowsData.m_buffer = data.ToArray();
+            ForestBrush.Instance.ForestBrushPanel.BrushEditSection.TreesList.rowsData.m_size = data.Count;
+            ForestBrush.Instance.ForestBrushPanel.BrushEditSection.TreesList.DisplayAt(0f);
+        }
+    }
+}

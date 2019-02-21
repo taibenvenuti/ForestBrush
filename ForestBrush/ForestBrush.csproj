@@ -93,6 +93,7 @@
     <Compile Include="Constants.cs" />
     <Compile Include="GUI\UIUtilities.cs" />
     <Compile Include="ForestBrush.cs" />
+    <Compile Include="Filtering.cs" />
     <Compile Include="Sorting.cs" />
     <Compile Include="TreeMeshData.cs" />
     <Compile Include="TreeProbability.cs" />
