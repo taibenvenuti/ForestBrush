@@ -18,6 +18,10 @@ namespace ForestBrush.Persistence
 
         public TreeSorting Sorting { get; set; }
 
+        public SortingOrder SortingOrder { get; set; }
+
+        public FilterStyle FilterStyle { get; set; }
+
         public List<Brush> Brushes { get; set; }
 
         public string SelectedBrush { get; set; }

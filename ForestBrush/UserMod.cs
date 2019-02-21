@@ -23,6 +23,7 @@ namespace ForestBrush
         private bool modInstalled = false;
         private OptionsKeyBinding optionKeys;
         private GameObject forestBrushGameObject;
+        private UIDropDown searchLogic;
 
         public string Name => Constants.ModName;
 
@@ -145,6 +146,35 @@ namespace ForestBrush
                                       Settings.Sorting = (TreeSorting)index; SaveSettings();
                                   });
 
+                group.AddSpace(10);
+
+                group.AddDropdown(Translation.Instance.GetTranslation("FOREST-BRUSH-OPTIONS-SORTING-ORDER"),
+                                  new string[]
+                                  {
+                                      Translation.Instance.GetTranslation("FOREST-BRUSH-OPTIONS-SORTING-DESCENDING"),
+                                      Translation.Instance.GetTranslation("FOREST-BRUSH-OPTIONS-SORTING-ASCENDING")
+                                  },
+                                  (int)Settings.SortingOrder,
+                                  (index) =>
+                                  {
+                                      Settings.SortingOrder = (SortingOrder)index; SaveSettings();
+                                  });
+
+                group.AddSpace(10);
+
+                searchLogic = (UIDropDown)group.AddDropdown(Translation.Instance.GetTranslation("FOREST-BRUSH-OPTIONS-FILTERING-LOGIC"),
+                                  new string[]
+                                  {
+                                      Translation.Instance.GetTranslation("FOREST-BRUSH-OPTIONS-FILTERING-SIMPLE"),
+                                      Translation.Instance.GetTranslation("FOREST-BRUSH-OPTIONS-FILTERING-AND"),
+                                      Translation.Instance.GetTranslation("FOREST-BRUSH-OPTIONS-FILTERING-OR")
+                                  },
+                                  (int)Settings.FilterStyle,
+                                  (index) =>
+                                  {
+                                      Settings.FilterStyle = (FilterStyle)index; SaveSettings();
+                                  });
+                searchLogic.width = 325.0f;
                 group.AddSpace(10);
 
                 group.AddCheckbox(Translation.Instance.GetTranslation("FOREST-BRUSH-OPTIONS-SHOWMESHDATA"), Settings.ShowTreeMeshData, (b) => { Settings.ShowTreeMeshData = b; SaveSettings(); });

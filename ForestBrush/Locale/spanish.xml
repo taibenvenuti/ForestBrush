@@ -28,6 +28,13 @@
     <Translation ID="FOREST-BRUSH-DATA-TEXTURE" String="Textura" />
     <Translation ID="FOREST-BRUSH-DATA-PIXELS" String="px" />
     <Translation ID="FOREST-BRUSH-OPTIONS-SORTING" String="Ordenar lista de árboles por" />
+    <Translation ID="FOREST-BRUSH-OPTIONS-SORTING-ORDER" String="Orden de la lista" />
+    <Translation ID="FOREST-BRUSH-OPTIONS-SORTING-ASCENDING" String="Ascendente" />
+    <Translation ID="FOREST-BRUSH-OPTIONS-SORTING-DESCENDING" String="Descendiente" />
+    <Translation ID="FOREST-BRUSH-OPTIONS-FILTERING-LOGIC" String="Lógica de búsqueda" />
+    <Translation ID="FOREST-BRUSH-OPTIONS-FILTERING-AND" String="Avanzada 'AND' (Lenta)" />
+    <Translation ID="FOREST-BRUSH-OPTIONS-FILTERING-OR" String="Avanzada 'OR' (Lenta)" />
+    <Translation ID="FOREST-BRUSH-OPTIONS-FILTERING-SIMPLE" String="Simple (Rápida)" />
     <Translation ID="FOREST-BRUSH-MODAL-WARNING" String="Advertencia" />
     <Translation ID="FOREST-BRUSH-MODAL-LIMITREACHED-TITLE" String="Limite de árboles alcanzado" />
     <Translation ID="FOREST-BRUSH-MODAL-LIMITREACHED-MESSAGE-ONE" String="Haz alcanzado el limite de 100 arboles por pincel. Porfavor remueve algunos árboles para agregar más." />

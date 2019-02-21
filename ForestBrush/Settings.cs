@@ -14,6 +14,8 @@ namespace ForestBrush
             bool BrushOptionsOpen,
             bool ShowTreeMeshData,
             TreeSorting Sorting,
+            SortingOrder SortingOrder,
+            FilterStyle FilterStyle,
             IEnumerable<Brush> forestBrushes,
             string selectedBrush,
             SavedInputKey toggleTool
@@ -25,6 +27,8 @@ namespace ForestBrush
             this.BrushOptionsOpen = BrushOptionsOpen;
             this.ShowTreeMeshData = ShowTreeMeshData;
             this.Sorting = Sorting;
+            this.SortingOrder = SortingOrder;
+            this.FilterStyle = FilterStyle;
             this.ToggleTool = toggleTool;
 
             this.Brushes = forestBrushes.ToList();
@@ -49,6 +53,10 @@ namespace ForestBrush
 
         public TreeSorting Sorting { get; set; }
 
+        public SortingOrder SortingOrder { get; set; }
+
+        public FilterStyle FilterStyle { get; set; }
+
         public List<Brush> Brushes { get; set; }
 
         public Brush SelectedBrush { get; private set; }
@@ -66,6 +74,8 @@ namespace ForestBrush
                 false,
                 true,
                 TreeSorting.Name,
+                SortingOrder.Descending,
+                FilterStyle.AND,
                 Enumerable.Empty<Brush>(),
                 string.Empty,
                 new SavedInputKey("toggleTool", Constants.ModName, SavedInputKey.Encode(KeyCode.B, false, false, true), true)
@@ -121,6 +131,8 @@ namespace ForestBrush
             this.ToggleTool = defaultSettings.ToggleTool;
             this.ShowTreeMeshData = defaultSettings.ShowTreeMeshData;
             this.Sorting = defaultSettings.Sorting;
+            this.SortingOrder = defaultSettings.SortingOrder;
+            this.FilterStyle = defaultSettings.FilterStyle;
         }
     }
 }

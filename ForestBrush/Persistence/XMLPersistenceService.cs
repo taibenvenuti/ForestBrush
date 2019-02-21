@@ -20,6 +20,8 @@ namespace ForestBrush.Persistence
                 BrushOptionsOpen = settings.BrushOptionsOpen,
                 ShowTreeMeshData = settings.ShowTreeMeshData,
                 Sorting = settings.Sorting,
+                SortingOrder = settings.SortingOrder,
+                FilterStyle = settings.FilterStyle,
                 Brushes = settings.Brushes,
                 SelectedBrush = settings.SelectedBrush.Name,
                 ToggleTool = GetXmlInputKey(settings.ToggleTool)
@@ -49,6 +51,8 @@ namespace ForestBrush.Persistence
                     xmlSettings.BrushOptionsOpen,
                     xmlSettings.ShowTreeMeshData,
                     xmlSettings.Sorting,
+                    xmlSettings.SortingOrder,
+                    xmlSettings.FilterStyle,
                     xmlSettings.Brushes,
                     xmlSettings.SelectedBrush,
                     GetSavedInputKey(xmlSettings.ToggleTool)

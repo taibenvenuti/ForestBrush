@@ -28,6 +28,13 @@
     <Translation ID="FOREST-BRUSH-DATA-TEXTURE" String="Texture" />
     <Translation ID="FOREST-BRUSH-DATA-PIXELS" String="px" />
     <Translation ID="FOREST-BRUSH-OPTIONS-SORTING" String="Sort trees list by" />
+    <Translation ID="FOREST-BRUSH-OPTIONS-SORTING-ORDER" String="Sorting order" />
+    <Translation ID="FOREST-BRUSH-OPTIONS-SORTING-ASCENDING" String="Ascending" />
+    <Translation ID="FOREST-BRUSH-OPTIONS-SORTING-DESCENDING" String="Descending" />
+    <Translation ID="FOREST-BRUSH-OPTIONS-FILTERING-LOGIC" String="Search logic" />
+    <Translation ID="FOREST-BRUSH-OPTIONS-FILTERING-AND" String="Advanced 'AND' (Slow)" />
+    <Translation ID="FOREST-BRUSH-OPTIONS-FILTERING-OR" String="Advanced 'OR' (Slow)" />
+    <Translation ID="FOREST-BRUSH-OPTIONS-FILTERING-SIMPLE" String="Simple (Fast)" />
     <Translation ID="FOREST-BRUSH-MODAL-WARNING" String="Warning" />
     <Translation ID="FOREST-BRUSH-MODAL-LIMITREACHED-TITLE" String="Tree limit reached" />
     <Translation ID="FOREST-BRUSH-MODAL-LIMITREACHED-MESSAGE-ONE" String="You've reached the 100 tree limit for this brush. Please remove some trees to add more." />

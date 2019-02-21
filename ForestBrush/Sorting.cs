@@ -9,6 +9,12 @@ namespace ForestBrush
         Triangles
     }
 
+    public enum SortingOrder
+    {
+        Descending,
+        Ascending
+    }
+
     public static class SortingExtension
     {
         public static int CompareTo(this TreeInfo info, object obj, TreeSorting sorting, bool ascendingSort = true)
