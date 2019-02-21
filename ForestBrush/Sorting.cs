@@ -17,11 +17,11 @@ namespace ForestBrush
 
     public static class SortingExtension
     {
-        public static int CompareTo(this TreeInfo info, object obj, TreeSorting sorting, bool ascendingSort = true)
+        public static int CompareTo(this TreeInfo info, object obj, TreeSorting sorting, SortingOrder order)
         {
             TreeInfo a, b;
 
-            if (!ascendingSort)
+            if (order == SortingOrder.Descending)
             {
                 a = info;
                 b = obj as TreeInfo;

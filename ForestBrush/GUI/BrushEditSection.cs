@@ -327,7 +327,7 @@ namespace ForestBrush.GUI
         private List<TreeInfo> GetAvailableTreesSorted()
         {
             List<TreeInfo> trees = ForestBrush.Instance.Trees.Values.ToList();
-            trees.Sort((t1, t2) => t1.CompareTo(t2, UserMod.Settings.Sorting));
+            trees.Sort((t1, t2) => t1.CompareTo(t2, UserMod.Settings.Sorting, UserMod.Settings.SortingOrder));
             return trees;
         }
 

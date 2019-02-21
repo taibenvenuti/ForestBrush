@@ -194,7 +194,7 @@ namespace ForestBrush
                 }
                 data = Data;
             }
-            data.Sort((t1, t2) => t1.CompareTo(t2, UserMod.Settings.Sorting));
+            data.Sort((t1, t2) => t1.CompareTo(t2, UserMod.Settings.Sorting, UserMod.Settings.SortingOrder));
             ForestBrush.Instance.ForestBrushPanel.BrushEditSection.TreesList.rowsData.m_buffer = data.ToArray();
             ForestBrush.Instance.ForestBrushPanel.BrushEditSection.TreesList.rowsData.m_size = data.Count;
             ForestBrush.Instance.ForestBrushPanel.BrushEditSection.TreesList.DisplayAt(0f);
@@ -260,7 +260,7 @@ namespace ForestBrush
                 }
                 data = newData;
             }
-            data.Sort((t1, t2) => t1.CompareTo(t2, UserMod.Settings.Sorting));
+            data.Sort((t1, t2) => t1.CompareTo(t2, UserMod.Settings.Sorting, UserMod.Settings.SortingOrder));
             ForestBrush.Instance.ForestBrushPanel.BrushEditSection.TreesList.rowsData.m_buffer = data.ToArray();
             ForestBrush.Instance.ForestBrushPanel.BrushEditSection.TreesList.rowsData.m_size = data.Count;
             ForestBrush.Instance.ForestBrushPanel.BrushEditSection.TreesList.DisplayAt(0f);
@@ -292,7 +292,7 @@ namespace ForestBrush
                 }
                 data = newData;
             }
-            data.Sort((t1, t2) => t1.CompareTo(t2, UserMod.Settings.Sorting));
+            data.Sort((t1, t2) => t1.CompareTo(t2, UserMod.Settings.Sorting, UserMod.Settings.SortingOrder));
             ForestBrush.Instance.ForestBrushPanel.BrushEditSection.TreesList.rowsData.m_buffer = data.ToArray();
             ForestBrush.Instance.ForestBrushPanel.BrushEditSection.TreesList.rowsData.m_size = data.Count;
             ForestBrush.Instance.ForestBrushPanel.BrushEditSection.TreesList.DisplayAt(0f);
