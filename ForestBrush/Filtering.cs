@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -26,13 +25,6 @@ namespace ForestBrush
 
     public class Filtering
     {
-        public Filtering()
-        {
-            Trees = ForestBrush.Instance.Trees.Values.ToList();
-        }
-
-        readonly List<TreeInfo> Trees;
-
         List<TreeInfo>[] filteredData;
         List<TreeInfo>[] FilteredData
         {
@@ -50,16 +42,16 @@ namespace ForestBrush
             }
         }
 
-        List<TreeInfo> data;
+        List<TreeInfo> _data;
         List<TreeInfo> Data
         {
             get
             {
-                if (data == null)
+                if (_data == null)
                 {
-                    data = new List<TreeInfo>();
+                    _data = new List<TreeInfo>();
                 }
-                return data;
+                return _data;
             }
         }
 
@@ -95,7 +87,7 @@ namespace ForestBrush
             if (!FilteredData[(int)filter].Contains(item))
             {
                 FilteredData[(int)filter].Add(item);
-                if(filter != Filter.Count) hasMatch[(int)filter] = true;
+                if (filter != Filter.Count) hasMatch[(int)filter] = true;
             }
         }
 
@@ -111,10 +103,10 @@ namespace ForestBrush
 
         public void FilterTreeListExclusive(string filterText)
         {
-            if (Trees == null) return;
-            ClearFilteredData();
+            if (ForestBrush.Instance.Trees == null) return;
             string[] filters = filterText?.Trim()?.ToLower().Split(' ');
-            var data = ForestBrush.Instance.Trees.Values.ToList();
+            List<TreeInfo> treeList = ForestBrush.Instance.Trees.Values.ToList();
+            ClearFilteredData();
             if (filters != null && filters.Length > 0 && !string.IsNullOrEmpty(filters[0]))
             {
                 var brushTrees = ForestBrush.Instance.BrushTool.TreeInfos;
@@ -138,9 +130,9 @@ namespace ForestBrush
                         if (isTrisCountFilter && int.TryParse(filter.Substring(0, filter.Length - 4), out int count))
                             if (count > trisCount) trisCount = count;
 
-                        for (int j = 0; j < data.Count; j++)
+                        for (int j = 0; j < treeList.Count; j++)
                         {
-                            TreeInfo item = data[j];
+                            TreeInfo item = treeList[j];
                             if (item == null) continue;
                             string itemTitle = item.GetUncheckedLocalizedTitle().ToLower();
                             bool itemHasData = treeMeshData.TryGetValue(item.name, out TreeMeshData itemData);
@@ -192,20 +184,20 @@ namespace ForestBrush
                             Data.Add(tree);
                     }
                 }
-                data = Data;
+                treeList = Data;
             }
-            data.Sort((t1, t2) => t1.CompareTo(t2, UserMod.Settings.Sorting, UserMod.Settings.SortingOrder));
-            ForestBrush.Instance.ForestBrushPanel.BrushEditSection.TreesList.rowsData.m_buffer = data.ToArray();
-            ForestBrush.Instance.ForestBrushPanel.BrushEditSection.TreesList.rowsData.m_size = data.Count;
+            treeList.Sort((t1, t2) => t1.CompareTo(t2, UserMod.Settings.Sorting, UserMod.Settings.SortingOrder));
+            ForestBrush.Instance.ForestBrushPanel.BrushEditSection.TreesList.rowsData.m_buffer = treeList.ToArray();
+            ForestBrush.Instance.ForestBrushPanel.BrushEditSection.TreesList.rowsData.m_size = treeList.Count;
             ForestBrush.Instance.ForestBrushPanel.BrushEditSection.TreesList.DisplayAt(0f);
         }
 
 
         public void FilterTreeListInclusive(string filterText)
         {
-            if (Trees == null) return;
+            if (ForestBrush.Instance.Trees == null) return;
             string[] filters = filterText?.Trim()?.ToLower().Split(' ');
-            var data = ForestBrush.Instance.Trees.Values.ToList();
+            List<TreeInfo> treeList = ForestBrush.Instance.Trees.Values.ToList();
             if (filters != null && filters.Length > 0 && !string.IsNullOrEmpty(filters[0]))
             {
                 var brushTrees = ForestBrush.Instance.BrushTool.TreeInfos;
@@ -239,9 +231,9 @@ namespace ForestBrush
                     string filter = filters[i];
                     if (!string.IsNullOrEmpty(filter))
                     {
-                        for (int j = 0; j < data.Count; j++)
+                        for (int j = 0; j < treeList.Count; j++)
                         {
-                            TreeInfo item = data[j];
+                            TreeInfo item = treeList[j];
                             if (item == null) continue;
                             string itemTitle = item.GetUncheckedLocalizedTitle().ToLower();
                             bool itemHasData = treeMeshData.TryGetValue(item.name, out TreeMeshData itemData);
@@ -258,19 +250,19 @@ namespace ForestBrush
                         }
                     }
                 }
-                data = newData;
+                treeList = newData;
             }
-            data.Sort((t1, t2) => t1.CompareTo(t2, UserMod.Settings.Sorting, UserMod.Settings.SortingOrder));
-            ForestBrush.Instance.ForestBrushPanel.BrushEditSection.TreesList.rowsData.m_buffer = data.ToArray();
-            ForestBrush.Instance.ForestBrushPanel.BrushEditSection.TreesList.rowsData.m_size = data.Count;
+            treeList.Sort((t1, t2) => t1.CompareTo(t2, UserMod.Settings.Sorting, UserMod.Settings.SortingOrder));
+            ForestBrush.Instance.ForestBrushPanel.BrushEditSection.TreesList.rowsData.m_buffer = treeList.ToArray();
+            ForestBrush.Instance.ForestBrushPanel.BrushEditSection.TreesList.rowsData.m_size = treeList.Count;
             ForestBrush.Instance.ForestBrushPanel.BrushEditSection.TreesList.DisplayAt(0f);
         }
 
-        public void FilterTreeListBasic(string text)
+        public void FilterTreeListBasic(string filterText)
         {
-            if (Trees == null) return;
-            string[] filters = text?.Trim()?.ToLower().Split(' ');
-            var data = ForestBrush.Instance.Trees.Values.ToList();
+            if (ForestBrush.Instance.Trees == null) return;
+            string[] filters = filterText?.Trim()?.ToLower().Split(' ');
+            List<TreeInfo> treeList = ForestBrush.Instance.Trees.Values.ToList();
             if (filters != null && filters.Length > 0 && !string.IsNullOrEmpty(filters[0]))
             {
                 var newData = new List<TreeInfo>();
@@ -279,22 +271,22 @@ namespace ForestBrush
                     var filter = filters[i];
                     if (!string.IsNullOrEmpty(filter))
                     {
-                        for (int j = 0; j < data.Count; j++)
+                        for (int j = 0; j < treeList.Count; j++)
                         {
-                            var item = data[j];
+                            var item = treeList[j];
                             if (item == null) continue;
                             if (item.GetUncheckedLocalizedTitle().ToLower().Contains(filter))
                             {
-                                if(!newData.Contains(item))newData.Add(item);
+                                if (!newData.Contains(item)) newData.Add(item);
                             }
                         }
                     }
                 }
-                data = newData;
+                treeList = newData;
             }
-            data.Sort((t1, t2) => t1.CompareTo(t2, UserMod.Settings.Sorting, UserMod.Settings.SortingOrder));
-            ForestBrush.Instance.ForestBrushPanel.BrushEditSection.TreesList.rowsData.m_buffer = data.ToArray();
-            ForestBrush.Instance.ForestBrushPanel.BrushEditSection.TreesList.rowsData.m_size = data.Count;
+            treeList.Sort((t1, t2) => t1.CompareTo(t2, UserMod.Settings.Sorting, UserMod.Settings.SortingOrder));
+            ForestBrush.Instance.ForestBrushPanel.BrushEditSection.TreesList.rowsData.m_buffer = treeList.ToArray();
+            ForestBrush.Instance.ForestBrushPanel.BrushEditSection.TreesList.rowsData.m_size = treeList.Count;
             ForestBrush.Instance.ForestBrushPanel.BrushEditSection.TreesList.DisplayAt(0f);
         }
     }

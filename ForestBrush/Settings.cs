@@ -19,7 +19,8 @@ namespace ForestBrush
             IEnumerable<Brush> forestBrushes,
             string selectedBrush,
             SavedInputKey toggleTool,
-            bool keepTreesInNewBrush
+            bool keepTreesInNewBrush,
+            bool ignoreVanillaTrees
         )
         {
             this.PanelPosX = panelPosX;
@@ -32,6 +33,7 @@ namespace ForestBrush
             this.FilterStyle = FilterStyle;
             this.ToggleTool = toggleTool;
             this.KeepTreesInNewBrush = keepTreesInNewBrush;
+            this.IgnoreVanillaTrees = ignoreVanillaTrees;
 
             this.Brushes = forestBrushes.ToList();
             if (this.Brushes.Count == 0)
@@ -67,6 +69,8 @@ namespace ForestBrush
 
         public bool KeepTreesInNewBrush { get; internal set; }
 
+        public bool IgnoreVanillaTrees { get; internal set; }
+
         public static Settings Default()
         {
             var defaultBrush = Brush.Default();
@@ -83,6 +87,7 @@ namespace ForestBrush
                 Enumerable.Empty<Brush>(),
                 string.Empty,
                 new SavedInputKey("toggleTool", Constants.ModName, SavedInputKey.Encode(KeyCode.B, false, false, true), true),
+                false,
                 false
             );
         }

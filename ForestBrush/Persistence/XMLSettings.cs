@@ -28,6 +28,8 @@ namespace ForestBrush.Persistence
 
         public bool KeepTreesInNewBrush { get; set; }
 
+        public bool IgnoreVanillaTrees { get; set; }
+
         public XmlInputKey Search { get; set; }
 
         public XmlInputKey ToggleTool { get; set; }

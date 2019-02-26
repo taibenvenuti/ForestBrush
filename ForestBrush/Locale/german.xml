@@ -19,7 +19,7 @@
     <Translation ID="FOREST-BRUSH-BRUSH-OPTIONS-AUTODENSITY" String="Auto-Dichte" />
     <Translation ID="FOREST-BRUSH-BRUSH-OPTIONS-OVERLAYCOLOR" String="Pinselfarbe" />
     <Translation ID="FOREST-BRUSH-OPTIONS-RESET" String="Alle Einstellungen zurücksetzen" />
-    <Translation ID="FOREST-BRUSH-OPTIONS-SHOWMESHDATA" String="Show tree mesh and texture data" />
+    <Translation ID="FOREST-BRUSH-OPTIONS-SHOWMESHDATA" String="Show tree mesh and texture data in tooltip" />
     <Translation ID="FOREST-BRUSH-DATA-NAME" String="Name" />
     <Translation ID="FOREST-BRUSH-DATA-AUTHOR" String="Author" />
     <Translation ID="FOREST-BRUSH-DATA-MESH" String="Mesh" />
@@ -38,6 +38,7 @@
     <Translation ID="FOREST-BRUSH-OPTIONS-NEWBRUSH" String="When creating a new brush" />
     <Translation ID="FOREST-BRUSH-OPTIONS-NEWBRUSH-CLEAR" String="Start with empty brush" />
     <Translation ID="FOREST-BRUSH-OPTIONS-NEWBRUSH-KEEP" String="Keep trees from last brush" />
+    <Translation ID="FOREST-BRUSH-OPTIONS-IGNORE-VANILLA" String="Hide vanilla trees" />
     <Translation ID="FOREST-BRUSH-MODAL-WARNING" String="Warnung" />
     <Translation ID="FOREST-BRUSH-MODAL-LIMITREACHED-TITLE" String="Baum Limit erreicht" />
     <Translation ID="FOREST-BRUSH-MODAL-LIMITREACHED-MESSAGE-ONE" String="Du hast das Limit von 100 Bäumen für diesen Pinsel erreicht. Bitte entferne zunächst Bäume um andere hinzuzufügen." />

@@ -25,7 +25,8 @@ namespace ForestBrush.Persistence
                 Brushes = settings.Brushes,
                 SelectedBrush = settings.SelectedBrush.Name,
                 ToggleTool = GetXmlInputKey(settings.ToggleTool),
-                KeepTreesInNewBrush = settings.KeepTreesInNewBrush
+                KeepTreesInNewBrush = settings.KeepTreesInNewBrush,
+                IgnoreVanillaTrees = settings.IgnoreVanillaTrees,
             };
 
             using (var sw = new StreamWriter(configurationPath))
@@ -57,7 +58,8 @@ namespace ForestBrush.Persistence
                     xmlSettings.Brushes,
                     xmlSettings.SelectedBrush,
                     GetSavedInputKey(xmlSettings.ToggleTool),
-                    xmlSettings.KeepTreesInNewBrush
+                    xmlSettings.KeepTreesInNewBrush,
+                    xmlSettings.IgnoreVanillaTrees
                 );
             }
             else

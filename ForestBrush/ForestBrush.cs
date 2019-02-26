@@ -48,8 +48,7 @@ namespace ForestBrush
             SizeMultiplier = 7,
             MaxRandomRange = 4.0f,
             Clearance = 4.5f,
-            maxSize = 1000f,
-            EraserBatchSize = 512
+            maxSize = 1000f
         };
 
         private TreeInfo container;
@@ -108,6 +107,7 @@ namespace ForestBrush
         internal void Initialize()
         {
             LoadTrees();
+            LoadTreeAuthors();
 
             UITabstrip tabstrip = ToolsModifierControl.mainToolbar.component as UITabstrip;
             toggleButtonComponents = CreateToggleButtonComponents(tabstrip);
@@ -245,7 +245,7 @@ namespace ForestBrush
 
             if (visible)
             {
-                ForestBrushPanel.ClampToScreen();
+                ForestBrushPanel.KeepWithinScreen();
                 lastBrush = tool.m_brush;
                 lastSize = tool.m_brushSize;
                 lastMode = tool.m_mode;
@@ -270,7 +270,7 @@ namespace ForestBrush
             ForestBrushPanel.isVisible = !ForestBrushPanel.isVisible;
         }
 
-        private void LoadTrees()
+        internal void LoadTrees()
         {
             Trees = new Dictionary<string, TreeInfo>();
             TreesMeshData = new Dictionary<string, TreeMeshData>();
@@ -278,7 +278,7 @@ namespace ForestBrush
             for (uint i = 0; i < treeCount; i++)
             {
                 var tree = PrefabCollection<TreeInfo>.GetLoaded(i);
-                if (tree == null || tree == Container) continue;
+                if (tree == null || tree == Container || (UserMod.Settings.IgnoreVanillaTrees && !tree.m_isCustomContent)) continue;
                 if (tree.m_availableIn != ItemClass.Availability.All)
                 {
                     tree.m_availableIn = ItemClass.Availability.All;
@@ -289,7 +289,6 @@ namespace ForestBrush
                 Trees.Add(tree.name, tree);
                 TreesMeshData.Add(tree.name, new TreeMeshData(tree));
             }
-            LoadTreeAuthors();
         }
 
         private void LoadTreeAuthors()

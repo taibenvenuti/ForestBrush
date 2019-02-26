@@ -1,5 +1,4 @@
-﻿using System;
-using ColossalFramework.UI;
+﻿using ColossalFramework.UI;
 using ForestBrush.Resources;
 using ForestBrush.TranslationFramework;
 using UnityEngine;
@@ -56,6 +55,7 @@ namespace ForestBrush.GUI
 
         private void DragHandle_eventMouseUp(UIComponent component, UIMouseEventParameter eventParam)
         {
+            ForestBrush.Instance.ForestBrushPanel.KeepWithinScreen();
             SavePanelPosition();
         }
 

@@ -82,7 +82,7 @@ namespace ForestBrush.GUI
         internal void KeepWithinScreen()
         {
             ClampToScreen();
-            if (relativePosition.y + height > Screen.height - 130.0f) relativePosition -= new Vector3(0.0f, 130.0f, 0.0f);
+            if (relativePosition.y + height > 87.0f) relativePosition += new Vector3(0.0f, 87.0f - (relativePosition.y + height));
         }
     }
 }
