@@ -10,7 +10,7 @@ namespace ForestBrush.Persistence
 
         public float PanelPosY { get; set; }
 
-        public bool AddRemoveTreesToBrushOpen { get; set; }
+        public bool BrushEditOpen { get; set; }
 
         public bool BrushOptionsOpen { get; set; }
 
@@ -25,6 +25,8 @@ namespace ForestBrush.Persistence
         public List<Brush> Brushes { get; set; }
 
         public string SelectedBrush { get; set; }
+
+        public bool KeepTreesInNewBrush { get; set; }
 
         public XmlInputKey Search { get; set; }
 

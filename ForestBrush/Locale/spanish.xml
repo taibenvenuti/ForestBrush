@@ -32,9 +32,12 @@
     <Translation ID="FOREST-BRUSH-OPTIONS-SORTING-ASCENDING" String="Ascendente" />
     <Translation ID="FOREST-BRUSH-OPTIONS-SORTING-DESCENDING" String="Descendiente" />
     <Translation ID="FOREST-BRUSH-OPTIONS-FILTERING-LOGIC" String="Lógica de búsqueda" />
-    <Translation ID="FOREST-BRUSH-OPTIONS-FILTERING-AND" String="Avanzada 'AND' (Lenta)" />
-    <Translation ID="FOREST-BRUSH-OPTIONS-FILTERING-OR" String="Avanzada 'OR' (Lenta)" />
-    <Translation ID="FOREST-BRUSH-OPTIONS-FILTERING-SIMPLE" String="Simple (Rápida)" />
+    <Translation ID="FOREST-BRUSH-OPTIONS-FILTERING-AND" String="AND (Contiene ambos términos)" />
+    <Translation ID="FOREST-BRUSH-OPTIONS-FILTERING-OR" String="OR (Contiene cualquier término)" />
+    <Translation ID="FOREST-BRUSH-OPTIONS-FILTERING-SIMPLE" String="Simple (Busca rapida solo de los nombres)" />
+    <Translation ID="FOREST-BRUSH-OPTIONS-NEWBRUSH" String="Al crear un nuevo pincel" />
+    <Translation ID="FOREST-BRUSH-OPTIONS-NEWBRUSH-CLEAR" String="Remueve los árboles del pincel anterior" />
+    <Translation ID="FOREST-BRUSH-OPTIONS-NEWBRUSH-KEEP" String="Mantén los árboles del pincel anterior" />
     <Translation ID="FOREST-BRUSH-MODAL-WARNING" String="Advertencia" />
     <Translation ID="FOREST-BRUSH-MODAL-LIMITREACHED-TITLE" String="Limite de árboles alcanzado" />
     <Translation ID="FOREST-BRUSH-MODAL-LIMITREACHED-MESSAGE-ONE" String="Haz alcanzado el limite de 100 arboles por pincel. Porfavor remueve algunos árboles para agregar más." />

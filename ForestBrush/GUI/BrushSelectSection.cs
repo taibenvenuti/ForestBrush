@@ -121,12 +121,18 @@ namespace ForestBrush.GUI
         {
             bool editVisible = father.ToggleBrushEdit();
             toggleEditButton.normalBgSprite = toggleEditButton.focusedBgSprite = editVisible ? ResourceLoader.SettingsDropboxPressed : ResourceLoader.SettingsDropbox;
+            if (editVisible) father.KeepWithinScreen();
+            UserMod.Settings.BrushEditOpen = editVisible;
+            UserMod.SaveSettings();
         }
 
         private void ToggleOptionsButton_eventClicked(UIComponent component, UIMouseEventParameter eventParam)
         {
             bool optionsVisible = father.ToggleBrushOptions();
             toggleOptionsButton.normalBgSprite = toggleOptionsButton.focusedBgSprite = optionsVisible ? ResourceLoader.OptionsDropboxPressed : ResourceLoader.OptionsDropbox;
+            if (optionsVisible) father.KeepWithinScreen();
+            UserMod.Settings.BrushOptionsOpen = optionsVisible;
+            UserMod.SaveSettings();
         }
 
         internal void UpdateDropDown()

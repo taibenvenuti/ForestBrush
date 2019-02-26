@@ -17,7 +17,7 @@ namespace ForestBrush.GUI
 
             if (m_previewRenderer == null)
             {
-                m_previewRenderer = new GameObject("ForestBrushPreviewRenderer").AddComponent<PreviewRenderer>();
+                m_previewRenderer = ForestBrush.Instance.gameObject.AddComponent<PreviewRenderer>();
                 m_previewRenderer.size = new Vector2(109, 100) * 2f;
             }
 
