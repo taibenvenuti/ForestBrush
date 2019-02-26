@@ -64,7 +64,7 @@ namespace ForestBrush.GUI
             SetupButtons();
             SetupListSection();
             SetupSearchFieldSection();
-            Hide();
+            if(!UserMod.Settings.BrushEditOpen) Hide();
         }
 
         public override void OnDestroy()

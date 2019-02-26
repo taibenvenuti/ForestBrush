@@ -19,9 +19,9 @@ namespace ForestBrush
 
     public enum FilterStyle
     {
-        Basic,
         AND,
         OR,
+        Basic
     }
 
     public class Filtering
@@ -144,7 +144,7 @@ namespace ForestBrush
                             if (item == null) continue;
                             string itemTitle = item.GetUncheckedLocalizedTitle().ToLower();
                             bool itemHasData = treeMeshData.TryGetValue(item.name, out TreeMeshData itemData);
-                            bool itemHasAuthor = treeAuthors.TryGetValue(item.name, out string itemAuthor);
+                            bool itemHasAuthor = treeAuthors.TryGetValue(item.name.Split('.')[0], out string itemAuthor);
 
                             bool isTextureMatch = itemHasData && isTextureSizeFilter && textureSize > 0 && (itemData.textureSize.x <= textureSize && itemData.textureSize.y <= textureSize);
                             bool isTrisMatch = isTrisCountFilter && itemHasData && itemData.triangles > 0 && (itemData.triangles <= trisCount);
@@ -173,7 +173,7 @@ namespace ForestBrush
                             {
                                 AddItem(Filter.Author, item);
                             }
-                            if (isStringMatch)
+                            else if (isStringMatch)
                             {
                                 AddItem(Filter.String, item);
                             }
@@ -245,7 +245,7 @@ namespace ForestBrush
                             if (item == null) continue;
                             string itemTitle = item.GetUncheckedLocalizedTitle().ToLower();
                             bool itemHasData = treeMeshData.TryGetValue(item.name, out TreeMeshData itemData);
-                            bool itemHasAuthor = treeAuthors.TryGetValue(item.name, out string itemAuthor);
+                            bool itemHasAuthor = treeAuthors.TryGetValue(item.name.Split('.')[0], out string itemAuthor);
                             if ((textureSizeFilter && itemHasData && textureSize > 0 && (itemData.textureSize.x <= textureSize && itemData.textureSize.y <= textureSize))
                             || (trisCountFilter && itemHasData && itemData.triangles > 0 && (itemData.triangles <= trisCount))
                             || (showNotBrushTree && !brushTrees.Contains(item))

@@ -111,7 +111,8 @@ namespace ForestBrush
 
                 brush.Name = brushName;
 
-                brush.ReplaceAll(TreeInfos);
+                if (UserMod.Settings.KeepTreesInNewBrush) brush.ReplaceAll(TreeInfos);
+                else RemoveAll();
 
                 Brushes.Add(brush);
 

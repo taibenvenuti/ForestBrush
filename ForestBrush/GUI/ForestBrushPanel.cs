@@ -44,7 +44,6 @@ namespace ForestBrush.GUI
             layoutPanelSpace.zOrder = 4;
 
             LocaleManager.eventLocaleChanged += ForestBrushPanel_eventLocaleChanged;
-
             Hide();
         }
 
@@ -78,6 +77,12 @@ namespace ForestBrush.GUI
             BrushSelectSection?.LoadBrush(brush);
             BrushEditSection?.LoadBrush(brush);
             BrushOptionsSection?.LoadBrush(brush);
+        }
+
+        internal void KeepWithinScreen()
+        {
+            ClampToScreen();
+            if (relativePosition.y + height > Screen.height - 130.0f) relativePosition -= new Vector3(0.0f, 130.0f, 0.0f);
         }
     }
 }

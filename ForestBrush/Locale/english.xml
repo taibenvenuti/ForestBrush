@@ -32,9 +32,12 @@
     <Translation ID="FOREST-BRUSH-OPTIONS-SORTING-ASCENDING" String="Ascending" />
     <Translation ID="FOREST-BRUSH-OPTIONS-SORTING-DESCENDING" String="Descending" />
     <Translation ID="FOREST-BRUSH-OPTIONS-FILTERING-LOGIC" String="Search logic" />
-    <Translation ID="FOREST-BRUSH-OPTIONS-FILTERING-AND" String="Advanced 'AND' (Slow)" />
-    <Translation ID="FOREST-BRUSH-OPTIONS-FILTERING-OR" String="Advanced 'OR' (Slow)" />
-    <Translation ID="FOREST-BRUSH-OPTIONS-FILTERING-SIMPLE" String="Simple (Fast)" />
+    <Translation ID="FOREST-BRUSH-OPTIONS-FILTERING-AND" String="AND (Match both words)" />
+    <Translation ID="FOREST-BRUSH-OPTIONS-FILTERING-OR" String="OR (Match either word)" />
+    <Translation ID="FOREST-BRUSH-OPTIONS-FILTERING-SIMPLE" String="Simple (Faster 'Tree-name only' search)" />
+    <Translation ID="FOREST-BRUSH-OPTIONS-NEWBRUSH" String="When creating a new brush" />
+    <Translation ID="FOREST-BRUSH-OPTIONS-NEWBRUSH-CLEAR" String="Start with empty brush" />
+    <Translation ID="FOREST-BRUSH-OPTIONS-NEWBRUSH-KEEP" String="Keep trees from last brush" />
     <Translation ID="FOREST-BRUSH-MODAL-WARNING" String="Warning" />
     <Translation ID="FOREST-BRUSH-MODAL-LIMITREACHED-TITLE" String="Tree limit reached" />
     <Translation ID="FOREST-BRUSH-MODAL-LIMITREACHED-MESSAGE-ONE" String="You've reached the 100 tree limit for this brush. Please remove some trees to add more." />

@@ -42,7 +42,8 @@ namespace ForestBrush.GUI
             SetupDensityPanel();
             SetupAutoDensityPanel();
             SetupSquareBrushPanel();
-            Hide();
+
+            if(!UserMod.Settings.BrushOptionsOpen) Hide();
         }
 
         public override void OnDestroy()
@@ -221,7 +222,7 @@ namespace ForestBrush.GUI
             densitySlider.atlas = ResourceLoader.Atlas;
             densitySlider.size = new Vector2(400f - densityLabel.width - 30f, 5f);
             densitySlider.color = new Color32(0, 0, 0, 255);
-            densitySlider.disabledColor = new Color32(190, 190, 190, 255);
+            densitySlider.disabledColor = new Color32(75, 75, 75, 255);
             densitySlider.minValue = 0f;
             densitySlider.maxValue = 16f;
             densitySlider.stepSize = 0.1f;
@@ -239,6 +240,7 @@ namespace ForestBrush.GUI
             thumb1.atlas = ResourceLoader.Atlas;
             thumb1.size = new Vector2(20, 20);
             thumb1.spriteName = ResourceLoader.IconPolicyForest;
+            thumb1.disabledColor = new Color32(100, 100, 100, 255);
             densitySlider.thumbObject = thumb1;
         }
 
@@ -377,12 +379,12 @@ namespace ForestBrush.GUI
 
         private void ColorField_eventColorPickerClose(UIColorField colorField, UIColorPicker popup, ref bool overridden)
         {
-            colorField.triggerButton.isInteractive = false;
+            colorField.triggerButton.isInteractive = true;
         }
 
         private void ColorField_eventColorPickerOpen(UIColorField colorField, UIColorPicker popup, ref bool overridden)
         {
-            colorField.triggerButton.isInteractive = true;
+            colorField.triggerButton.isInteractive = false;
         }
 
         private void ColorField_eventSelectedColorChangedHandler(UIComponent component, Color value)

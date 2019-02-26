@@ -3,7 +3,6 @@ using ColossalFramework.Math;
 using Harmony;
 using System;
 using System.Collections;
-using System.Reflection;
 using UnityEngine;
 using static RenderManager;
 
@@ -56,7 +55,7 @@ namespace ForestBrush
             return (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl) || Input.GetKey(KeyCode.LeftCommand) || Input.GetKey(KeyCode.RightCommand));
         }
 
-        internal static bool DeleteAllTogglePressed()
+        internal static bool DeleteForestTogglePressed()
         {
             return (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift));
         }
@@ -64,8 +63,8 @@ namespace ForestBrush
         static bool Prefix(TreeTool __instance, Randomizer ___m_randomizer, Vector3 ___m_mousePosition, bool ___m_mouseLeftDown, bool ___m_mouseRightDown, ToolController ___m_toolController)
         {
             if (!ForestBrush.Instance.Active) return true;
-            else if (ForestBrush.Instance.Container.m_variations.Length == 0) return false;
-            else if (___m_mouseLeftDown && !DeleteAllTogglePressed() || (___m_mouseRightDown && !RotationTogglePressed() && !DeleteAllTogglePressed()))
+            else if ((___m_mouseLeftDown && ForestBrush.Instance.Container.m_variations.Length == 0) || (___m_mouseRightDown && RotationTogglePressed())) return false;
+            else if (___m_mouseLeftDown || (___m_mouseRightDown && DeleteForestTogglePressed()))
             {
                 if (__instance.m_prefab != null)
                 {
@@ -75,9 +74,9 @@ namespace ForestBrush
                     for (int i = 0; i < batchSize; i++)
                     {
                         var xz = UnityEngine.Random.insideUnitCircle;
-                        var _x = xz.x;
-                        var _y = xz.y;
-                        var position = ___m_mousePosition + new Vector3(_x, 0f, _y) * (__instance.m_brushSize / 2);
+                        var xzx = xz.x;
+                        var xzy = xz.y;
+                        var position = ___m_mousePosition + new Vector3(xzx, 0f, xzy) * (__instance.m_brushSize / 2);
                         if (UserMod.Settings.SelectedBrush.Options.IsSquare)
                         {
                             var radians = Angle * Mathf.Deg2Rad;
@@ -90,9 +89,9 @@ namespace ForestBrush
                             xz.x = translated.x * c - translated.y * s;
                             xz.y = translated.y * c + translated.x * s;
                             xz += center;
-                            _x = xz.x;
-                            _y = xz.y;
-                            position = ___m_mousePosition + new Vector3(_x, 0f, _y);
+                            xzx = xz.x;
+                            xzy = xz.y;
+                            position = ___m_mousePosition + new Vector3(xzx, 0f, xzy);
                         }
                         TreeInfo ___m_treeInfo = __instance.m_prefab.GetVariation(ref ___m_randomizer);
 
@@ -127,13 +126,13 @@ namespace ForestBrush
                                 || Singleton<BuildingManager>.instance.OverlapQuad(quad, y, maxY, collisionType, ___m_treeInfo.m_class.m_layer, 0, 0, 0)
                                 || (Singleton<TerrainManager>.instance.HasWater(vector2)
                                     && !Input.GetKey(KeyCode.LeftAlt)
-                                    && !Input.GetKey(KeyCode.LeftAlt))))
+                                    && !Input.GetKey(KeyCode.RightAlt))))
                             continue;
                         var scale = ___m_randomizer.Int32(16);
                         var str2Rnd = UnityEngine.Random.Range(0.0f, ForestBrush.Instance.BrushTweaker.MaxRandomRange);
                         if (Mathf.PerlinNoise(position.x * scale, position.y * scale) > 0.5 && str2Rnd < UserMod.Settings.SelectedBrush.Options.Strength)
                         {
-                            if (___m_mouseLeftDown)
+                            if (___m_mouseLeftDown )
                             {
                                 if (Singleton<TreeManager>.instance.CreateTree(out uint num25, ref ___m_randomizer, ___m_treeInfo, position, false))
                                 {
@@ -161,18 +160,14 @@ namespace ForestBrush
                 }
                 return false;
             }
-            else if ((___m_mouseRightDown && RotationTogglePressed() || ___m_mouseLeftDown && DeleteAllTogglePressed()))
-            {
-                return false;
-            }
             return true;
         }
 
         static bool RayCast(ToolBase.RaycastInput input, out ToolBase.RaycastOutput output)
         {
-            MethodInfo methodInfo = AccessTools.Method(typeof(ToolBase), "RayCast");
+            
             object[] parameters = new object[] { input, null };
-            object result = methodInfo.Invoke(null, parameters);
+            object result = ForestBrush.Instance.RayCastMethod.Invoke(null, parameters);
             bool boolResult = (bool)result;
             if (boolResult)
                 output = (ToolBase.RaycastOutput)parameters[1];
@@ -186,7 +181,7 @@ namespace ForestBrush
     {
         static bool Prefix(TreeTool __instance, ToolController ___m_toolController, ToolBase.ToolErrors ___m_placementErrors, Vector3 ___m_mousePosition, bool ___m_mouseRightDown, Randomizer ___m_randomizer, CameraInfo cameraInfo)
         {
-            if (!ForestBrush.Instance.Active || ApplyBrushPatch.DeleteAllTogglePressed())
+            if (!ForestBrush.Instance.Active || ___m_mouseRightDown && !ApplyBrushPatch.DeleteForestTogglePressed() && !ApplyBrushPatch.RotationTogglePressed())
             {
                 return true;
             }

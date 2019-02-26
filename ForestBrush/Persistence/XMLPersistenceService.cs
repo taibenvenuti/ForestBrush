@@ -16,7 +16,7 @@ namespace ForestBrush.Persistence
             {
                 PanelPosX = settings.PanelPosX,
                 PanelPosY = settings.PanelPosY,
-                AddRemoveTreesToBrushOpen = settings.AddRemoveTreesToBrushOpen,
+                BrushEditOpen = settings.BrushEditOpen,
                 BrushOptionsOpen = settings.BrushOptionsOpen,
                 ShowTreeMeshData = settings.ShowTreeMeshData,
                 Sorting = settings.Sorting,
@@ -24,7 +24,8 @@ namespace ForestBrush.Persistence
                 FilterStyle = settings.FilterStyle,
                 Brushes = settings.Brushes,
                 SelectedBrush = settings.SelectedBrush.Name,
-                ToggleTool = GetXmlInputKey(settings.ToggleTool)
+                ToggleTool = GetXmlInputKey(settings.ToggleTool),
+                KeepTreesInNewBrush = settings.KeepTreesInNewBrush
             };
 
             using (var sw = new StreamWriter(configurationPath))
@@ -47,7 +48,7 @@ namespace ForestBrush.Persistence
                 return new Settings(
                     xmlSettings.PanelPosX,
                     xmlSettings.PanelPosY,
-                    xmlSettings.AddRemoveTreesToBrushOpen,
+                    xmlSettings.BrushEditOpen,
                     xmlSettings.BrushOptionsOpen,
                     xmlSettings.ShowTreeMeshData,
                     xmlSettings.Sorting,
@@ -55,7 +56,8 @@ namespace ForestBrush.Persistence
                     xmlSettings.FilterStyle,
                     xmlSettings.Brushes,
                     xmlSettings.SelectedBrush,
-                    GetSavedInputKey(xmlSettings.ToggleTool)
+                    GetSavedInputKey(xmlSettings.ToggleTool),
+                    xmlSettings.KeepTreesInNewBrush
                 );
             }
             else

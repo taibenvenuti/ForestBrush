@@ -24,6 +24,7 @@ namespace ForestBrush
         private OptionsKeyBinding optionKeys;
         private GameObject forestBrushGameObject;
         private UIDropDown searchLogic;
+        private UIDropDown newBrushBehaviour;
 
         public string Name => Constants.ModName;
 
@@ -108,9 +109,12 @@ namespace ForestBrush
 
         void UninstallMod()
         {
+            try { harmony.UnpatchAll(harmonyId); }
+            catch (Exception) { }
+            finally { harmony = null; }
+
             ForestBrush.Instance.CleanUp();
-            harmony.UnpatchAll(harmonyId);
-            harmony = null;
+
             if (IsMap || IsTheme)
             {
                 if(Resources.ResourceLoader.Atlas != null) UnityEngine.Resources.UnloadAsset(Resources.ResourceLoader.Atlas);
@@ -165,16 +169,32 @@ namespace ForestBrush
                 searchLogic = (UIDropDown)group.AddDropdown(Translation.Instance.GetTranslation("FOREST-BRUSH-OPTIONS-FILTERING-LOGIC"),
                                   new string[]
                                   {
-                                      Translation.Instance.GetTranslation("FOREST-BRUSH-OPTIONS-FILTERING-SIMPLE"),
                                       Translation.Instance.GetTranslation("FOREST-BRUSH-OPTIONS-FILTERING-AND"),
-                                      Translation.Instance.GetTranslation("FOREST-BRUSH-OPTIONS-FILTERING-OR")
+                                      Translation.Instance.GetTranslation("FOREST-BRUSH-OPTIONS-FILTERING-OR"),
+                                      Translation.Instance.GetTranslation("FOREST-BRUSH-OPTIONS-FILTERING-SIMPLE")
                                   },
                                   (int)Settings.FilterStyle,
                                   (index) =>
                                   {
                                       Settings.FilterStyle = (FilterStyle)index; SaveSettings();
                                   });
-                searchLogic.width = 325.0f;
+                searchLogic.width = 500.0f;
+
+                group.AddSpace(10);
+
+                newBrushBehaviour = (UIDropDown)group.AddDropdown(Translation.Instance.GetTranslation("FOREST-BRUSH-OPTIONS-NEWBRUSH"),
+                                  new string[]
+                                  {
+                                      Translation.Instance.GetTranslation("FOREST-BRUSH-OPTIONS-NEWBRUSH-CLEAR"),
+                                      Translation.Instance.GetTranslation("FOREST-BRUSH-OPTIONS-NEWBRUSH-KEEP")
+                                  },
+                                  Settings.KeepTreesInNewBrush ? 1 : 0,
+                                  (index) =>
+                                  {
+                                      Settings.KeepTreesInNewBrush = index == 1 ? true : false; SaveSettings();
+                                  });
+                newBrushBehaviour.width = 500.0f;
+
                 group.AddSpace(10);
 
                 group.AddCheckbox(Translation.Instance.GetTranslation("FOREST-BRUSH-OPTIONS-SHOWMESHDATA"), Settings.ShowTreeMeshData, (b) => { Settings.ShowTreeMeshData = b; SaveSettings(); });

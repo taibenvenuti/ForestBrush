@@ -8,6 +8,7 @@ using ColossalFramework.PlatformServices;
 using ColossalFramework.UI;
 using ForestBrush.GUI;
 using ForestBrush.TranslationFramework;
+using Harmony;
 using UnityEngine;
 
 namespace ForestBrush
@@ -78,6 +79,8 @@ namespace ForestBrush
 
         public ForestBrushTool BrushTool { get; private set; }
 
+        public MethodInfo RayCastMethod = AccessTools.Method(typeof(ToolBase), "RayCast");
+
         public UIButton ToggleButton => toggleButtonComponents.ToggleButton;
 
         internal ForestBrushPanel ForestBrushPanel { get; private set; }
@@ -97,6 +100,10 @@ namespace ForestBrush
         private ToolBase lastTool;
 
         private Texture2D lastBrush;
+
+        private float lastSize;
+
+        private TreeTool.Mode lastMode;
 
         internal void Initialize()
         {
@@ -239,17 +246,21 @@ namespace ForestBrush
             if (visible)
             {
                 ForestBrushPanel.ClampToScreen();
+                lastBrush = tool.m_brush;
+                lastSize = tool.m_brushSize;
+                lastMode = tool.m_mode;
                 lastTool = ToolsModifierControl.toolController.CurrentTool;
                 ToolsModifierControl.toolController.CurrentTool = tool;
                 tool.m_prefab = Container;
-                lastBrush = tool.m_brush;
                 tool.m_brush = ToolsModifierControl.toolController.m_brushes[3];
             }
             else
             {
+                tool.m_brush = lastBrush;
+                tool.m_brushSize = lastSize;
+                tool.m_mode = lastMode;
                 if (lastTool != null && lastTool.GetType() != typeof(TreeTool) && ToolsModifierControl.toolController.NextTool == null)
                     lastTool.enabled = true;
-                tool.m_brush = lastBrush;
             }
         }
 
@@ -287,16 +298,13 @@ namespace ForestBrush
             foreach (Package.Asset current in PackageManager.FilterAssets(new Package.AssetType[] { UserAssetType.CustomAssetMetaData }))
             {
                 PublishedFileId id = current.package.GetPublishedFileID();
-                if (UInt64.TryParse(current.package.packageName, out ulong steamid))
+                string publishedFileId = string.Concat(id.AsUInt64);
+                if (!TreeAuthors.ContainsKey(publishedFileId) && !current.package.packageAuthor.IsNullOrWhiteSpace())
                 {
-                    string prefabName = string.Concat(steamid, ".", current.package.packageMainAsset, "_Data");
-                    if (!TreeAuthors.ContainsKey(prefabName) && !current.package.packageAuthor.IsNullOrWhiteSpace())
+                    if (ulong.TryParse(current.package.packageAuthor.Substring("steamid:".Length), out ulong authorID))
                     {
-                        if (UInt64.TryParse(current.package.packageAuthor.Substring("steamid:".Length), out ulong authorID))
-                        {
-                            string author = new Friend(new UserID(authorID)).personaName;
-                            TreeAuthors.Add(prefabName, author);
-                        }
+                        string author = new Friend(new UserID(authorID)).personaName;
+                        TreeAuthors.Add(publishedFileId, author);
                     }
                 }
             }
