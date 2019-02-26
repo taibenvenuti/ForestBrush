@@ -90,7 +90,7 @@ namespace ForestBrush.GUI
             deleteBrushButton.tooltip = Translation.Instance.GetTranslation("FOREST-BRUSH-DELETE");
             renameBrushTextField.tooltip = Translation.Instance.GetTranslation("FOREST-BRUSH-RENAME-BRUSH");
             searchLabel.text = Translation.Instance.GetTranslation("FOREST-BRUSH-SEARCH");
-            foreach (TreeItem item in TreesList.rowsData.m_buffer)
+            foreach (TreeItem item in TreesList.rowsData)
             {
                 item?.LocaleChanged();
             }
@@ -102,9 +102,7 @@ namespace ForestBrush.GUI
             renameBrushTextField.text = brush.Name;
             renameBrushTextField.eventTextChanged += RenameBrushTextField_eventTextChanged;
 
-            var itemBuffer = TreesList.rows.m_buffer;
-
-            foreach (TreeItem item in itemBuffer)
+            foreach (TreeItem item in TreesList.rows)
             {
                 item?.UpdateCheckbox();
             }
@@ -156,6 +154,12 @@ namespace ForestBrush.GUI
             TreesList.zOrder = 0;
             TreesList.backgroundSprite = "UnlockingPanel";
             TreesList.size = new Vector2(width - Constants.UISpacing * 2, 420f);
+            SetupFastlist();
+        }
+
+        internal void SetupFastlist()
+        {
+            TreesList.rowsData.Clear();
             List<TreeInfo> trees = GetAvailableTreesSorted();
             TreesList.rowHeight = Constants.UIItemHeight;
             if (trees.Count > 0)
@@ -168,6 +172,7 @@ namespace ForestBrush.GUI
                 TreesList.DisplayAt(0f);
             }
             TreesList.selectedIndex = -1;
+            TreesList.Refresh();
         }
 
         private void SetupSearchFieldSection()

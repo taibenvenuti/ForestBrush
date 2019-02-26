@@ -38,6 +38,7 @@
     <Translation ID="FOREST-BRUSH-OPTIONS-NEWBRUSH" String="When creating a new brush" />
     <Translation ID="FOREST-BRUSH-OPTIONS-NEWBRUSH-CLEAR" String="Start with empty brush" />
     <Translation ID="FOREST-BRUSH-OPTIONS-NEWBRUSH-KEEP" String="Keep trees from last brush" />
+    <Translation ID="FOREST-BRUSH-OPTIONS-IGNORE-VANILLA" String="Hide vanilla trees" />
     <Translation ID="FOREST-BRUSH-MODAL-WARNING" String="Внимание" />
     <Translation ID="FOREST-BRUSH-MODAL-LIMITREACHED-TITLE" String="Достигнут предел деревьев" />
     <Translation ID="FOREST-BRUSH-MODAL-LIMITREACHED-MESSAGE-ONE" String="Вы достигли предела в 100 деревьев для этой кисти. Пожалуйста, удалите некоторые деревья, чтобы добавить ещё." />

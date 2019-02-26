@@ -52,7 +52,6 @@ namespace ForestBrush
             return steamID;
         }
 
-
         private static void GetTriangleInfo(PrefabInfo prefab, out int triangles)
         {
             Mesh mesh = null;

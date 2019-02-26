@@ -62,13 +62,11 @@ namespace ForestBrush
 
         public void RemoveAll()
         {
-            var infoBuffer = ForestBrush.Instance.ForestBrushPanel.BrushEditSection.TreesList.rowsData.m_buffer;
-            var itemBuffer = ForestBrush.Instance.ForestBrushPanel.BrushEditSection.TreesList.rows.m_buffer;
-            foreach (TreeInfo tree in infoBuffer)
+            foreach (TreeInfo tree in ForestBrush.Instance.ForestBrushPanel.BrushEditSection.TreesList.rowsData)
             {
                 Remove(tree);
             }
-            foreach (TreeItem item in itemBuffer)
+            foreach (TreeItem item in ForestBrush.Instance.ForestBrushPanel.BrushEditSection.TreesList.rows)
             {
                 item?.ToggleCheckbox(false);
             }
@@ -76,9 +74,8 @@ namespace ForestBrush
 
         private void AddAll()
         {
-            var infoBuffer = ForestBrush.Instance.ForestBrushPanel.BrushEditSection.TreesList.rowsData.m_buffer.Cast<TreeInfo>().ToList();
             List<TreeInfo> treeInfos = new List<TreeInfo>();
-            foreach (var tree in infoBuffer)
+            foreach (TreeInfo tree in ForestBrush.Instance.ForestBrushPanel.BrushEditSection.TreesList.rowsData)
             {
                 if(treeInfos.Count == 100)
                 {

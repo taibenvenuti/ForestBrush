@@ -240,7 +240,7 @@ namespace ForestBrush.GUI
                 }
             }
         }
-
+        
         /// <summary>
         /// Currently selected row
         /// -1 if none selected

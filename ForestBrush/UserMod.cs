@@ -201,6 +201,19 @@ namespace ForestBrush
 
                 group.AddSpace(10);
 
+                group.AddCheckbox(Translation.Instance.GetTranslation("FOREST-BRUSH-OPTIONS-IGNORE-VANILLA"), Settings.IgnoreVanillaTrees, (b) => 
+                {
+                    Settings.IgnoreVanillaTrees = b;
+                    SaveSettings();
+                    if (LoadingManager.instance.m_loadingComplete)
+                    {
+                        ForestBrush.Instance.LoadTrees();
+                        ForestBrush.Instance.ForestBrushPanel.BrushEditSection.SetupFastlist();
+                    }
+                });
+
+                group.AddSpace(20);
+
                 optionKeys = panel.gameObject.AddComponent<OptionsKeyBinding>();
 
                 group.AddSpace(10);
