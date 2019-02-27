@@ -33,7 +33,7 @@
     <Translation ID="FOREST-BRUSH-OPTIONS-SORTING-DESCENDING" String="По убыванию" />
     <Translation ID="FOREST-BRUSH-OPTIONS-FILTERING-LOGIC" String="Логика поиска" />
     <Translation ID="FOREST-BRUSH-OPTIONS-FILTERING-AND" String="И (Совпадение с обоими словами)" />
-    <Translation ID="FOREST-BRUSH-OPTIONS-FILTERING-OR" String="Или (Совпадение с любым из слов)" />
+    <Translation ID="FOREST-BRUSH-OPTIONS-FILTERING-OR" String="ИЛИ (Совпадение с любым из слов)" />
     <Translation ID="FOREST-BRUSH-OPTIONS-FILTERING-SIMPLE" String="Простой (Быстрый поиск только по названиям)" />
     <Translation ID="FOREST-BRUSH-OPTIONS-NEWBRUSH" String="При создании новой кисти" />
     <Translation ID="FOREST-BRUSH-OPTIONS-NEWBRUSH-CLEAR" String="Начать с пустой кисти" />
