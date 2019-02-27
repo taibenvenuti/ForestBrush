@@ -28,17 +28,17 @@
     <Translation ID="FOREST-BRUSH-DATA-TEXTURE" String="Текстура" />
     <Translation ID="FOREST-BRUSH-DATA-PIXELS" String="пикс" />
     <Translation ID="FOREST-BRUSH-OPTIONS-SORTING" String="Сортировка деревьев по" />
-    <Translation ID="FOREST-BRUSH-OPTIONS-SORTING-ORDER" String="Sorting order" />
-    <Translation ID="FOREST-BRUSH-OPTIONS-SORTING-ASCENDING" String="Ascending" />
-    <Translation ID="FOREST-BRUSH-OPTIONS-SORTING-DESCENDING" String="Descending" />
-    <Translation ID="FOREST-BRUSH-OPTIONS-FILTERING-LOGIC" String="Search logic" />
-    <Translation ID="FOREST-BRUSH-OPTIONS-FILTERING-AND" String="AND (Match both words)" />
-    <Translation ID="FOREST-BRUSH-OPTIONS-FILTERING-OR" String="OR (Match either word)" />
-    <Translation ID="FOREST-BRUSH-OPTIONS-FILTERING-SIMPLE" String="Simple (Faster Tree name only search)" />
-    <Translation ID="FOREST-BRUSH-OPTIONS-NEWBRUSH" String="When creating a new brush" />
-    <Translation ID="FOREST-BRUSH-OPTIONS-NEWBRUSH-CLEAR" String="Start with empty brush" />
-    <Translation ID="FOREST-BRUSH-OPTIONS-NEWBRUSH-KEEP" String="Keep trees from last brush" />
-    <Translation ID="FOREST-BRUSH-OPTIONS-IGNORE-VANILLA" String="Hide vanilla trees" />
+    <Translation ID="FOREST-BRUSH-OPTIONS-SORTING-ORDER" String="Порядок сортировки" />
+    <Translation ID="FOREST-BRUSH-OPTIONS-SORTING-ASCENDING" String="По возрастанию" />
+    <Translation ID="FOREST-BRUSH-OPTIONS-SORTING-DESCENDING" String="По убыванию" />
+    <Translation ID="FOREST-BRUSH-OPTIONS-FILTERING-LOGIC" String="Логика поиска" />
+    <Translation ID="FOREST-BRUSH-OPTIONS-FILTERING-AND" String="И (Совпадение с обоими словами)" />
+    <Translation ID="FOREST-BRUSH-OPTIONS-FILTERING-OR" String="ИЛИ (Совпадение с любым из слов)" />
+    <Translation ID="FOREST-BRUSH-OPTIONS-FILTERING-SIMPLE" String="Простой (Быстрый поиск только по названиям)" />
+    <Translation ID="FOREST-BRUSH-OPTIONS-NEWBRUSH" String="При создании новой кисти" />
+    <Translation ID="FOREST-BRUSH-OPTIONS-NEWBRUSH-CLEAR" String="Начать с пустой кисти" />
+    <Translation ID="FOREST-BRUSH-OPTIONS-NEWBRUSH-KEEP" String="Оставить деревья с предыдущей кисти" />
+    <Translation ID="FOREST-BRUSH-OPTIONS-IGNORE-VANILLA" String="Скрыть стандартные деревья" />
     <Translation ID="FOREST-BRUSH-MODAL-WARNING" String="Внимание" />
     <Translation ID="FOREST-BRUSH-MODAL-LIMITREACHED-TITLE" String="Достигнут предел деревьев" />
     <Translation ID="FOREST-BRUSH-MODAL-LIMITREACHED-MESSAGE-ONE" String="Вы достигли предела в 100 деревьев для этой кисти. Пожалуйста, удалите некоторые деревья, чтобы добавить ещё." />
