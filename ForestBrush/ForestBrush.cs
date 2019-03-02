@@ -19,38 +19,6 @@ namespace ForestBrush
 
         private ToggleButtonComponents toggleButtonComponents;
 
-        public class BrushTweaks
-        {
-            public int SizeAddend;
-            public int SizeMultiplier;
-            public float MaxRandomRange;
-            public float MinSpacing;
-            public float Clearance;
-            public int EraserBatchSize;
-            public float maxSize;
-            public float MaxSize
-            {
-                get
-                {
-                    return maxSize;
-                }
-                set
-                {
-                    maxSize = value;
-                    Instance.ForestBrushPanel.BrushOptionsSection.sizeSlider.maxValue = value;
-                }
-            }
-        }
-
-        internal BrushTweaks BrushTweaker = new BrushTweaks()
-        {
-            SizeAddend = 10,
-            SizeMultiplier = 7,
-            MaxRandomRange = 4.0f,
-            Clearance = 4.5f,
-            maxSize = 1000f
-        };
-
         private TreeInfo container;
         internal TreeInfo Container
         {
@@ -78,6 +46,17 @@ namespace ForestBrush
 
         public ForestBrushTool BrushTool { get; private set; }
 
+        private ForestTool _tool;
+        public ForestTool Tool
+        {
+            get
+            {
+                if (_tool == null)
+                    _tool = ToolsModifierControl.toolController.gameObject.AddComponent<ForestTool>();
+                return _tool;
+            }
+        }
+
         public MethodInfo RayCastMethod = AccessTools.Method(typeof(ToolBase), "RayCast");
 
         public UIButton ToggleButton => toggleButtonComponents.ToggleButton;
@@ -97,12 +76,6 @@ namespace ForestBrush
         private static readonly string kToggleButton = "ForestBrushModToggle";
 
         private ToolBase lastTool;
-
-        private Texture2D lastBrush;
-
-        private float lastSize;
-
-        private TreeTool.Mode lastMode;
 
         internal void Initialize()
         {
@@ -241,24 +214,14 @@ namespace ForestBrush
 
         private void OnForestBrushPanelVisibilityChanged(UIComponent component, bool visible)
         {
-            TreeTool tool = ToolsModifierControl.GetTool<TreeTool>();
-
             if (visible)
             {
                 ForestBrushPanel.KeepWithinScreen();
-                lastBrush = tool.m_brush;
-                lastSize = tool.m_brushSize;
-                lastMode = tool.m_mode;
                 lastTool = ToolsModifierControl.toolController.CurrentTool;
-                ToolsModifierControl.toolController.CurrentTool = tool;
-                tool.m_prefab = Container;
-                tool.m_brush = ToolsModifierControl.toolController.m_brushes[3];
+                ToolsModifierControl.toolController.CurrentTool = Tool;
             }
             else
             {
-                tool.m_brush = lastBrush;
-                tool.m_brushSize = lastSize;
-                tool.m_mode = lastMode;
                 if (lastTool != null && lastTool.GetType() != typeof(TreeTool) && ToolsModifierControl.toolController.NextTool == null)
                     lastTool.enabled = true;
             }

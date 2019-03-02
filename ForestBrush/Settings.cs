@@ -10,30 +10,32 @@ namespace ForestBrush
         public Settings(
             float panelPosX,
             float panelPosY,
-            bool BrushEditOpen,
-            bool BrushOptionsOpen,
-            bool ShowTreeMeshData,
-            TreeSorting Sorting,
-            SortingOrder SortingOrder,
-            FilterStyle FilterStyle,
+            bool brushEditOpen,
+            bool brushOptionsOpen,
+            bool showTreeMeshData,
+            TreeSorting sorting,
+            SortingOrder sortingOrder,
+            FilterStyle filterStyle,
             IEnumerable<Brush> forestBrushes,
             string selectedBrush,
             SavedInputKey toggleTool,
             bool keepTreesInNewBrush,
-            bool ignoreVanillaTrees
+            bool ignoreVanillaTrees,
+            bool showInfoTooltip
         )
         {
             this.PanelPosX = panelPosX;
             this.PanelPosY = panelPosY;
-            this.BrushEditOpen = BrushEditOpen;
-            this.BrushOptionsOpen = BrushOptionsOpen;
-            this.ShowTreeMeshData = ShowTreeMeshData;
-            this.Sorting = Sorting;
-            this.SortingOrder = SortingOrder;
-            this.FilterStyle = FilterStyle;
+            this.BrushEditOpen = brushEditOpen;
+            this.BrushOptionsOpen = brushOptionsOpen;
+            this.ShowTreeMeshData = showTreeMeshData;
+            this.Sorting = sorting;
+            this.SortingOrder = sortingOrder;
+            this.FilterStyle = filterStyle;
             this.ToggleTool = toggleTool;
             this.KeepTreesInNewBrush = keepTreesInNewBrush;
             this.IgnoreVanillaTrees = ignoreVanillaTrees;
+            this.ShowInfoTooltip = showInfoTooltip;
 
             this.Brushes = forestBrushes.ToList();
             if (this.Brushes.Count == 0)
@@ -71,6 +73,8 @@ namespace ForestBrush
 
         public bool IgnoreVanillaTrees { get; internal set; }
 
+        public bool ShowInfoTooltip { get; internal set; }
+
         public static Settings Default()
         {
             var defaultBrush = Brush.Default();
@@ -88,7 +92,8 @@ namespace ForestBrush
                 string.Empty,
                 new SavedInputKey("toggleTool", Constants.ModName, SavedInputKey.Encode(KeyCode.B, false, false, true), true),
                 false,
-                false
+                false,
+                true
             );
         }
 

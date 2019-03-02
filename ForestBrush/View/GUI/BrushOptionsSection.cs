@@ -101,7 +101,7 @@ namespace ForestBrush.GUI
             sizeSlider.color = new Color32(0, 0, 0, 255);
             sizeSlider.disabledColor = new Color32(190, 190, 190, 255);
             sizeSlider.minValue = 1f;
-            sizeSlider.maxValue = ForestBrush.Instance.BrushTweaker.MaxSize;
+            sizeSlider.maxValue = ForestBrush.Instance.Tool.Tweaker.MaxSize;
             sizeSlider.stepSize = 1f;
             sizeSlider.value = UserMod.Settings.SelectedBrush.Options.Size;
             sizeSlider.scrollWheelAmount = 1f;
