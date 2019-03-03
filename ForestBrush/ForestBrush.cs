@@ -8,7 +8,6 @@ using ColossalFramework.PlatformServices;
 using ColossalFramework.UI;
 using ForestBrush.GUI;
 using ForestBrush.TranslationFramework;
-using Harmony;
 using UnityEngine;
 
 namespace ForestBrush
@@ -56,8 +55,6 @@ namespace ForestBrush
                 return _tool;
             }
         }
-
-        public MethodInfo RayCastMethod = AccessTools.Method(typeof(ToolBase), "RayCast");
 
         public UIButton ToggleButton => toggleButtonComponents.ToggleButton;
 

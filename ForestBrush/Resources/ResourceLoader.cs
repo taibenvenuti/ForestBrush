@@ -1,4 +1,7 @@
-﻿using ColossalFramework.UI;
+﻿using ColossalFramework.IO;
+using ColossalFramework.Plugins;
+using ColossalFramework.UI;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using UnityEngine;
@@ -229,6 +232,66 @@ namespace ForestBrush.Resources
                 Debug.LogWarning("Failed to Load Texture from Assembly");
             }
             return texture2D;
+        }
+
+        private static string GetModPath()
+        {
+            foreach (var plugin in PluginManager.instance.GetPluginsInfo())
+            {
+                string path = Path.Combine(plugin.modPath, "ForestBrush.dll");
+                if (File.Exists(path))
+                    return plugin.modPath;
+            }
+            return null;
+        }
+        public static Texture2D[] LoadBrushTextures()
+        {
+            List<Texture2D> list = new List<Texture2D>();
+            foreach (var brush in ToolsModifierControl.toolController.m_brushes)
+            {
+                Texture2D tex = new Texture2D(1, 1);
+                CopyTexture(brush, tex);
+                tex.Resize(128, 128);
+                list.Add(tex);
+            }
+            string path = GetModPath();
+            if (path == null) return list.ToArray();
+            string resourcesPath = Path.Combine(path, "Resources");
+            foreach (var file in Directory.GetFiles(Path.Combine(resourcesPath, "Brushes")))
+            {
+                Texture2D tex = new Texture2D(1, 1);
+                tex.LoadImage(File.ReadAllBytes(file));
+                tex.Apply();
+                list.Add(tex);
+            }
+            //string mapEditorPath = Path.Combine(DataLocation.addonsPath, "MapEditor"); 
+            //foreach (var userBrush in Directory.GetFiles(Path.Combine(mapEditorPath, "Brushes")))
+            //{
+            //    Texture2D tex = new Texture2D(1, 1);
+            //    tex.LoadImage(File.ReadAllBytes(userBrush));
+            //    tex.Apply();
+            //    tex.Resize(128, 128);
+            //    list.Add(tex);
+            //}
+            return list.ToArray();
+        }
+
+        public static Shader LoadCustomShaderFromBundle()
+        {
+            AssetBundle shaderBundle = AssetBundle.LoadFromMemory(ExtractResource("ForestBrush.Resources.forestbrush"));
+            return shaderBundle.LoadAsset<Shader>("Assets/Shader/ForestBrush.shader");
+        }
+
+        public static byte[] ExtractResource(string filename)
+        {
+            Assembly a = Assembly.GetExecutingAssembly();
+            using (Stream resFilestream = a.GetManifestResourceStream(filename))
+            {
+                if (resFilestream == null) return null;
+                byte[] ba = new byte[resFilestream.Length];
+                resFilestream.Read(ba, 0, ba.Length);
+                return ba;
+            }
         }
 
         public static Texture2D ConvertRenderTexture(RenderTexture renderTexture)
