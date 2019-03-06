@@ -16,6 +16,7 @@ namespace ForestBrush.Persistence
             {
                 PanelPosX = settings.PanelPosX,
                 PanelPosY = settings.PanelPosY,
+                BrushShapesOpen = settings.BrushShapesOpen,
                 BrushEditOpen = settings.BrushEditOpen,
                 BrushOptionsOpen = settings.BrushOptionsOpen,
                 ShowTreeMeshData = settings.ShowTreeMeshData,
@@ -50,6 +51,7 @@ namespace ForestBrush.Persistence
                 return new Settings(
                     xmlSettings.PanelPosX,
                     xmlSettings.PanelPosY,
+                    xmlSettings.BrushShapesOpen,
                     xmlSettings.BrushEditOpen,
                     xmlSettings.BrushOptionsOpen,
                     xmlSettings.ShowTreeMeshData,

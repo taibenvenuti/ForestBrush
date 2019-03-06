@@ -10,6 +10,7 @@ namespace ForestBrush
         public Settings(
             float panelPosX,
             float panelPosY,
+            bool brushShapesOpen,
             bool brushEditOpen,
             bool brushOptionsOpen,
             bool showTreeMeshData,
@@ -26,6 +27,7 @@ namespace ForestBrush
         {
             this.PanelPosX = panelPosX;
             this.PanelPosY = panelPosY;
+            this.BrushShapesOpen = brushShapesOpen;
             this.BrushEditOpen = brushEditOpen;
             this.BrushOptionsOpen = brushOptionsOpen;
             this.ShowTreeMeshData = showTreeMeshData;
@@ -50,6 +52,8 @@ namespace ForestBrush
         public float PanelPosX { get; set; }
 
         public float PanelPosY { get; set; }
+
+        public bool BrushShapesOpen { get; set; }
 
         public bool BrushEditOpen { get; set; }
 
@@ -82,6 +86,7 @@ namespace ForestBrush
             return new Settings(
                 200f,
                 100f,
+                false,
                 false,
                 false,
                 true,
@@ -141,6 +146,7 @@ namespace ForestBrush
 
             this.PanelPosX = defaultSettings.PanelPosX;
             this.PanelPosY = defaultSettings.PanelPosY;
+            this.BrushShapesOpen = defaultSettings.BrushShapesOpen;
             this.BrushEditOpen = defaultSettings.BrushEditOpen;
             this.BrushOptionsOpen = defaultSettings.BrushOptionsOpen;
             this.ToggleTool = defaultSettings.ToggleTool;

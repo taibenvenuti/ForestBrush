@@ -30,6 +30,7 @@ namespace ForestBrush
                     container.gameObject.name = "ForestBrushContainer";
                     container.name = "ForestBrushContainer";
                     container.m_mesh = null;
+                    container.gameObject.SetActive(false);
                 }
                 return container;
             }
@@ -279,6 +280,15 @@ namespace ForestBrush
             return name;
         }
 
+        public void SetBrush(string id)
+        {
+            Tool.SetBrush(id);
+        }
+
+        public Dictionary<string, Texture2D> GetBrushBitmaps()
+        {
+            return Tool.GetBrushes();
+        }
         public void OnGUI()
         {
             try

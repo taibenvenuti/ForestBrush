@@ -48,6 +48,14 @@ namespace ForestBrush.Resources
         public static string OptionsDropboxListbox{ get; } = "OptionsDropboxListbox";
         public static string OptionsDropboxListboxHovered{ get; } = "OptionsDropboxListboxHovered";
         public static string OptionsDropboxListboxPressed{ get; } = "OptionsDropboxListboxPressed";
+        public static string OptionsDropboxListboxFocused { get; } = "OptionsDropboxListboxFocused";
+        public static string PaintBrushNormal { get; } = "PaintBrushNormal";
+        public static string PaintBrushHovered { get; } = "PaintBrushHovered";
+        public static string PaintBrushPressed { get; } = "PaintBrushPressed";
+        public static string PaintBrushFocused { get; } = "PaintBrushFocused";
+        public static string MenuContainer { get; } = "MenuContainer";
+        public static string GenericPanel { get; } = "GenericPanel";
+        public static string SubcategoriesPanel { get; } = "SubcategoriesPanel";
 
         private static UITextureAtlas atlas;
         public static UITextureAtlas Atlas
@@ -100,7 +108,11 @@ namespace ForestBrush.Resources
                 SettingsDropbox,
                 SettingsDropboxHovered,
                 SettingsDropboxPressed,
-                SettingsDropboxFocused
+                SettingsDropboxFocused,
+                PaintBrushNormal,
+                PaintBrushHovered,
+                PaintBrushPressed,
+                PaintBrushFocused
             };
 
             atlas = CreateTextureAtlas("ForestBrushAtlas", spriteNames, "ForestBrush.Resources.");
@@ -244,36 +256,39 @@ namespace ForestBrush.Resources
             }
             return null;
         }
-        public static Texture2D[] LoadBrushTextures()
+        public static Dictionary<string, Texture2D> LoadBrushTextures()
         {
-            List<Texture2D> list = new List<Texture2D>();
-            foreach (var brush in ToolsModifierControl.toolController.m_brushes)
-            {
-                Texture2D tex = new Texture2D(1, 1);
-                CopyTexture(brush, tex);
-                tex.Resize(128, 128);
-                list.Add(tex);
-            }
+            Dictionary<string, Texture2D> dict = new Dictionary<string, Texture2D>();
             string path = GetModPath();
-            if (path == null) return list.ToArray();
             string resourcesPath = Path.Combine(path, "Resources");
             foreach (var file in Directory.GetFiles(Path.Combine(resourcesPath, "Brushes")))
             {
                 Texture2D tex = new Texture2D(1, 1);
                 tex.LoadImage(File.ReadAllBytes(file));
                 tex.Apply();
-                list.Add(tex);
+                string id = Path.GetFileNameWithoutExtension(file);
+                if (!dict.ContainsKey(id))
+                    dict.Add(id, tex);
             }
-            //string mapEditorPath = Path.Combine(DataLocation.addonsPath, "MapEditor"); 
-            //foreach (var userBrush in Directory.GetFiles(Path.Combine(mapEditorPath, "Brushes")))
-            //{
-            //    Texture2D tex = new Texture2D(1, 1);
-            //    tex.LoadImage(File.ReadAllBytes(userBrush));
-            //    tex.Apply();
-            //    tex.Resize(128, 128);
-            //    list.Add(tex);
-            //}
-            return list.ToArray();
+            string mapEditorPath = Path.Combine(DataLocation.addonsPath, "MapEditor");
+            string brushesPath = Path.Combine(mapEditorPath, "Brushes");
+            string customBrushesPath = Path.Combine(brushesPath, "ForestBrush");
+            if (Directory.Exists(customBrushesPath))
+            {
+                foreach (var userBrush in Directory.GetFiles(customBrushesPath))
+                {
+                    Texture2D tex = new Texture2D(1, 1);
+                    tex.LoadImage(File.ReadAllBytes(userBrush));
+                    tex.Apply();
+                    if (tex.width == 128 && tex.height == 128)
+                    {
+                        string id = Path.GetFileNameWithoutExtension(userBrush);
+                        if (!dict.ContainsKey(id))
+                            dict.Add(id, tex);
+                    }
+                }
+            }
+            return dict;
         }
 
         public static Shader LoadCustomShaderFromBundle()

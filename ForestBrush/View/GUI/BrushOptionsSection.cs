@@ -8,6 +8,8 @@ namespace ForestBrush.GUI
 {
     public class BrushOptionsSection : UIPanel
     {
+        ForestBrushPanel owner;
+
         UIPanel layoutPanelSize;
         UILabel sizeLabel;
         internal UISlider sizeSlider;
@@ -24,13 +26,6 @@ namespace ForestBrush.GUI
         UILabel autoDensityLabel;
 
         internal UICheckBox autoDensityCheckBox;
-        UILabel overlayColorLabel;
-        UIColorField colorFieldTemplate;
-
-        UIPanel layoutPanelSquareBrush;
-        UILabel squareBrushLabel;
-
-        internal UICheckBox squareBrushCheckBox;
 
         public override void Start()
         {
@@ -41,9 +36,12 @@ namespace ForestBrush.GUI
             SetupStrengthPanel();
             SetupDensityPanel();
             SetupAutoDensityPanel();
-            SetupSquareBrushPanel();
 
-            if(!UserMod.Settings.BrushOptionsOpen) Hide();
+            if(!UserMod.Settings.BrushOptionsOpen)
+            {
+                owner.BrushSelectSection.UnfocusHideOptionsSectionButton();
+                Hide();
+            }
         }
 
         public override void OnDestroy()
@@ -55,18 +53,12 @@ namespace ForestBrush.GUI
             densitySlider.eventValueChanged -= DensitySlider_eventValueChanged;
             densitySlider.eventMouseUp -= DensitySlider_eventMouseUp;
             autoDensityCheckBox.eventCheckChanged -= SutoDensityCheckBox_eventCheckChanged;
-            squareBrushCheckBox.eventCheckChanged -= SquareBrushCheckBox_eventCheckChanged;
-            if (colorFieldTemplate != null)
-            {
-                colorFieldTemplate.eventSelectedColorChanged -= ColorField_eventSelectedColorChangedHandler;
-                colorFieldTemplate.eventColorPickerOpen -= ColorField_eventColorPickerOpen;
-                colorFieldTemplate.eventColorPickerClose -= ColorField_eventColorPickerClose;
-            }
             base.OnDestroy();
         }
 
         private void Setup()
         {
+            owner = (ForestBrushPanel)parent;
             autoLayout = true;
             autoLayoutDirection = LayoutDirection.Vertical;
             autoFitChildrenVertically = true;
@@ -137,8 +129,6 @@ namespace ForestBrush.GUI
             strengthLabel.text = Translation.Instance.GetTranslation("FOREST-BRUSH-BRUSH-OPTIONS-STRENGTH");
             densityLabel.text = Translation.Instance.GetTranslation("FOREST-BRUSH-BRUSH-OPTIONS-DENSITY");
             autoDensityLabel.text = AutoDensityLabelText;
-            squareBrushLabel.text = SquareBrushLabelText;
-            if(overlayColorLabel != null) overlayColorLabel.text = OverlayColorLabelText;
         }
 
         private void SetupStrengthPanel()
@@ -288,21 +278,6 @@ namespace ForestBrush.GUI
             autoDensityCheckBox.isChecked = UserMod.Settings.SelectedBrush.Options.AutoDensity;
             autoDensityCheckBox.eventCheckChanged += SutoDensityCheckBox_eventCheckChanged;
             autoDensityCheckBox.zOrder = 0;
-
-            var colorField = CreateColorField(layoutPanelAutoDensityColor);
-            if (colorField != null)
-            {
-                overlayColorLabel = layoutPanelAutoDensityColor.AddUIComponent<UILabel>();
-                overlayColorLabel.text = OverlayColorLabelText;
-                overlayColorLabel.textScale = Constants.UITextScale;
-                overlayColorLabel.autoSize = true;
-                overlayColorLabel.textAlignment = UIHorizontalAlignment.Left;
-                overlayColorLabel.verticalAlignment = UIVerticalAlignment.Middle;
-                overlayColorLabel.zOrder = 3;
-                colorFieldTemplate = colorField;
-                colorFieldTemplate.size = Constants.UIColorFieldSize;
-                colorFieldTemplate.zOrder = 2;
-            }
         }
 
         private void SutoDensityCheckBox_eventCheckChanged(UIComponent component, bool value)
@@ -312,90 +287,7 @@ namespace ForestBrush.GUI
             UserMod.SaveSettings();
         }
 
-        private void SetupSquareBrushPanel()
-        {
-            layoutPanelSquareBrush = AddUIComponent<UIPanel>();
-            layoutPanelSquareBrush.size = new Vector2(width, 16);
-            layoutPanelSquareBrush.autoLayout = true;
-            layoutPanelSquareBrush.autoLayoutDirection = LayoutDirection.Horizontal;
-            layoutPanelSquareBrush.autoFitChildrenHorizontally = true;
-            layoutPanelSquareBrush.autoLayoutPadding = new RectOffset(10, 0, 0, 0);
-            layoutPanelSquareBrush.zOrder = 4;
-
-            squareBrushLabel = layoutPanelSquareBrush.AddUIComponent<UILabel>();
-            squareBrushLabel.text = SquareBrushLabelText;
-            squareBrushLabel.textScale = Constants.UITextScale;
-            squareBrushLabel.autoSize = true;
-            squareBrushLabel.textAlignment = UIHorizontalAlignment.Left;
-            squareBrushLabel.verticalAlignment = UIVerticalAlignment.Middle;
-            squareBrushLabel.zOrder = 1;
-
-            squareBrushCheckBox = layoutPanelSquareBrush.AddUIComponent<UICheckBox>();
-            squareBrushCheckBox.size = Constants.UICheckboxSize;
-            var sprite2 = squareBrushCheckBox.AddUIComponent<UISprite>();
-            sprite2.atlas = ResourceLoader.Atlas;
-            sprite2.spriteName = ResourceLoader.CheckBoxSpriteUnchecked;
-            sprite2.size = squareBrushCheckBox.size;
-            sprite2.transform.parent = squareBrushCheckBox.transform;
-            sprite2.transform.localPosition = Vector3.zero;
-            squareBrushCheckBox.checkedBoxObject = sprite2.AddUIComponent<UISprite>();
-
-            ((UISprite)squareBrushCheckBox.checkedBoxObject).atlas = ResourceLoader.Atlas;
-            ((UISprite)squareBrushCheckBox.checkedBoxObject).spriteName = ResourceLoader.CheckBoxSpriteChecked;
-            squareBrushCheckBox.checkedBoxObject.size = squareBrushCheckBox.size;
-            squareBrushCheckBox.checkedBoxObject.relativePosition = Vector3.zero;
-            squareBrushCheckBox.isChecked = UserMod.Settings.SelectedBrush.Options.IsSquare;
-            squareBrushCheckBox.eventCheckChanged += SquareBrushCheckBox_eventCheckChanged;
-            squareBrushCheckBox.zOrder = 0;
-        }
-
-        private void SquareBrushCheckBox_eventCheckChanged(UIComponent component, bool value)
-        {
-            UserMod.Settings.SelectedBrush.Options.IsSquare = value;
-            UserMod.SaveSettings();
-        }
-
-        private UIColorField CreateColorField(UIComponent parent)
-        {
-            if (colorFieldTemplate == null)
-            {
-                UIComponent template = UITemplateManager.Get("LineTemplate");
-                if (template == null) return null;
-
-                colorFieldTemplate = template.Find<UIColorField>("LineColor");
-                if (colorFieldTemplate == null) return null;
-            }
-
-            UIColorField colorField = Instantiate(colorFieldTemplate.gameObject).GetComponent<UIColorField>();
-            parent.AttachUIComponent(colorField.gameObject);
-            colorField.name = "ForestBrushColorField";
-            colorField.pickerPosition = UIColorField.ColorPickerPosition.RightBelow;
-            colorField.eventSelectedColorChanged += ColorField_eventSelectedColorChangedHandler;
-            colorField.eventColorPickerOpen += ColorField_eventColorPickerOpen;
-            colorField.eventColorPickerClose += ColorField_eventColorPickerClose;
-            colorField.selectedColor = UserMod.Settings.SelectedBrush.Options.OverlayColor;
-            return colorField;
-        }
-
-        private void ColorField_eventColorPickerClose(UIColorField colorField, UIColorPicker popup, ref bool overridden)
-        {
-            colorField.triggerButton.isInteractive = true;
-        }
-
-        private void ColorField_eventColorPickerOpen(UIColorField colorField, UIColorPicker popup, ref bool overridden)
-        {
-            colorField.triggerButton.isInteractive = false;
-        }
-
-        private void ColorField_eventSelectedColorChangedHandler(UIComponent component, Color value)
-        {
-            UserMod.Settings.SelectedBrush.Options.OverlayColor = value;
-            UserMod.SaveSettings();
-        }
-
         public string AutoDensityLabelText => Translation.Instance.GetTranslation("FOREST-BRUSH-BRUSH-OPTIONS-AUTODENSITY");
-        public string SquareBrushLabelText => Translation.Instance.GetTranslation("FOREST-BRUSH-BRUSH-OPTIONS-SQUAREBRUSH");
-        public string OverlayColorLabelText => Translation.Instance.GetTranslation("FOREST-BRUSH-BRUSH-OPTIONS-OVERLAYCOLOR");
 
         internal void LoadBrush(Brush brush)
         {
@@ -405,8 +297,6 @@ namespace ForestBrush.GUI
             strengthSlider.tooltip = Math.Round(brush.Options.Strength * 100, 1) + "%";
             densitySlider.value = 16f - brush.Options.Density;
             autoDensityCheckBox.isChecked = brush.Options.AutoDensity;
-            if (colorFieldTemplate != null) colorFieldTemplate.selectedColor = brush.Options.OverlayColor;
-            squareBrushCheckBox.isChecked = brush.Options.IsSquare;
         }
     }
 }

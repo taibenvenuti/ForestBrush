@@ -7,17 +7,16 @@
     <Translation ID="FOREST-BRUSH-SELECT" String="Selecciona pincel" />
     <Translation ID="FOREST-BRUSH-CREATE" String="Crea nuevo pincel" />
     <Translation ID="FOREST-BRUSH-DELETE" String="Borra pincel" />
-    <Translation ID="FOREST-BRUSH-SQUARE" String="Activa pincel cuadrado" />
     <Translation ID="FOREST-BRUSH-SEARCH" String="Busca" />
     <Translation ID="FOREST-BRUSH-PROBABILITY" String="Probabilidad" />
     <Translation ID="FOREST-BRUSH-TOGGLE-EDIT" String="Muestra/Esconde el panel 'Árboles'" />
     <Translation ID="FOREST-BRUSH-TOGGLE-OPTIONS" String="Muestra/Esconde el panel 'Opciones de Pincel'" />
+    <Translation ID="FOREST-BRUSH-TOGGLE-SELECTBRUSHSHAPE" String="Muestra/Esconde el panel 'Formas del Pincel'" />
     <Translation ID="FOREST-BRUSH-BRUSH-OPTIONS-SQUAREBRUSH" String="Pincel cuadrado" />
     <Translation ID="FOREST-BRUSH-BRUSH-OPTIONS-STRENGTH" String="Fuerza" />
     <Translation ID="FOREST-BRUSH-BRUSH-OPTIONS-DENSITY" String="Densidad" />
     <Translation ID="FOREST-BRUSH-BRUSH-OPTIONS-SIZE" String="Tamaño" />
     <Translation ID="FOREST-BRUSH-BRUSH-OPTIONS-AUTODENSITY" String="Auto-densidad" />
-    <Translation ID="FOREST-BRUSH-BRUSH-OPTIONS-OVERLAYCOLOR" String="Color del pincel" />
     <Translation ID="FOREST-BRUSH-OPTIONS-RESET" String="Reinicia las opciones predeterminadas" />
     <Translation ID="FOREST-BRUSH-OPTIONS-SHOWMESHDATA" String="Mostrar informacion sobre malla y textura" />
     <Translation ID="FOREST-BRUSH-DATA-NAME" String="Nombre" />

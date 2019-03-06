@@ -12,6 +12,7 @@ namespace ForestBrush.GUI
         internal BrushSelectSection BrushSelectSection;
         internal BrushEditSection BrushEditSection;
         internal BrushOptionsSection BrushOptionsSection;
+        internal BrushShapeSelector BrushShapeSelector;
         UIPanel layoutPanelSpace;
 
         internal bool ToggleBrushEdit()
@@ -26,11 +27,18 @@ namespace ForestBrush.GUI
             return BrushOptionsSection.isVisible;
         }
 
+        internal bool ToggleBrushShapes()
+        {
+            BrushShapeSelector.isVisible = !BrushShapeSelector.isVisible;
+            return BrushShapeSelector.isVisible;
+        }
+
         public override void Start()
         {
             base.Start();
             Setup();
             TitleSection = AddUIComponent<TitleSection>();
+            BrushShapeSelector = AddUIComponent<BrushShapeSelector>();
             BrushSelectSection = AddUIComponent<BrushSelectSection>();
             BrushEditSection = AddUIComponent<BrushEditSection>();
             BrushOptionsSection = AddUIComponent<BrushOptionsSection>();
@@ -41,7 +49,8 @@ namespace ForestBrush.GUI
             BrushSelectSection.zOrder = 1;
             BrushEditSection.zOrder = 2;
             BrushOptionsSection.zOrder = 3;
-            layoutPanelSpace.zOrder = 4;
+            BrushShapeSelector.zOrder = 4;
+            layoutPanelSpace.zOrder = 5;
 
             LocaleManager.eventLocaleChanged += ForestBrushPanel_eventLocaleChanged;
             Hide();
@@ -77,6 +86,7 @@ namespace ForestBrush.GUI
             BrushSelectSection?.LoadBrush(brush);
             BrushEditSection?.LoadBrush(brush);
             BrushOptionsSection?.LoadBrush(brush);
+            BrushShapeSelector?.LoadBrush(brush);
         }
 
         internal void KeepWithinScreen()

@@ -63,9 +63,7 @@ namespace ForestBrush
             public float Strength { get; set; }
             public float Density { get; set; }
             public bool AutoDensity { get; set; }
-            public bool IsSquare { get; set; }
-            public Color32 OverlayColor { get; set; }
-            public ForestTool.Mode ToolMode { get; set; }
+            public string BitmapID { get; set; }
 
             public static BrushOptions Default()
             {
@@ -75,9 +73,7 @@ namespace ForestBrush
                     Strength = 0.1f,
                     Density = 1f,
                     AutoDensity = true,
-                    IsSquare = false,
-                    OverlayColor = new Color32(25, 125, 155, 192),
-                    ToolMode = ForestTool.Mode.Geometric
+                    BitmapID = string.Empty
                 };
             }
         }

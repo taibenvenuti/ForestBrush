@@ -41,7 +41,7 @@ namespace ForestBrush
             NoiseThreshold = 0.5f,
             MaxRandomRange = 4f,
             Clearance = 4.5f,
-            StrengthMultiplier = 1,
+            StrengthMultiplier = 10,
             _maxSize = 1000f
         };
     }
