@@ -1,6 +1,7 @@
 ﻿using ColossalFramework.UI;
 using ForestBrush.Resources;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace ForestBrush.GUI
@@ -10,6 +11,7 @@ namespace ForestBrush.GUI
         ForestBrushPanel owner;
         private Dictionary<string, UIButton> BrushButtons = new Dictionary<string, UIButton>();
         private UIScrollablePanel ScrollablePanel;
+
         public override void Start()
         {
             base.Start();
@@ -20,6 +22,7 @@ namespace ForestBrush.GUI
                 Hide();
             }
         }
+
         private void Setup()
         {
             width = parent.width;
@@ -42,7 +45,7 @@ namespace ForestBrush.GUI
             ScrollablePanel.backgroundSprite = "TextFieldPanel";
             ScrollablePanel.autoLayoutDirection = LayoutDirection.Horizontal;
             ScrollablePanel.autoLayoutPadding = new RectOffset(2, 2, 2, 2);
-            ScrollablePanel.color = new Color32(180, 180, 180, 255);
+            ScrollablePanel.color = new Color32(255, 255, 255, 255);
             ScrollablePanel.isInteractive = true;
             ScrollablePanel.builtinKeyNavigation = true;
             ScrollablePanel.scrollWheelDirection = UIOrientation.Vertical;
@@ -53,6 +56,10 @@ namespace ForestBrush.GUI
                 UIButton button = ScrollablePanel.AddUIComponent<UIButton>();
                 button.atlas = ResourceLoader.Atlas;
                 button.normalBgSprite = ResourceLoader.GenericPanel;
+                if (UserMod.Settings.SelectedBrush != null 
+                && UserMod.Settings.SelectedBrush.Options != null 
+                && UserMod.Settings.SelectedBrush.Options.BitmapID == brush.Key)
+                    button.normalBgSprite = string.Empty;
                 button.color = new Color32(170, 170, 170, 255);
                 button.hoveredColor = new Color32(210, 210, 210, 255);
                 button.focusedColor = Color.white;
@@ -103,22 +110,36 @@ namespace ForestBrush.GUI
 
         internal void LoadBrush(Brush brush)
         {
+            ResetButtons();
+                
             if (BrushButtons.TryGetValue(brush.Options.BitmapID, out UIButton button))
             {
-                button.SimulateClick();
+                button.normalBgSprite = string.Empty;
+                ForestBrush.Instance.SetBrush((string)button.objectUserData);
+            }
+            else
+            {
+                var buttonkvp = BrushButtons.FirstOrDefault(b => b.Value != null);
+                buttonkvp.Value.normalBgSprite = string.Empty;
+                ForestBrush.Instance.SetBrush((string)buttonkvp.Value.objectUserData);
             }
         }
 
         private void Button_eventClicked(UIComponent comp, UIMouseEventParameter eventParam)
         {
+            ResetButtons();
+            UIButton caller = comp as UIButton;
+            caller.normalBgSprite = string.Empty;
+            ForestBrush.Instance.SetBrush((string)caller.objectUserData);
+        }
+
+        private void ResetButtons()
+        {
             foreach (var button in BrushButtons.Values)
             {
+                if (button == null) continue;
                 button.normalBgSprite = ResourceLoader.GenericPanel;
             }
-            ((UIButton)comp).normalBgSprite = string.Empty;
-            UIButton caller = comp as UIButton;
-            Debug.LogWarning(caller.objectUserData);
-            ForestBrush.Instance.SetBrush((string)caller.objectUserData);
         }
     }
 }

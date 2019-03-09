@@ -22,10 +22,13 @@ namespace ForestBrush.GUI
         UILabel densityLabel;
         internal UISlider densitySlider;
 
-        UIPanel layoutPanelAutoDensityColor;
+        UIPanel layoutPanelAutoDensityReset;
+        UIPanel layoutPanelAutoDensity;
+        UIPanel layoutPanelReset;
         UILabel autoDensityLabel;
-
         internal UICheckBox autoDensityCheckBox;
+        UIButton resetButton;
+
 
         public override void Start()
         {
@@ -52,7 +55,7 @@ namespace ForestBrush.GUI
             strengthSlider.eventMouseUp -= StrengthSlider_eventMouseUp;
             densitySlider.eventValueChanged -= DensitySlider_eventValueChanged;
             densitySlider.eventMouseUp -= DensitySlider_eventMouseUp;
-            autoDensityCheckBox.eventCheckChanged -= SutoDensityCheckBox_eventCheckChanged;
+            autoDensityCheckBox.eventCheckChanged -= AutoDensityCheckBox_eventCheckChanged;
             base.OnDestroy();
         }
 
@@ -215,9 +218,10 @@ namespace ForestBrush.GUI
             densitySlider.disabledColor = new Color32(75, 75, 75, 255);
             densitySlider.minValue = 0f;
             densitySlider.maxValue = 16f;
-            densitySlider.stepSize = 0.1f;
+            densitySlider.stepSize = 0.16f;
             densitySlider.value = 16 - UserMod.Settings.SelectedBrush.Options.Density;
-            densitySlider.scrollWheelAmount = 0.1f;
+            densitySlider.scrollWheelAmount = 0.16f;
+            densitySlider.tooltip = Math.Round(densitySlider.value * 6.25, 1, MidpointRounding.AwayFromZero) + "%";
             densitySlider.eventValueChanged += DensitySlider_eventValueChanged;
             densitySlider.eventMouseUp += DensitySlider_eventMouseUp;
             densitySlider.backgroundSprite = ResourceLoader.WhiteRect;
@@ -234,6 +238,13 @@ namespace ForestBrush.GUI
             densitySlider.thumbObject = thumb1;
         }
 
+        internal void UpdateBindings(Brush.BrushOptions options)
+        {
+            sizeSlider.value = options.Size;
+            strengthSlider.value = options.Strength;
+            densitySlider.value = 16f - options.Density;
+        }
+
         private void DensitySlider_eventMouseUp(UIComponent component, UIMouseEventParameter eventParam)
         {
             UserMod.SaveSettings();
@@ -241,28 +252,28 @@ namespace ForestBrush.GUI
 
         private void DensitySlider_eventValueChanged(UIComponent component, float value)
         {
+            densitySlider.tooltip = Math.Round(densitySlider.value * 6.25, 1, MidpointRounding.AwayFromZero) + "%";
+            densitySlider.RefreshTooltip();
             UserMod.Settings.SelectedBrush.Options.Density = 16f - value;
         }
 
         private void SetupAutoDensityPanel()
         {
-            layoutPanelAutoDensityColor = AddUIComponent<UIPanel>();
-            layoutPanelAutoDensityColor.size = new Vector2(width, 16);
-            layoutPanelAutoDensityColor.autoLayout = true;
-            layoutPanelAutoDensityColor.autoLayoutDirection = LayoutDirection.Horizontal;
-            layoutPanelAutoDensityColor.autoFitChildrenHorizontally = true;
-            layoutPanelAutoDensityColor.autoLayoutPadding = new RectOffset(10, 0, 0, 0);
-            layoutPanelAutoDensityColor.zOrder = 3;
+            layoutPanelAutoDensityReset = AddUIComponent<UIPanel>();
+            layoutPanelAutoDensityReset.size = new Vector2(width, 16);
+            layoutPanelAutoDensityReset.autoLayout = true;
+            layoutPanelAutoDensityReset.autoLayoutDirection = LayoutDirection.Horizontal;
+            layoutPanelAutoDensityReset.autoLayoutPadding = new RectOffset(0, 0, 0, 0);
+            layoutPanelAutoDensityReset.zOrder = 3;
 
-            autoDensityLabel = layoutPanelAutoDensityColor.AddUIComponent<UILabel>();
-            autoDensityLabel.text = AutoDensityLabelText;
-            autoDensityLabel.textScale = Constants.UITextScale;
-            autoDensityLabel.autoSize = true;
-            autoDensityLabel.textAlignment = UIHorizontalAlignment.Left;
-            autoDensityLabel.verticalAlignment = UIVerticalAlignment.Middle;
-            autoDensityLabel.zOrder = 1;
+            layoutPanelAutoDensity = layoutPanelAutoDensityReset.AddUIComponent<UIPanel>();
+            layoutPanelAutoDensity.size = new Vector2(width / 2, 16);
+            layoutPanelAutoDensity.autoLayout = true;
+            layoutPanelAutoDensity.autoLayoutDirection = LayoutDirection.Horizontal;
+            layoutPanelAutoDensity.autoLayoutPadding = new RectOffset(10, 0, 0, 0);
+            layoutPanelAutoDensity.zOrder = 0;
 
-            autoDensityCheckBox = layoutPanelAutoDensityColor.AddUIComponent<UICheckBox>();
+            autoDensityCheckBox = layoutPanelAutoDensity.AddUIComponent<UICheckBox>();
             autoDensityCheckBox.size = Constants.UICheckboxSize;
             var sprite = autoDensityCheckBox.AddUIComponent<UISprite>();
             sprite.atlas = ResourceLoader.Atlas;
@@ -276,11 +287,52 @@ namespace ForestBrush.GUI
             autoDensityCheckBox.checkedBoxObject.size = autoDensityCheckBox.size;
             autoDensityCheckBox.checkedBoxObject.relativePosition = Vector3.zero;
             autoDensityCheckBox.isChecked = UserMod.Settings.SelectedBrush.Options.AutoDensity;
-            autoDensityCheckBox.eventCheckChanged += SutoDensityCheckBox_eventCheckChanged;
+            autoDensityCheckBox.eventCheckChanged += AutoDensityCheckBox_eventCheckChanged;
             autoDensityCheckBox.zOrder = 0;
+
+            autoDensityLabel = layoutPanelAutoDensity.AddUIComponent<UILabel>();
+            autoDensityLabel.text = AutoDensityLabelText;
+            autoDensityLabel.textScale = Constants.UITextScale;
+            autoDensityLabel.padding = new RectOffset(0, 0, 3, 0);
+            autoDensityLabel.autoSize = true;
+            autoDensityLabel.textAlignment = UIHorizontalAlignment.Left;
+            autoDensityLabel.verticalAlignment = UIVerticalAlignment.Middle;
+            autoDensityLabel.zOrder = 1;
+
+            layoutPanelReset = layoutPanelAutoDensityReset.AddUIComponent<UIPanel>();
+            layoutPanelReset.size = new Vector2(width / 2, 16);
+            layoutPanelReset.autoLayout = true;
+            layoutPanelReset.autoLayoutDirection = LayoutDirection.Horizontal;
+            layoutPanelReset.autoLayoutStart = LayoutStart.TopRight;
+            layoutPanelReset.autoLayoutPadding = new RectOffset(0, 10, 0, 0);
+            layoutPanelReset.zOrder = 1;
+
+            resetButton = layoutPanelReset.AddUIComponent<UIButton>();
+            resetButton.atlas = ResourceLoader.Atlas;
+            resetButton.textScale = Constants.UITextScale;
+            resetButton.textPadding = new RectOffset(4, 4, 4, 2);
+            resetButton.pivot = UIPivotPoint.TopRight;
+            resetButton.anchor = UIAnchorStyle.Right;
+            resetButton.zOrder = 0;
+            resetButton.normalBgSprite = "ButtonSmall";
+            resetButton.hoveredBgSprite = "ButtonSmallHovered";
+            resetButton.pressedBgSprite = "ButtonSmallPressed";
+            resetButton.focusedBgSprite = "ButtonSmall";
+            resetButton.text = Translation.Instance.GetTranslation("FOREST-BRUSH-BRUSH-OPTIONS-RESET");
+            resetButton.eventClicked += ResetButton_eventClicked;
+            resetButton.autoSize = true;
         }
 
-        private void SutoDensityCheckBox_eventCheckChanged(UIComponent component, bool value)
+        private void ResetButton_eventClicked(UIComponent component, UIMouseEventParameter eventParam)
+        {
+            Brush.BrushOptions options = Brush.BrushOptions.Default();
+            UserMod.Settings.SelectedBrush.Options = options;
+            UpdateBindings(options);
+            autoDensityCheckBox.isChecked = options.AutoDensity;
+            UserMod.SaveSettings();
+        }
+
+        private void AutoDensityCheckBox_eventCheckChanged(UIComponent component, bool value)
         {
             UserMod.Settings.SelectedBrush.Options.AutoDensity = value;
             densityLabel.isEnabled = densitySlider.isEnabled = !value;
@@ -291,11 +343,7 @@ namespace ForestBrush.GUI
 
         internal void LoadBrush(Brush brush)
         {
-            sizeSlider.value = brush.Options.Size;
-            sizeSlider.tooltip = brush.Options.Size.ToString();
-            strengthSlider.value = brush.Options.Strength;
-            strengthSlider.tooltip = Math.Round(brush.Options.Strength * 100, 1) + "%";
-            densitySlider.value = 16f - brush.Options.Density;
+            UpdateBindings(brush.Options);
             autoDensityCheckBox.isChecked = brush.Options.AutoDensity;
         }
     }

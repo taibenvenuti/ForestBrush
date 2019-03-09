@@ -17,6 +17,7 @@
     <Translation ID="FOREST-BRUSH-BRUSH-OPTIONS-DENSITY" String="Densidad" />
     <Translation ID="FOREST-BRUSH-BRUSH-OPTIONS-SIZE" String="Tamaño" />
     <Translation ID="FOREST-BRUSH-BRUSH-OPTIONS-AUTODENSITY" String="Auto-densidad" />
+    <Translation ID="FOREST-BRUSH-BRUSH-OPTIONS-RESET" String="Reinicia" />
     <Translation ID="FOREST-BRUSH-OPTIONS-RESET" String="Reinicia las opciones predeterminadas" />
     <Translation ID="FOREST-BRUSH-OPTIONS-SHOWMESHDATA" String="Mostrar informacion sobre malla y textura" />
     <Translation ID="FOREST-BRUSH-DATA-NAME" String="Nombre" />

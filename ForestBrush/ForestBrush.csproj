@@ -111,7 +111,6 @@
     <Compile Include="TranslationFramework\TranslationUtil.cs" />
     <Compile Include="UserMod.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="View\Tweaker.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Locale\german.xml">

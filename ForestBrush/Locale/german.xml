@@ -17,6 +17,7 @@
     <Translation ID="FOREST-BRUSH-BRUSH-OPTIONS-DENSITY" String="Dichte" />
     <Translation ID="FOREST-BRUSH-BRUSH-OPTIONS-SIZE" String="Größe" />
     <Translation ID="FOREST-BRUSH-BRUSH-OPTIONS-AUTODENSITY" String="Auto-Dichte" />
+    <Translation ID="FOREST-BRUSH-BRUSH-OPTIONS-RESET" String="Reset" />
     <Translation ID="FOREST-BRUSH-OPTIONS-RESET" String="Alle Einstellungen zurücksetzen" />
     <Translation ID="FOREST-BRUSH-OPTIONS-SHOWMESHDATA" String="Show tree mesh and texture data in tooltip" />
     <Translation ID="FOREST-BRUSH-DATA-NAME" String="Name" />

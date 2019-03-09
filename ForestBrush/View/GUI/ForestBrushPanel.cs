@@ -15,33 +15,15 @@ namespace ForestBrush.GUI
         internal BrushShapeSelector BrushShapeSelector;
         UIPanel layoutPanelSpace;
 
-        internal bool ToggleBrushEdit()
-        {
-            BrushEditSection.isVisible = !BrushEditSection.isVisible;
-            return BrushEditSection.isVisible;
-        }
-
-        internal bool ToggleBrushOptions()
-        {
-            BrushOptionsSection.isVisible = !BrushOptionsSection.isVisible;
-            return BrushOptionsSection.isVisible;
-        }
-
-        internal bool ToggleBrushShapes()
-        {
-            BrushShapeSelector.isVisible = !BrushShapeSelector.isVisible;
-            return BrushShapeSelector.isVisible;
-        }
-
         public override void Start()
         {
             base.Start();
             Setup();
             TitleSection = AddUIComponent<TitleSection>();
-            BrushShapeSelector = AddUIComponent<BrushShapeSelector>();
             BrushSelectSection = AddUIComponent<BrushSelectSection>();
             BrushEditSection = AddUIComponent<BrushEditSection>();
             BrushOptionsSection = AddUIComponent<BrushOptionsSection>();
+            BrushShapeSelector = AddUIComponent<BrushShapeSelector>();
             layoutPanelSpace = AddUIComponent<UIPanel>();
             layoutPanelSpace.size = new Vector2(width, 1);
 
@@ -93,6 +75,24 @@ namespace ForestBrush.GUI
         {
             ClampToScreen();
             if (relativePosition.y + height > 87.0f) relativePosition += new Vector3(0.0f, 87.0f - (relativePosition.y + height));
+        }
+
+        internal bool ToggleBrushEdit()
+        {
+            BrushEditSection.isVisible = !BrushEditSection.isVisible;
+            return BrushEditSection.isVisible;
+        }
+
+        internal bool ToggleBrushOptions()
+        {
+            BrushOptionsSection.isVisible = !BrushOptionsSection.isVisible;
+            return BrushOptionsSection.isVisible;
+        }
+
+        internal bool ToggleBrushShapes()
+        {
+            BrushShapeSelector.isVisible = !BrushShapeSelector.isVisible;
+            return BrushShapeSelector.isVisible;
         }
     }
 }

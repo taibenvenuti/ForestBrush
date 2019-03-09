@@ -69,9 +69,9 @@ namespace ForestBrush
             {
                 return new BrushOptions()
                 {
-                    Size = 100f,
-                    Strength = 0.1f,
-                    Density = 1f,
+                    Size = 150f,
+                    Strength = 0.2f,
+                    Density = 8f,
                     AutoDensity = true,
                     BitmapID = string.Empty
                 };

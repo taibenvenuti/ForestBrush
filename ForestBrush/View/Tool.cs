@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace ForestBrush
 {
-    public partial class ForestTool : ToolBase
+    public class ForestTool : ToolBase
     {
         private static readonly string kCursorInfoNormalColor = "<color #87d3ff>";
         private static readonly string kCursorInfoCloseColorTag = "</color>";
@@ -28,6 +28,7 @@ namespace ForestBrush
         private float Size => Options.Size;
         private float Strength => Options.Strength;
         private float Density => Options.Density;
+        private int TreeCount => UserMod.Settings.SelectedBrush.Trees.Count;
         private Brush.BrushOptions Options { get => UserMod.Settings.SelectedBrush.Options; set => UserMod.Settings.SelectedBrush.Options = value; }
 
         private bool ShiftDown => Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
@@ -128,6 +129,7 @@ namespace ForestBrush
         {
             return Brushes;
         }
+
         public void SetBrush(string id)
         {
             if (id == null || id == string.Empty)
@@ -190,8 +192,8 @@ namespace ForestBrush
             {
                 if (UserMod.Settings.ShowInfoTooltip)
                 {
-                    string density = Options.AutoDensity ? "Auto" :  Math.Round(16 - Options.Density, 2, MidpointRounding.AwayFromZero).ToString();
-                    string text = $"Trees: {Container.m_variations.Length}\nSize: {Options.Size}\nStrength: { Math.Round(Options.Strength * 100, 1) + "%"}\nDensity: {density}";                    
+                    string density = Options.AutoDensity ? "Auto" :  string.Concat(Math.Round((16 - Options.Density) * 6.25f, 1, MidpointRounding.AwayFromZero), "%");
+                    string text = $"Trees: {Container.m_variations.Length}\nSize: {Options.Size}\nStrength: { Math.Round(Options.Strength * 100, 1) + "%"}\nDensity: {density}";
                     ShowInfo(true, text);
                 }
                 else base.ShowToolInfo(false, null, CachedPosition);
@@ -211,7 +213,6 @@ namespace ForestBrush
                     else if (SizeAndStrength)
                     {
                         Options.Size = Mathf.Clamp((float)Math.Round(Options.Size + axisX * (Tweaker.MaxSize / 50.0f), 1), 1.0f, Tweaker.MaxSize);
-                        
                     }
                 }
                 if (axisY != 0)
@@ -219,7 +220,7 @@ namespace ForestBrush
                     AngleChanged = true;
                     if (DensityOrRotation)
                     {
-                        Options.Density = Mathf.Clamp(Options.Density + axisY, 0.0f, 16.0f);
+                        Options.Density = Mathf.Clamp(Options.Density - axisY, 0.0f, 16.0f);
                         
                     }
                     else if (SizeAndStrength)
@@ -228,6 +229,8 @@ namespace ForestBrush
                     }
                 }
             }
+
+            ForestBrush.Instance.ForestBrushPanel.BrushOptionsSection.UpdateBindings(Options);
         }
 
         protected void ShowInfo(bool show, string text)
@@ -291,7 +294,7 @@ namespace ForestBrush
         private void ApplyBrush()
         {
             if (Container is null) return;
-            if (Painting) AddTreesImpl();
+            if (Painting && TreeCount > 0) AddTreesImpl();
             else if(Deleting && !AngleChanged) RemoveTreesImpl();
         }
 
@@ -332,7 +335,7 @@ namespace ForestBrush
                     TreeInfo treeInfo = Container.GetVariation(ref Randomizer);
 
                     treePosition.y = Singleton<TerrainManager>.instance.SampleDetailHeight(treePosition, out float f, out float f2);
-                    float spacing = Options.AutoDensity ? treeInfo.m_generatedInfo.m_size.x / 2 : Density;
+                    float spacing = Options.AutoDensity ? treeInfo.m_generatedInfo.m_size.x : Density;
                     Randomizer tempRandomizer = Randomizer;
                     uint item = TreeManager.instance.m_trees.NextFreeItem(ref tempRandomizer);
                     Randomizer treeRandomizer = new Randomizer(item);
@@ -485,5 +488,41 @@ namespace ForestBrush
             Angle += delta;
             ClampAngle();
         }
+
+        public class Tweaks
+        {
+            public int SizeAddend;
+            public int SizeMultiplier;
+            public uint NoiseScale;
+            public float NoiseThreshold;
+            public float MaxRandomRange;
+            public float Clearance;
+            public float StrengthMultiplier;
+            public float _maxSize;
+            public float MaxSize
+            {
+                get
+                {
+                    return _maxSize;
+                }
+                set
+                {
+                    _maxSize = value;
+                    ForestBrush.Instance.ForestBrushPanel.BrushOptionsSection.sizeSlider.maxValue = value;
+                }
+            }
+        }
+
+        public Tweaks Tweaker = new Tweaks()
+        {
+            SizeAddend = 10,
+            SizeMultiplier = 7,
+            NoiseScale = 16,
+            NoiseThreshold = 0.5f,
+            MaxRandomRange = 4f,
+            Clearance = 4.5f,
+            StrengthMultiplier = 10,
+            _maxSize = 1000f
+        };
     }
 }

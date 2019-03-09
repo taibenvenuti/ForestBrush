@@ -249,7 +249,7 @@ namespace ForestBrush.GUI
         }
 
         private void DeleteBrushButton_eventClicked(UIComponent component, UIMouseEventParameter mouseEventParameter)
-        {            
+        {
             ConfirmPanel.ShowModal(Translation.Instance.GetTranslation("FOREST-BRUSH-MODAL-WARNING"), Translation.Instance.GetTranslation("FOREST-BRUSH-PROMPT-DELETE"), (d, i) =>
             {
                 if (i == 1)
