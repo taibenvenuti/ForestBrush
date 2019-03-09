@@ -64,7 +64,10 @@ namespace ForestBrush.GUI
             SetupButtons();
             SetupListSection();
             SetupSearchFieldSection();
-            if(!UserMod.Settings.BrushEditOpen)
+
+            LoadBrush(UserMod.Settings.SelectedBrush);
+
+            if (!UserMod.Settings.BrushEditOpen)
             {
                 owner.BrushSelectSection.UnfocusEditSectionButton();
                 Hide();

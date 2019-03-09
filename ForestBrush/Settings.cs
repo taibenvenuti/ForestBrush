@@ -67,8 +67,6 @@ namespace ForestBrush
 
         public FilterStyle FilterStyle { get; set; }
 
-        public List<Brush> Brushes { get; set; }
-
         public Brush SelectedBrush { get; private set; }
 
         public SavedInputKey ToggleTool { get; set; }
@@ -78,6 +76,8 @@ namespace ForestBrush
         public bool IgnoreVanillaTrees { get; internal set; }
 
         public bool ShowInfoTooltip { get; internal set; }
+
+        public List<Brush> Brushes { get; set; }
 
         public static Settings Default()
         {
@@ -91,7 +91,7 @@ namespace ForestBrush
                 false,
                 true,
                 TreeSorting.Name,
-                SortingOrder.Descending,
+                SortingOrder.Ascending,
                 FilterStyle.AND,
                 Enumerable.Empty<Brush>(),
                 string.Empty,

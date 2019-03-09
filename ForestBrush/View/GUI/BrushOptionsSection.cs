@@ -40,7 +40,9 @@ namespace ForestBrush.GUI
             SetupDensityPanel();
             SetupAutoDensityPanel();
 
-            if(!UserMod.Settings.BrushOptionsOpen)
+            LoadBrush(UserMod.Settings.SelectedBrush);
+
+            if (!UserMod.Settings.BrushOptionsOpen)
             {
                 owner.BrushSelectSection.UnfocusHideOptionsSectionButton();
                 Hide();

@@ -24,8 +24,6 @@ namespace ForestBrush.Persistence
 
         public FilterStyle FilterStyle { get; set; }
 
-        public List<Brush> Brushes { get; set; }
-
         public string SelectedBrush { get; set; }
 
         public bool KeepTreesInNewBrush { get; set; }
@@ -53,5 +51,7 @@ namespace ForestBrush.Persistence
         public XmlInputKey IncreaseStrength { get; set; }
 
         public XmlInputKey DecreaseStrength { get; set; }
+
+        public List<Brush> Brushes { get; set; }
     }
 }

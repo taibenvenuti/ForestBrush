@@ -28,6 +28,8 @@ namespace ForestBrush.GUI
 
             SetupDropDown();
             SetupButtons();
+
+            LoadBrush(UserMod.Settings.SelectedBrush);
         }
 
         public override void OnDestroy()

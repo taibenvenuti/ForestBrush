@@ -14,7 +14,7 @@ namespace ForestBrush
         private static readonly string kCursorInfoNormalColor = "<color #87d3ff>";
         private static readonly string kCursorInfoCloseColorTag = "</color>";
         private float Angle = ToolsModifierControl.cameraController.m_currentAngle.x;
-        private bool AngleChanged;
+        private bool AxisChanged;
         private float MouseRayLength;
         private bool MouseLeftDown;
         private bool MouseRightDown;
@@ -168,7 +168,7 @@ namespace ForestBrush
                 else if (e.button == 1)
                 {
                     MouseRightDown = true;
-                    AngleChanged = false;
+                    AxisChanged = false;
                 }
             }
             else if (e.type == EventType.MouseUp)
@@ -179,8 +179,9 @@ namespace ForestBrush
                 }
                 else if (e.button == 1)
                 {
+                    if(!AxisChanged && DensityOrRotation) Rotate45();
                     MouseRightDown = false;
-                    if(!AngleChanged && DensityOrRotation) Rotate45();
+                    AxisChanged = false;
                 }
             }
         }
@@ -190,9 +191,9 @@ namespace ForestBrush
             if (Container is null) return;
             if (MouseRayValid)
             {
-                if (UserMod.Settings.ShowInfoTooltip)
+                if (UserMod.Settings.ShowInfoTooltip && (CtrlDown || AltDown))
                 {
-                    string density = Options.AutoDensity ? "Auto" :  string.Concat(Math.Round((16 - Options.Density) * 6.25f, 1, MidpointRounding.AwayFromZero), "%");
+                    string density = Options.AutoDensity ? "Auto" : string.Concat(Math.Round((16 - Options.Density) * 6.25f, 1, MidpointRounding.AwayFromZero), "%");
                     string text = $"Trees: {Container.m_variations.Length}\nSize: {Options.Size}\nStrength: { Math.Round(Options.Strength * 100, 1) + "%"}\nDensity: {density}";
                     ShowInfo(true, text);
                 }
@@ -205,7 +206,7 @@ namespace ForestBrush
                 float axisY = Input.GetAxis("Mouse Y");
                 if (axisX != 0)
                 {
-                    AngleChanged = true;
+                    AxisChanged = true;
                     if (DensityOrRotation)
                     {
                         DeltaAngle(axisX * 10.0f);
@@ -217,7 +218,7 @@ namespace ForestBrush
                 }
                 if (axisY != 0)
                 {
-                    AngleChanged = true;
+                    AxisChanged = true;
                     if (DensityOrRotation)
                     {
                         Options.Density = Mathf.Clamp(Options.Density - axisY, 0.0f, 16.0f);
@@ -295,7 +296,7 @@ namespace ForestBrush
         {
             if (Container is null) return;
             if (Painting && TreeCount > 0) AddTreesImpl();
-            else if(Deleting && !AngleChanged) RemoveTreesImpl();
+            else if(Deleting && !AxisChanged) RemoveTreesImpl();
         }
 
         private void AddTreesImpl()
@@ -335,7 +336,7 @@ namespace ForestBrush
                     TreeInfo treeInfo = Container.GetVariation(ref Randomizer);
 
                     treePosition.y = Singleton<TerrainManager>.instance.SampleDetailHeight(treePosition, out float f, out float f2);
-                    float spacing = Options.AutoDensity ? treeInfo.m_generatedInfo.m_size.x : Density;
+                    float spacing = Options.AutoDensity ? treeInfo.m_generatedInfo.m_size.x * Tweaker.SpacingFactor : Density;
                     Randomizer tempRandomizer = Randomizer;
                     uint item = TreeManager.instance.m_trees.NextFreeItem(ref tempRandomizer);
                     Randomizer treeRandomizer = new Randomizer(item);
@@ -358,7 +359,7 @@ namespace ForestBrush
                     ItemClass.CollisionType collisionType = ItemClass.CollisionType.Terrain;
 
                     if (PropManager.instance.OverlapQuad(clearanceQuad, minY, maxY, collisionType, 0, 0) && !AltDown) continue;
-                    if (TreeManager.instance.OverlapQuad(spacingQuad, minY, maxY, collisionType, 0, 0) && !AltDown) continue;
+                    if (TreeManager.instance.OverlapQuad(spacingQuad, minY, maxY, collisionType, 0, 0)) continue;
                     if (NetManager.instance.OverlapQuad(clearanceQuad, minY, maxY, collisionType, treeInfo.m_class.m_layer, 0, 0, 0) && !AltDown) continue;
                     if (BuildingManager.instance.OverlapQuad(clearanceQuad, minY, maxY, collisionType, treeInfo.m_class.m_layer, 0, 0, 0) && !AltDown) continue;
                     if (TerrainManager.instance.HasWater(treePosition2) && !AltDown) continue;
@@ -497,6 +498,7 @@ namespace ForestBrush
             public float NoiseThreshold;
             public float MaxRandomRange;
             public float Clearance;
+            public float SpacingFactor;
             public float StrengthMultiplier;
             public float _maxSize;
             public float MaxSize
@@ -521,6 +523,7 @@ namespace ForestBrush
             NoiseThreshold = 0.5f,
             MaxRandomRange = 4f,
             Clearance = 4.5f,
+            SpacingFactor = 0.6f,
             StrengthMultiplier = 10,
             _maxSize = 1000f
         };

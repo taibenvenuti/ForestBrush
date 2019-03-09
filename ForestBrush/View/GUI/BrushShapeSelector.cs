@@ -16,6 +16,9 @@ namespace ForestBrush.GUI
         {
             base.Start();
             Setup();
+
+            LoadBrush(UserMod.Settings.SelectedBrush);
+
             if (!UserMod.Settings.BrushShapesOpen)
             {
                 owner.BrushSelectSection.UnfocusShapesSectionButton();
