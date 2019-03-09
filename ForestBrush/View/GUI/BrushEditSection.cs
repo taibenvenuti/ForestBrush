@@ -9,7 +9,7 @@ namespace ForestBrush.GUI
 {
     public class BrushEditSection : UIPanel
     {
-        ForestBrushPanel father;
+        ForestBrushPanel owner;
         UIPanel topPanel;
         UIPanel centerPanel;
         UIPanel bottomPanel;
@@ -25,12 +25,12 @@ namespace ForestBrush.GUI
         public override void Start()
         {
             base.Start();
-            father = (ForestBrushPanel)parent;
-            selectBrushDropDown = father.BrushSelectSection.SelectBrushDropDown;
+            owner = (ForestBrushPanel)parent;
+            selectBrushDropDown = owner.BrushSelectSection.SelectBrushDropDown;
 
             Filtering = new Filtering();
 
-            width = father.width;
+            width = owner.width;
             autoLayout = true;
             autoLayoutDirection = LayoutDirection.Vertical;
             autoFitChildrenVertically = true;
@@ -64,7 +64,11 @@ namespace ForestBrush.GUI
             SetupButtons();
             SetupListSection();
             SetupSearchFieldSection();
-            if(!UserMod.Settings.BrushEditOpen) Hide();
+            if(!UserMod.Settings.BrushEditOpen)
+            {
+                owner.BrushSelectSection.UnfocusEditSectionButton();
+                Hide();
+            }
         }
 
         public override void OnDestroy()
@@ -245,7 +249,7 @@ namespace ForestBrush.GUI
         }
 
         private void DeleteBrushButton_eventClicked(UIComponent component, UIMouseEventParameter mouseEventParameter)
-        {            
+        {
             ConfirmPanel.ShowModal(Translation.Instance.GetTranslation("FOREST-BRUSH-MODAL-WARNING"), Translation.Instance.GetTranslation("FOREST-BRUSH-PROMPT-DELETE"), (d, i) =>
             {
                 if (i == 1)
@@ -261,7 +265,7 @@ namespace ForestBrush.GUI
             if (UserMod.Settings.Brushes.Find(b => b.Name == newName && b.Name != currentName) == null)
             {
                 ResetRenameError();
-                UIDropDown brushDropDown = father.BrushSelectSection.SelectBrushDropDown;
+                UIDropDown brushDropDown = owner.BrushSelectSection.SelectBrushDropDown;
                 if (newName != brushDropDown.items[brushDropDown.selectedIndex])
                 {
                     brushDropDown.items[brushDropDown.selectedIndex] = newName;

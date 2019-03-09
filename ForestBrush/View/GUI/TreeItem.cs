@@ -39,7 +39,7 @@ namespace ForestBrush.GUI
             //CheckBox
             includeCheckBox = AddUIComponent<UICheckBox>();
             includeCheckBox.size = Constants.UICheckboxSize + new Vector2(3f, 3f);
-            var sprite = includeCheckBox.AddUIComponent<UISprite>();
+            UISprite sprite = includeCheckBox.AddUIComponent<UISprite>();
             sprite.atlas = ResourceLoader.Atlas;
             sprite.spriteName = ResourceLoader.CheckBoxSpriteUnchecked;
             sprite.size = includeCheckBox.size;
@@ -49,6 +49,8 @@ namespace ForestBrush.GUI
             ((UISprite)includeCheckBox.checkedBoxObject).spriteName = ResourceLoader.CheckBoxSpriteChecked;
             includeCheckBox.checkedBoxObject.size = includeCheckBox.size;
             includeCheckBox.checkedBoxObject.relativePosition = Vector3.zero;
+            bool enabled = ForestBrush.Instance.Container.m_variations.Any(v => v.m_finalTree == info);
+            includeCheckBox.isChecked = enabled;
             includeCheckBox.eventCheckChanged += IncludeCheckBox_eventCheckChanged;
             includeCheckBox.relativePosition = new Vector3(70.0f, 15f);
 
@@ -107,10 +109,9 @@ namespace ForestBrush.GUI
             probabilityTextField.eventGotFocus += ProbabilityTextField_eventGotFocus;
             probabilityTextField.tooltip = Translation.Instance.GetTranslation("FOREST-BRUSH-PROBABILITY");
             probabilityTextField.isEnabled = includeCheckBox.isChecked;
-
-            probabilitySlider.value = GetProbability(info);
-            includeCheckBox.isChecked = ForestBrush.Instance.Container.m_variations.Any(v => v.m_finalTree == info);
-            probabilityTextField.text = probabilityTextField.isEnabled ? GetProbability(info).ToString() : 0.ToString();
+            float probability = GetProbability(info, enabled);
+            probabilitySlider.value = probability;
+            probabilityTextField.text = GetProbability(info, enabled).ToString();
 
             initialized = true;
         }
@@ -211,7 +212,7 @@ namespace ForestBrush.GUI
 
         private void IncludeCheckBox_eventCheckChanged(UIComponent component, bool value)
         {
-            if (ForestBrush.Instance?.BrushTool?.Brush?.Trees != null && ForestBrush.Instance.BrushTool.Brush.Trees.Count > 100 && value)
+            if (ForestBrush.Instance?.BrushTool?.Brush?.Trees != null && ForestBrush.Instance.BrushTool.Brush.Trees.Count >= 100 && value)
             {
                 ToggleCheckbox(false);
                 UIView.library.ShowModal<ExceptionPanel>("ExceptionPanel").SetMessage(
@@ -229,7 +230,7 @@ namespace ForestBrush.GUI
 
         private void RefreshProbabilityUI(bool value)
         {
-            float probability = GetProbability(Prefab);
+            float probability = GetProbability(Prefab, value);
             probabilitySlider.isEnabled = probabilityTextField.isEnabled = value;
             probabilitySlider.eventValueChanged -= ProbabilitySlider_eventValueChanged;
             probabilityTextField.eventTextChanged -= ProbabilityTextField_eventTextChanged;
@@ -246,10 +247,10 @@ namespace ForestBrush.GUI
             ForestBrush.Instance.BrushTool.UpdateBrushPrefabProbabilities();
         }
 
-        private float GetProbability(TreeInfo info)
+        private float GetProbability(TreeInfo info, bool enabled)
         {
             Tree tree = ForestBrush.Instance.BrushTool.Brush.Trees.Find(t => t.Name == info.name);
-            return tree != null ? tree.Probability : 100.0f;
+            return !enabled ? 0.0f : tree != null ? tree.Probability : 100.0f;
         }
 
         public override void OnDestroy()
@@ -273,9 +274,11 @@ namespace ForestBrush.GUI
             includeCheckBox.eventCheckChanged += IncludeCheckBox_eventCheckChanged;
         }
 
-        public void UpdateCheckbox()
+        public bool UpdateCheckbox()
         {
-            ToggleCheckbox(ForestBrush.Instance.Container.m_variations.Any(v => v.m_finalTree == Prefab));
+            bool enabled = ForestBrush.Instance.Container.m_variations.Any(v => v.m_finalTree == Prefab);
+            ToggleCheckbox(enabled);
+            return enabled;
         }
 
         public void Deselect(bool isRowOdd)
@@ -286,33 +289,43 @@ namespace ForestBrush.GUI
         public void Display(object data, bool isRowOdd)
         {
             if (data == null) return;
-            try
+            Prefab = data as TreeInfo;
+            if(!initialized) Initialize(Prefab);
+
+            // Set item state
+            bool enabled = UpdateCheckbox();
+
+            // Set label and sprite
+            treeNameLabel.text = Prefab.GetUncheckedLocalizedTitle();
+            thumbNailSprite.texture = Prefab.m_Atlas.sprites.Find(spr => spr.name == Prefab.m_Thumbnail).texture;
+
+            // Set slider and textfield enabled state
+            probabilityTextField.isEnabled = includeCheckBox.isChecked;
+            probabilitySlider.isEnabled = includeCheckBox.isChecked;
+
+            // Set textfield
+            probabilityTextField.eventTextChanged -= ProbabilityTextField_eventTextChanged;
+            probabilityTextField.text = probabilityTextField.isEnabled ? GetProbability(Prefab, enabled).ToString() : 0.ToString();
+            probabilityTextField.eventTextChanged += ProbabilityTextField_eventTextChanged;
+            probabilityTextField.disabledTextColor = new Color32(128, 128, 128, 255);
+
+            // Set slider
+            probabilitySlider.eventValueChanged -= ProbabilitySlider_eventValueChanged;
+            probabilitySlider.value = GetProbability(Prefab, enabled);
+            probabilitySlider.eventValueChanged += ProbabilitySlider_eventValueChanged;
+            probabilitySlider.thumbObject.disabledColor = new Color32(140, 140, 140, 255);
+            probabilitySlider.disabledColor = new Color32(100, 100, 100, 255);
+
+            // Set default background
+            backgroundSprite = "";
+
+            // Set odd row colors/background
+            if (isRowOdd)
             {
-                Prefab = data as TreeInfo;
-                if(!initialized) Initialize(Prefab);
-                includeCheckBox.isChecked = ForestBrush.Instance.Container.m_variations.Any(v => v.m_finalTree == Prefab);
-                treeNameLabel.text = Prefab.GetUncheckedLocalizedTitle();
-                thumbNailSprite.texture = Prefab.m_Atlas.sprites.Find(spr => spr.name == Prefab.m_Thumbnail).texture;
-                probabilityTextField.isEnabled = includeCheckBox.isChecked;
-                probabilityTextField.text = probabilityTextField.isEnabled ? GetProbability(Prefab).ToString() : 0.ToString();
-                probabilitySlider.isEnabled = includeCheckBox.isChecked;
-                probabilitySlider.value = GetProbability(Prefab);
-                backgroundSprite = "";
-                probabilitySlider.disabledColor = new Color32(100, 100, 100, 255);
-                probabilitySlider.thumbObject.disabledColor = new Color32(140, 140, 140, 255);
-                probabilityTextField.disabledTextColor = new Color32(128, 128, 128, 255);
-                if (isRowOdd)
-                {
-                    backgroundSprite = ResourceLoader.ListItemHover;
-                    probabilitySlider.disabledColor = new Color32(110, 135, 135, 255);
-                    probabilitySlider.thumbObject.disabledColor = new Color32(190, 210, 210, 255);
-                    probabilityTextField.disabledTextColor = new Color32(110, 135, 135, 255); ;
-                }
-            }
-            catch (System.Exception exception)
-            {
-                Debug.LogWarning(exception + "Stacktrace: " + exception.StackTrace, this);
-                
+                backgroundSprite = ResourceLoader.ListItemHover;
+                probabilitySlider.disabledColor = new Color32(110, 135, 135, 255);
+                probabilitySlider.thumbObject.disabledColor = new Color32(190, 210, 210, 255);
+                probabilityTextField.disabledTextColor = new Color32(110, 135, 135, 255); ;
             }
         }
 

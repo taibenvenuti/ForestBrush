@@ -10,6 +10,8 @@ namespace ForestBrush.Persistence
 
         public float PanelPosY { get; set; }
 
+        public bool BrushShapesOpen { get; set; }
+
         public bool BrushEditOpen { get; set; }
 
         public bool BrushOptionsOpen { get; set; }
@@ -29,6 +31,8 @@ namespace ForestBrush.Persistence
         public bool KeepTreesInNewBrush { get; set; }
 
         public bool IgnoreVanillaTrees { get; set; }
+
+        public bool ShowInfoTooltip { get; internal set; }
 
         public XmlInputKey Search { get; set; }
 

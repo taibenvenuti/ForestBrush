@@ -63,19 +63,17 @@ namespace ForestBrush
             public float Strength { get; set; }
             public float Density { get; set; }
             public bool AutoDensity { get; set; }
-            public bool IsSquare { get; set; }
-            public Color32 OverlayColor { get; set; }
+            public string BitmapID { get; set; }
 
             public static BrushOptions Default()
             {
                 return new BrushOptions()
                 {
-                    Size = 100f,
-                    Strength = 0.1f,
-                    Density = 1f,
+                    Size = 150f,
+                    Strength = 0.2f,
+                    Density = 8f,
                     AutoDensity = true,
-                    IsSquare = false,
-                    OverlayColor = new Color32(25, 125, 155, 255)
+                    BitmapID = string.Empty
                 };
             }
         }

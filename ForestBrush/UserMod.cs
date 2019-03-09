@@ -2,7 +2,6 @@
 using ColossalFramework.UI;
 using ForestBrush.Persistence;
 using ForestBrush.TranslationFramework;
-using Harmony;
 using ICities;
 using System;
 using System.Collections.Generic;
@@ -18,8 +17,6 @@ namespace ForestBrush
         public static Settings Settings { get; private set; }
         public static LoadMode LoadMode;
         //in game dependecies
-        private readonly string harmonyId = "com.tpb.forestbrush";
-        private HarmonyInstance harmony;
         private bool modInstalled = false;
         private OptionsKeyBinding optionKeys;
         private GameObject forestBrushGameObject;
@@ -98,8 +95,6 @@ namespace ForestBrush
             }
             if (IsMap || IsTheme) Resources.ResourceLoader.Atlas = Resources.ResourceLoader.Atlas;
             Resources.ResourceLoader.ForestBrushAtlas = Resources.ResourceLoader.ForestBrushAtlas;
-            harmony = HarmonyInstance.Create(harmonyId);
-            harmony.PatchAll(Assembly.GetExecutingAssembly());
             forestBrushGameObject = new GameObject("ForestBrush");
             ForestBrush.Instance = forestBrushGameObject.AddComponent<ForestBrush>();
             ForestBrush.Instance.Initialize();
@@ -109,10 +104,6 @@ namespace ForestBrush
 
         void UninstallMod()
         {
-            try { harmony.UnpatchAll(harmonyId); }
-            catch (Exception) { }
-            finally { harmony = null; }
-
             ForestBrush.Instance.CleanUp();
 
             if (IsMap || IsTheme)

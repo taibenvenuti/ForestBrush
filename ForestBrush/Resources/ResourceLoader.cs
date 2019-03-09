@@ -1,4 +1,7 @@
-﻿using ColossalFramework.UI;
+﻿using ColossalFramework.IO;
+using ColossalFramework.Plugins;
+using ColossalFramework.UI;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using UnityEngine;
@@ -45,6 +48,14 @@ namespace ForestBrush.Resources
         public static string OptionsDropboxListbox{ get; } = "OptionsDropboxListbox";
         public static string OptionsDropboxListboxHovered{ get; } = "OptionsDropboxListboxHovered";
         public static string OptionsDropboxListboxPressed{ get; } = "OptionsDropboxListboxPressed";
+        public static string OptionsDropboxListboxFocused { get; } = "OptionsDropboxListboxFocused";
+        public static string PaintBrushNormal { get; } = "PaintBrushNormal";
+        public static string PaintBrushHovered { get; } = "PaintBrushHovered";
+        public static string PaintBrushPressed { get; } = "PaintBrushPressed";
+        public static string PaintBrushFocused { get; } = "PaintBrushFocused";
+        public static string MenuContainer { get; } = "MenuContainer";
+        public static string GenericPanel { get; } = "GenericPanel";
+        public static string SubcategoriesPanel { get; } = "SubcategoriesPanel";
 
         private static UITextureAtlas atlas;
         public static UITextureAtlas Atlas
@@ -97,7 +108,11 @@ namespace ForestBrush.Resources
                 SettingsDropbox,
                 SettingsDropboxHovered,
                 SettingsDropboxPressed,
-                SettingsDropboxFocused
+                SettingsDropboxFocused,
+                PaintBrushNormal,
+                PaintBrushHovered,
+                PaintBrushPressed,
+                PaintBrushFocused
             };
 
             atlas = CreateTextureAtlas("ForestBrushAtlas", spriteNames, "ForestBrush.Resources.");
@@ -229,6 +244,69 @@ namespace ForestBrush.Resources
                 Debug.LogWarning("Failed to Load Texture from Assembly");
             }
             return texture2D;
+        }
+
+        private static string GetModPath()
+        {
+            foreach (var plugin in PluginManager.instance.GetPluginsInfo())
+            {
+                string path = Path.Combine(plugin.modPath, "ForestBrush.dll");
+                if (File.Exists(path))
+                    return plugin.modPath;
+            }
+            return null;
+        }
+        public static Dictionary<string, Texture2D> LoadBrushTextures()
+        {
+            Dictionary<string, Texture2D> dict = new Dictionary<string, Texture2D>();
+            string path = GetModPath();
+            string resourcesPath = Path.Combine(path, "Resources");
+            foreach (var file in Directory.GetFiles(Path.Combine(resourcesPath, "Brushes")))
+            {
+                Texture2D tex = new Texture2D(1, 1);
+                tex.LoadImage(File.ReadAllBytes(file));
+                tex.Apply();
+                string id = Path.GetFileNameWithoutExtension(file);
+                if (!dict.ContainsKey(id))
+                    dict.Add(id, tex);
+            }
+            string mapEditorPath = Path.Combine(DataLocation.addonsPath, "MapEditor");
+            string brushesPath = Path.Combine(mapEditorPath, "Brushes");
+            string customBrushesPath = Path.Combine(brushesPath, "ForestBrush");
+            if (Directory.Exists(customBrushesPath))
+            {
+                foreach (var userBrush in Directory.GetFiles(customBrushesPath))
+                {
+                    Texture2D tex = new Texture2D(1, 1);
+                    tex.LoadImage(File.ReadAllBytes(userBrush));
+                    tex.Apply();
+                    if (tex.width == 128 && tex.height == 128)
+                    {
+                        string id = Path.GetFileNameWithoutExtension(userBrush);
+                        if (!dict.ContainsKey(id))
+                            dict.Add(id, tex);
+                    }
+                }
+            }
+            return dict;
+        }
+
+        public static Shader LoadCustomShaderFromBundle()
+        {
+            AssetBundle shaderBundle = AssetBundle.LoadFromMemory(ExtractResource("ForestBrush.Resources.forestbrush"));
+            return shaderBundle.LoadAsset<Shader>("Assets/Shader/ForestBrush.shader");
+        }
+
+        public static byte[] ExtractResource(string filename)
+        {
+            Assembly a = Assembly.GetExecutingAssembly();
+            using (Stream resFilestream = a.GetManifestResourceStream(filename))
+            {
+                if (resFilestream == null) return null;
+                byte[] ba = new byte[resFilestream.Length];
+                resFilestream.Read(ba, 0, ba.Length);
+                return ba;
+            }
         }
 
         public static Texture2D ConvertRenderTexture(RenderTexture renderTexture)

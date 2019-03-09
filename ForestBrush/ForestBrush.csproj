@@ -45,9 +45,6 @@
     </PostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="0Harmony, Version=1.2.0.1, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Lib.Harmony.1.2.0.1\lib\net35\0Harmony.dll</HintPath>
-    </Reference>
     <Reference Include="Assembly-CSharp">
       <HintPath>C:\References\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
@@ -79,19 +76,20 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Brush.cs" />
-    <Compile Include="GUI\BrushSelectSection.cs" />
-    <Compile Include="GUI\BrushEditSection.cs" />
-    <Compile Include="GUI\BrushOptionsSection.cs" />
-    <Compile Include="GUI\SeparatorComponents.cs" />
-    <Compile Include="GUI\TitleSection.cs" />
-    <Compile Include="GUI\ForestBrushPanel.cs" />
-    <Compile Include="GUI\PreviewRenderer.cs" />
-    <Compile Include="GUI\ImageUtil.cs" />
-    <Compile Include="GUI\ToggleButtonComponents.cs" />
+    <Compile Include="View\GUI\BrushShapeSelector.cs" />
+    <Compile Include="View\Tool.cs" />
+    <Compile Include="View\GUI\BrushSelectSection.cs" />
+    <Compile Include="View\GUI\BrushEditSection.cs" />
+    <Compile Include="View\GUI\BrushOptionsSection.cs" />
+    <Compile Include="View\GUI\SeparatorComponents.cs" />
+    <Compile Include="View\GUI\TitleSection.cs" />
+    <Compile Include="View\GUI\ForestBrushPanel.cs" />
+    <Compile Include="View\GUI\PreviewRenderer.cs" />
+    <Compile Include="View\GUI\ImageUtil.cs" />
+    <Compile Include="View\GUI\ToggleButtonComponents.cs" />
     <Compile Include="OptionsKeyBinding.cs" />
-    <Compile Include="Patches.cs" />
     <Compile Include="Constants.cs" />
-    <Compile Include="GUI\UIUtilities.cs" />
+    <Compile Include="View\GUI\UIUtilities.cs" />
     <Compile Include="ForestBrush.cs" />
     <Compile Include="Filtering.cs" />
     <Compile Include="Sorting.cs" />
@@ -104,9 +102,9 @@
     <Compile Include="Persistence\XmlPersistenceService.cs" />
     <Compile Include="Tree.cs" />
     <Compile Include="Persistence\XmlSettings.cs" />
-    <Compile Include="Tool.cs" />
-    <Compile Include="GUI\TreeItem.cs" />
-    <Compile Include="GUI\UIFastList.cs" />
+    <Compile Include="ForestBrushTool.cs" />
+    <Compile Include="View\GUI\TreeItem.cs" />
+    <Compile Include="View\GUI\UIFastList.cs" />
     <Compile Include="TranslationFramework\Language.cs" />
     <Compile Include="TranslationFramework\TranslatableAttribute.cs" />
     <Compile Include="TranslationFramework\Translation.cs" />
@@ -130,6 +128,82 @@
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Resources\Brushes\01.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Brushes\02.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Brushes\03.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Brushes\04.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Brushes\05.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Brushes\06.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Brushes\07.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Brushes\08.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Brushes\09.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Brushes\10.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Brushes\11.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Brushes\12.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Brushes\13.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Brushes\14.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Brushes\15.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Brushes\16.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Brushes\17.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Brushes\18.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Brushes\19.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Brushes\20.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Brushes\21.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Brushes\22.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Brushes\23.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Brushes\24.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <EmbeddedResource Include="Resources\PaintBrushFocused.png" />
+    <EmbeddedResource Include="Resources\PaintBrushHovered.png" />
+    <EmbeddedResource Include="Resources\PaintBrushPressed.png" />
+    <EmbeddedResource Include="Resources\PaintBrushNormal.png" />
     <EmbeddedResource Include="Resources\OptionsDropboxFocused.png" />
     <EmbeddedResource Include="Resources\SettingsDropbox.png" />
     <EmbeddedResource Include="Resources\SettingsDropboxFocused.png" />
@@ -145,7 +219,7 @@
     <EmbeddedResource Include="Resources\SelectFilter.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <EmbeddedResource Include="Resources\forestbrush" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

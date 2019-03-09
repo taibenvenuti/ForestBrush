@@ -16,6 +16,7 @@ namespace ForestBrush.Persistence
             {
                 PanelPosX = settings.PanelPosX,
                 PanelPosY = settings.PanelPosY,
+                BrushShapesOpen = settings.BrushShapesOpen,
                 BrushEditOpen = settings.BrushEditOpen,
                 BrushOptionsOpen = settings.BrushOptionsOpen,
                 ShowTreeMeshData = settings.ShowTreeMeshData,
@@ -27,6 +28,7 @@ namespace ForestBrush.Persistence
                 ToggleTool = GetXmlInputKey(settings.ToggleTool),
                 KeepTreesInNewBrush = settings.KeepTreesInNewBrush,
                 IgnoreVanillaTrees = settings.IgnoreVanillaTrees,
+                ShowInfoTooltip = settings.ShowInfoTooltip
             };
 
             using (var sw = new StreamWriter(configurationPath))
@@ -49,6 +51,7 @@ namespace ForestBrush.Persistence
                 return new Settings(
                     xmlSettings.PanelPosX,
                     xmlSettings.PanelPosY,
+                    xmlSettings.BrushShapesOpen,
                     xmlSettings.BrushEditOpen,
                     xmlSettings.BrushOptionsOpen,
                     xmlSettings.ShowTreeMeshData,
@@ -59,7 +62,8 @@ namespace ForestBrush.Persistence
                     xmlSettings.SelectedBrush,
                     GetSavedInputKey(xmlSettings.ToggleTool),
                     xmlSettings.KeepTreesInNewBrush,
-                    xmlSettings.IgnoreVanillaTrees
+                    xmlSettings.IgnoreVanillaTrees,
+                    xmlSettings.ShowInfoTooltip
                 );
             }
             else

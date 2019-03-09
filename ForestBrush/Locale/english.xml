@@ -7,17 +7,17 @@
     <Translation ID="FOREST-BRUSH-SELECT" String="Select brush" />
     <Translation ID="FOREST-BRUSH-CREATE" String="Create new brush" />
     <Translation ID="FOREST-BRUSH-DELETE" String="Delete current brush" />
-    <Translation ID="FOREST-BRUSH-SQUARE" String="Enable square brush" />
     <Translation ID="FOREST-BRUSH-SEARCH" String="Search" />
     <Translation ID="FOREST-BRUSH-PROBABILITY" String="Probability" />
     <Translation ID="FOREST-BRUSH-TOGGLE-EDIT" String="Toggle 'Trees' panel" />
     <Translation ID="FOREST-BRUSH-TOGGLE-OPTIONS" String="Toggle 'Brush Options' panel" />
+    <Translation ID="FOREST-BRUSH-TOGGLE-SELECTBRUSHSHAPE" String="Toggle 'Brush Shapes' panel" />
     <Translation ID="FOREST-BRUSH-BRUSH-OPTIONS-SQUAREBRUSH" String="Square brush" />
     <Translation ID="FOREST-BRUSH-BRUSH-OPTIONS-STRENGTH" String="Strength" />
     <Translation ID="FOREST-BRUSH-BRUSH-OPTIONS-DENSITY" String="Density" />
     <Translation ID="FOREST-BRUSH-BRUSH-OPTIONS-SIZE" String="Size" />
     <Translation ID="FOREST-BRUSH-BRUSH-OPTIONS-AUTODENSITY" String="Auto-density" />
-    <Translation ID="FOREST-BRUSH-BRUSH-OPTIONS-OVERLAYCOLOR" String="Overlay color" />
+    <Translation ID="FOREST-BRUSH-BRUSH-OPTIONS-RESET" String="Reset" />
     <Translation ID="FOREST-BRUSH-OPTIONS-RESET" String="Reset all options to default values" />
     <Translation ID="FOREST-BRUSH-OPTIONS-SHOWMESHDATA" String="Show tree mesh and texture data in tooltip" />
     <Translation ID="FOREST-BRUSH-DATA-NAME" String="Name" />

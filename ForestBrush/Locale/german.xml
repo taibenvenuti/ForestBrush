@@ -7,17 +7,17 @@
     <Translation ID="FOREST-BRUSH-SELECT" String="Pinsel auswählen" />
     <Translation ID="FOREST-BRUSH-CREATE" String="Erstelle neuen Pinsel" />
     <Translation ID="FOREST-BRUSH-DELETE" String="Lösche aktuellen Pinsel" />
-    <Translation ID="FOREST-BRUSH-SQUARE" String="Aktiviere quadratischen Pinsel" />
     <Translation ID="FOREST-BRUSH-SEARCH" String="Suche" />
     <Translation ID="FOREST-BRUSH-PROBABILITY" String="Wahrscheinlichkeit" />
     <Translation ID="FOREST-BRUSH-TOGGLE-EDIT" String="Baumliste anzeigen/verstecken" />
     <Translation ID="FOREST-BRUSH-TOGGLE-OPTIONS" String="Pinseloptionen anzeigen/verstecken" />
+    <Translation ID="FOREST-BRUSH-TOGGLE-SELECTBRUSHSHAPE" String="Toggle 'Brush Shapes' panel" />
     <Translation ID="FOREST-BRUSH-BRUSH-OPTIONS-SQUAREBRUSH" String="Quadratischer Pinsel" />
     <Translation ID="FOREST-BRUSH-BRUSH-OPTIONS-STRENGTH" String="Stärke" />
     <Translation ID="FOREST-BRUSH-BRUSH-OPTIONS-DENSITY" String="Dichte" />
     <Translation ID="FOREST-BRUSH-BRUSH-OPTIONS-SIZE" String="Größe" />
     <Translation ID="FOREST-BRUSH-BRUSH-OPTIONS-AUTODENSITY" String="Auto-Dichte" />
-    <Translation ID="FOREST-BRUSH-BRUSH-OPTIONS-OVERLAYCOLOR" String="Pinselfarbe" />
+    <Translation ID="FOREST-BRUSH-BRUSH-OPTIONS-RESET" String="Reset" />
     <Translation ID="FOREST-BRUSH-OPTIONS-RESET" String="Alle Einstellungen zurücksetzen" />
     <Translation ID="FOREST-BRUSH-OPTIONS-SHOWMESHDATA" String="Zeige Mesh- und Texturdaten im Tooltip" />
     <Translation ID="FOREST-BRUSH-DATA-NAME" String="Name" />

@@ -12,19 +12,8 @@ namespace ForestBrush.GUI
         internal BrushSelectSection BrushSelectSection;
         internal BrushEditSection BrushEditSection;
         internal BrushOptionsSection BrushOptionsSection;
+        internal BrushShapeSelector BrushShapeSelector;
         UIPanel layoutPanelSpace;
-
-        internal bool ToggleBrushEdit()
-        {
-            BrushEditSection.isVisible = !BrushEditSection.isVisible;
-            return BrushEditSection.isVisible;
-        }
-
-        internal bool ToggleBrushOptions()
-        {
-            BrushOptionsSection.isVisible = !BrushOptionsSection.isVisible;
-            return BrushOptionsSection.isVisible;
-        }
 
         public override void Start()
         {
@@ -34,6 +23,7 @@ namespace ForestBrush.GUI
             BrushSelectSection = AddUIComponent<BrushSelectSection>();
             BrushEditSection = AddUIComponent<BrushEditSection>();
             BrushOptionsSection = AddUIComponent<BrushOptionsSection>();
+            BrushShapeSelector = AddUIComponent<BrushShapeSelector>();
             layoutPanelSpace = AddUIComponent<UIPanel>();
             layoutPanelSpace.size = new Vector2(width, 1);
 
@@ -41,7 +31,8 @@ namespace ForestBrush.GUI
             BrushSelectSection.zOrder = 1;
             BrushEditSection.zOrder = 2;
             BrushOptionsSection.zOrder = 3;
-            layoutPanelSpace.zOrder = 4;
+            BrushShapeSelector.zOrder = 4;
+            layoutPanelSpace.zOrder = 5;
 
             LocaleManager.eventLocaleChanged += ForestBrushPanel_eventLocaleChanged;
             Hide();
@@ -77,12 +68,31 @@ namespace ForestBrush.GUI
             BrushSelectSection?.LoadBrush(brush);
             BrushEditSection?.LoadBrush(brush);
             BrushOptionsSection?.LoadBrush(brush);
+            BrushShapeSelector?.LoadBrush(brush);
         }
 
         internal void KeepWithinScreen()
         {
             ClampToScreen();
             if (relativePosition.y + height > 87.0f) relativePosition += new Vector3(0.0f, 87.0f - (relativePosition.y + height));
+        }
+
+        internal bool ToggleBrushEdit()
+        {
+            BrushEditSection.isVisible = !BrushEditSection.isVisible;
+            return BrushEditSection.isVisible;
+        }
+
+        internal bool ToggleBrushOptions()
+        {
+            BrushOptionsSection.isVisible = !BrushOptionsSection.isVisible;
+            return BrushOptionsSection.isVisible;
+        }
+
+        internal bool ToggleBrushShapes()
+        {
+            BrushShapeSelector.isVisible = !BrushShapeSelector.isVisible;
+            return BrushShapeSelector.isVisible;
         }
     }
 }
