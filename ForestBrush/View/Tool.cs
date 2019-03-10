@@ -41,8 +41,6 @@ namespace ForestBrush
         private bool DensityOrRotation => MouseRightDown && CtrlDown && !ShiftDown && !AltDown && !MouseLeftDown;
         private bool SelectiveDelete => MouseRightDown && ShiftDown && !CtrlDown && !AltDown && !MouseLeftDown;
         private bool SizeAndStrength => MouseRightDown && AltDown && !ShiftDown && !MouseLeftDown;
-
-        private BoxCollider2D BoxCollider = new BoxCollider2D();
         private float[] BrushData;
 
         public int ID_Angle { get; private set; }
@@ -54,7 +52,7 @@ namespace ForestBrush
         public Material BrushMaterial { get; private set; }
         private Mesh BoxMesh { get; set; }
         private Dictionary<string, Texture2D> Brushes { get; set; }
-        private Shader Shader { get; } = Resources.ResourceLoader.LoadCustomShaderFromBundle();
+        private Shader Shader => Resources.ResourceLoader.Shader;
 
         public Texture2D BrushTexture { get; set; }
 

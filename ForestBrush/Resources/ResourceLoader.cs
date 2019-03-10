@@ -57,6 +57,17 @@ namespace ForestBrush.Resources
         public static string GenericPanel { get; } = "GenericPanel";
         public static string SubcategoriesPanel { get; } = "SubcategoriesPanel";
 
+        private static Shader shader;
+        public static Shader Shader
+        {
+            get
+            {
+                if (shader == null)
+                    shader = LoadCustomShaderFromBundle();
+                return shader;
+            }
+        }
+
         private static UITextureAtlas atlas;
         public static UITextureAtlas Atlas
         {
@@ -291,7 +302,7 @@ namespace ForestBrush.Resources
             return dict;
         }
 
-        public static Shader LoadCustomShaderFromBundle()
+        private static Shader LoadCustomShaderFromBundle()
         {
             AssetBundle shaderBundle = AssetBundle.LoadFromMemory(ExtractResource("ForestBrush.Resources.forestbrush"));
             return shaderBundle.LoadAsset<Shader>("Assets/Shader/ForestBrush.shader");
