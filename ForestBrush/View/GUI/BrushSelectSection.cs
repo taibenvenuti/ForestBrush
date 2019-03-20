@@ -149,7 +149,7 @@ namespace ForestBrush.GUI
         {
             bool shapeSelectorVisible = owner.ToggleBrushShapes();
             selectBitmapButton.normalBgSprite = selectBitmapButton.focusedBgSprite = shapeSelectorVisible ? ResourceLoader.PaintBrushFocused : ResourceLoader.PaintBrushNormal;
-            if (shapeSelectorVisible) owner.KeepWithinScreen();
+            if (shapeSelectorVisible) owner.ClampToScreen();
             UserMod.Settings.BrushShapesOpen = shapeSelectorVisible;
             UserMod.SaveSettings();
         }
@@ -158,7 +158,7 @@ namespace ForestBrush.GUI
         {
             bool editVisible = owner.ToggleBrushEdit();
             toggleEditButton.normalBgSprite = toggleEditButton.focusedBgSprite = editVisible ? ResourceLoader.SettingsDropboxFocused : ResourceLoader.SettingsDropbox;
-            if (editVisible) owner.KeepWithinScreen();
+            if (editVisible) owner.ClampToScreen();
             UserMod.Settings.BrushEditOpen = editVisible;
             UserMod.SaveSettings();
         }
@@ -167,7 +167,7 @@ namespace ForestBrush.GUI
         {
             bool optionsVisible = owner.ToggleBrushOptions();
             toggleOptionsButton.normalBgSprite = toggleOptionsButton.focusedBgSprite = optionsVisible ? ResourceLoader.OptionsDropboxFocused : ResourceLoader.OptionsDropbox;
-            if (optionsVisible) owner.KeepWithinScreen();
+            if (optionsVisible) owner.ClampToScreen();
             UserMod.Settings.BrushOptionsOpen = optionsVisible;
             UserMod.SaveSettings();
         }

@@ -55,7 +55,7 @@ namespace ForestBrush.GUI
 
         private void DragHandle_eventMouseUp(UIComponent component, UIMouseEventParameter eventParam)
         {
-            ForestBrush.Instance.ForestBrushPanel.KeepWithinScreen();
+            ForestBrush.Instance.ForestBrushPanel.ClampToScreen();
             SavePanelPosition();
         }
 

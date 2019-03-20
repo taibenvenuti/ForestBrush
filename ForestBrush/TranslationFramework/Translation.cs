@@ -18,11 +18,18 @@ namespace ForestBrush.TranslationFramework
         protected Language _currentLanguage = null;
         protected bool _languagesLoaded = false;
         protected bool _loadLanguageAutomatically = true;
-        private string fallbackLanguage = "en";
+        private const string fallbackLanguage = "en";
 
-        private static Translation instance = null;
+        private static Translation instance;
 
-        public static Translation Instance => instance ?? new Translation();
+        public static Translation Instance
+        {
+            get
+            {
+                if (instance == null) instance = new Translation();
+                return instance;
+            }
+        }
 
         private Translation(bool loadLanguageAutomatically = true)
         {
@@ -35,7 +42,7 @@ namespace ForestBrush.TranslationFramework
             if (_languages == null || _languages.Count == 0 || !LocaleManager.exists)
                 return;
             _currentLanguage = _languages.Find(lang => lang._uniqueName == LocaleManager.instance.language) ??
-                               _languages.Find(lang => lang._uniqueName == fallbackLanguage);            
+                               _languages.Find(lang => lang._uniqueName == fallbackLanguage);
         }
 
 

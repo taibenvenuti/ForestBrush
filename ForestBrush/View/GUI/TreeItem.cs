@@ -230,6 +230,7 @@ namespace ForestBrush.GUI
 
         private void RefreshProbabilityUI(bool value)
         {
+            if (!initialized) return;
             float probability = GetProbability(Prefab, value);
             probabilitySlider.isEnabled = probabilityTextField.isEnabled = value;
             probabilitySlider.eventValueChanged -= ProbabilitySlider_eventValueChanged;
@@ -268,6 +269,7 @@ namespace ForestBrush.GUI
 
         public void ToggleCheckbox(bool value)
         {
+            if (!initialized) return;
             RefreshProbabilityUI(value);
             includeCheckBox.eventCheckChanged -= IncludeCheckBox_eventCheckChanged;
             includeCheckBox.isChecked = value;
@@ -288,9 +290,9 @@ namespace ForestBrush.GUI
 
         public void Display(object data, bool isRowOdd)
         {
-            if (data == null) return;
             Prefab = data as TreeInfo;
-            if(!initialized) Initialize(Prefab);
+            if (Prefab == null) return;
+            if (!initialized) Initialize(Prefab);
 
             // Set item state
             bool enabled = UpdateCheckbox();

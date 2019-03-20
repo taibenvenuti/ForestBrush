@@ -31,7 +31,7 @@ namespace ForestBrush.TranslationFramework
 
                     }
                 }
-                throw new Exception("Failed to find Forest Brush assembly!");
+                throw new Exception($"Failed to find assembly!");
             }
         }
     }

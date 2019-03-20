@@ -71,12 +71,6 @@ namespace ForestBrush.GUI
             BrushShapeSelector?.LoadBrush(brush);
         }
 
-        internal void KeepWithinScreen()
-        {
-            if (relativePosition.y + height > 87.0f) relativePosition += new Vector3(0.0f, 87.0f - (relativePosition.y + height));
-            ClampToScreen();
-        }
-
         internal bool ToggleBrushEdit()
         {
             BrushEditSection.isVisible = !BrushEditSection.isVisible;

@@ -1,9 +1,11 @@
 ﻿using ColossalFramework.IO;
 using ColossalFramework.Plugins;
 using ColossalFramework.UI;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using UnityEngine;
 
 namespace ForestBrush.Resources
@@ -304,8 +306,10 @@ namespace ForestBrush.Resources
 
         private static Shader LoadCustomShaderFromBundle()
         {
-            AssetBundle shaderBundle = AssetBundle.LoadFromMemory(ExtractResource("ForestBrush.Resources.forestbrush"));
-            return shaderBundle.LoadAsset<Shader>("Assets/Shader/ForestBrush.shader");
+            AssetBundle shaderBundle = Application.platform == RuntimePlatform.OSXPlayer ? AssetBundle.LoadFromMemory(ExtractResource("ForestBrush.Resources.forestbrushmac")) : AssetBundle.LoadFromMemory(ExtractResource("ForestBrush.Resources.forestbrush"));
+            Shader shader = shaderBundle.LoadAsset<Shader>("Assets/Shader/ForestBrush.shader");
+            shaderBundle.Unload(false);
+            return shader;
         }
 
         public static byte[] ExtractResource(string filename)

@@ -46,17 +46,6 @@ namespace ForestBrush
 
         public ForestBrushTool BrushTool { get; private set; }
 
-        private ForestTool _tool;
-        public ForestTool Tool
-        {
-            get
-            {
-                if (_tool == null)
-                    _tool = ToolsModifierControl.toolController.gameObject.AddComponent<ForestTool>();
-                return _tool;
-            }
-        }
-
         public UIButton ToggleButton => toggleButtonComponents.ToggleButton;
 
         internal ForestBrushPanel ForestBrushPanel { get; private set; }
@@ -72,6 +61,8 @@ namespace ForestBrush
         private static readonly string kMainToolbarButtonTemplate = "MainToolbarButtonTemplate";
 
         private static readonly string kToggleButton = "ForestBrushModToggle";
+
+        public ForestTool Tool { get; private set; }
 
         private ToolBase lastTool;
 
@@ -89,6 +80,8 @@ namespace ForestBrush
             toggleButtonComponents.ToggleButton.eventClick += OnToggleClick;
             ForestBrushPanel.eventVisibilityChanged += OnForestBrushPanelVisibilityChanged;
             LocaleManager.eventLocaleChanged += SetTutorialLocale;
+
+            Tool = ToolsModifierControl.toolController.gameObject.AddComponent<ForestTool>();
 
             Initialized = true;
         }
@@ -214,9 +207,9 @@ namespace ForestBrush
         {
             if (visible)
             {
-                ForestBrushPanel.KeepWithinScreen();
+                ForestBrushPanel.ClampToScreen();
                 lastTool = ToolsModifierControl.toolController.CurrentTool;
-                ToolsModifierControl.toolController.CurrentTool = Tool;
+                ToolsModifierControl.SetTool<ForestTool>();
             }
             else
             {

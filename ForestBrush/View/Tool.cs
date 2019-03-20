@@ -70,6 +70,7 @@ namespace ForestBrush
             ID_Color2 = Shader.PropertyToID("_TerrainBrushColor2");
             BrushMaterial = new Material(ToolsModifierControl.toolController.m_brushMaterial) { shader = Shader };
             Randomizer = new Randomizer((int)DateTime.Now.Ticks);
+
             FieldInfo fieldInfo = typeof(ToolController).GetField("m_tools", BindingFlags.Instance | BindingFlags.NonPublic);
             ToolBase[] tools = (ToolBase[])fieldInfo.GetValue(ToolsModifierControl.toolController);
             int initialLength = tools.Length;

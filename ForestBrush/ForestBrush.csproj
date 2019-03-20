@@ -185,6 +185,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Resources\forestbrush" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\forestbrushmac" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>if not exist "$(LOCALAPPDATA)\Colossal Order\Cities_Skylines\Addons\Mods\$(SolutionName)" mkdir "$(LOCALAPPDATA)\Colossal Order\Cities_Skylines\Addons\Mods\$(SolutionName)"
