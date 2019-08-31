@@ -11,7 +11,7 @@ namespace ForestBrush.GUI
         public TreeInfo Prefab { get; private set; }
         UICheckBox includeCheckBox;
         UILabel treeNameLabel;
-        UITextureSprite thumbNailSprite;
+        UISprite thumbNailSprite;
         UISlider probabilitySlider;
         UITextField probabilityTextField;
         bool initialized;
@@ -31,9 +31,10 @@ namespace ForestBrush.GUI
             eventMouseLeave += TreeItem_eventMouseLeave;
 
             //Thumbnail
-            thumbNailSprite = AddUIComponent<UITextureSprite>();
-            thumbNailSprite.texture = info.m_Atlas.sprites.Find(spr => spr.name == info.m_Thumbnail).texture;
+            thumbNailSprite = AddUIComponent<UISprite>();
             thumbNailSprite.size = new Vector2(50f, 54.5f);
+            thumbNailSprite.atlas = info.m_Atlas;
+            thumbNailSprite.spriteName = info.m_Thumbnail;
             thumbNailSprite.relativePosition = new Vector3(Constants.UISpacing, (Constants.UIItemHeight - thumbNailSprite.height) / 2);
 
             //CheckBox
@@ -299,7 +300,8 @@ namespace ForestBrush.GUI
 
             // Set label and sprite
             treeNameLabel.text = Prefab.GetUncheckedLocalizedTitle();
-            thumbNailSprite.texture = Prefab.m_Atlas.sprites.Find(spr => spr.name == Prefab.m_Thumbnail).texture;
+            thumbNailSprite.atlas = Prefab.m_Atlas;
+            thumbNailSprite.spriteName = Prefab.m_Thumbnail;
 
             // Set slider and textfield enabled state
             probabilityTextField.isEnabled = includeCheckBox.isChecked;
