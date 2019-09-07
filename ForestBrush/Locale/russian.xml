@@ -11,13 +11,13 @@
     <Translation ID="FOREST-BRUSH-PROBABILITY" String="Частота" />
     <Translation ID="FOREST-BRUSH-TOGGLE-EDIT" String="Переключить панель 'Деревья'" />
     <Translation ID="FOREST-BRUSH-TOGGLE-OPTIONS" String="Переключить панель 'Настройки кисти'" />
-    <Translation ID="FOREST-BRUSH-TOGGLE-SELECTBRUSHSHAPE" String="Toggle 'Brush Shapes' panel" />
+    <Translation ID="FOREST-BRUSH-TOGGLE-SELECTBRUSHSHAPE" String="Переключить панель 'Формы кисти'" />
     <Translation ID="FOREST-BRUSH-BRUSH-OPTIONS-SQUAREBRUSH" String="Квадратная кисть" />
     <Translation ID="FOREST-BRUSH-BRUSH-OPTIONS-STRENGTH" String="Сила" />
     <Translation ID="FOREST-BRUSH-BRUSH-OPTIONS-DENSITY" String="Плотность" />
     <Translation ID="FOREST-BRUSH-BRUSH-OPTIONS-SIZE" String="Размер" />
     <Translation ID="FOREST-BRUSH-BRUSH-OPTIONS-AUTODENSITY" String="Авто-плотность" />
-    <Translation ID="FOREST-BRUSH-BRUSH-OPTIONS-RESET" String="Reset" />
+    <Translation ID="FOREST-BRUSH-BRUSH-OPTIONS-RESET" String="Сбросить" />
     <Translation ID="FOREST-BRUSH-OPTIONS-RESET" String="Сбросить все настройки по умолчанию" />
     <Translation ID="FOREST-BRUSH-OPTIONS-SHOWMESHDATA" String="Показать данные о моделях и текстурах деревьев" />
     <Translation ID="FOREST-BRUSH-DATA-NAME" String="Название" />
