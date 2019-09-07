@@ -165,7 +165,7 @@ namespace ForestBrush
                             {
                                 AddItem(Filter.Author, item);
                             }
-                            else if (isStringMatch)
+                            if (isStringMatch)
                             {
                                 AddItem(Filter.String, item);
                             }

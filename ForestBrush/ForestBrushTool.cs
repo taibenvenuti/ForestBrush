@@ -2,7 +2,6 @@
 using ForestBrush.GUI;
 using ForestBrush.TranslationFramework;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 namespace ForestBrush
@@ -19,21 +18,18 @@ namespace ForestBrush
 
         public List<Brush> Brushes => UserMod.Settings.Brushes;
 
-        void Awake()
-        {
+        void Awake() {
             probabilityCalculator = new ProbabilityCalculator();
 
             UpdateTool(UserMod.Settings.SelectedBrush.Name);
         }
 
-        public void UpdateTool(string brushName)
-        {
+        public void UpdateTool(string brushName) {
             UserMod.Settings.SelectBrush(brushName);
 
             TreeInfos = new List<TreeInfo>();
 
-            foreach (var tree in Brush.Trees)
-            {
+            foreach (var tree in Brush.Trees) {
                 if (!ForestBrush.Instance.Trees.TryGetValue(tree.Name, out TreeInfo treeInfo)) continue;
                 if (treeInfo == null) continue;
                 TreeInfos.Add(treeInfo);
@@ -46,39 +42,31 @@ namespace ForestBrush
             UserMod.SaveSettings();
         }
 
-        private void Add(TreeInfo tree)
-        {
+        private void Add(TreeInfo tree) {
             if (TreeInfos.Contains(tree)) return;
             TreeInfos.Add(tree);
             Brush.Add(tree);
         }
 
-        private void Remove(TreeInfo tree)
-        {
+        private void Remove(TreeInfo tree) {
             if (!TreeInfos.Contains(tree)) return;
             TreeInfos.Remove(tree);
             Brush.Remove(tree);
         }
 
-        public void RemoveAll()
-        {
-            foreach (TreeInfo tree in ForestBrush.Instance.ForestBrushPanel.BrushEditSection.TreesList.rowsData)
-            {
+        public void RemoveAll() {
+            foreach (TreeInfo tree in ForestBrush.Instance.ForestBrushPanel.BrushEditSection.TreesList.rowsData) {
                 Remove(tree);
             }
-            foreach (TreeItem item in ForestBrush.Instance.ForestBrushPanel.BrushEditSection.TreesList.rows)
-            {
+            foreach (TreeItem item in ForestBrush.Instance.ForestBrushPanel.BrushEditSection.TreesList.rows) {
                 item?.ToggleCheckbox(false);
             }
         }
 
-        private void AddAll()
-        {
+        private void AddAll() {
             List<TreeInfo> treeInfos = new List<TreeInfo>();
-            foreach (TreeInfo tree in ForestBrush.Instance.ForestBrushPanel.BrushEditSection.TreesList.rowsData)
-            {
-                if(treeInfos.Count == 100)
-                {
+            foreach (TreeInfo tree in ForestBrush.Instance.ForestBrushPanel.BrushEditSection.TreesList.rowsData) {
+                if (treeInfos.Count == 100) {
                     UIView.library.ShowModal<ExceptionPanel>("ExceptionPanel").SetMessage(
                      Translation.Instance.GetTranslation("FOREST-BRUSH-MODAL-LIMITREACHED-TITLE"),
                      Translation.Instance.GetTranslation("FOREST-BRUSH-MODAL-LIMITREACHED-MESSAGE-ALL"),
@@ -93,33 +81,27 @@ namespace ForestBrush
 
             var itemBuffer = ForestBrush.Instance.ForestBrushPanel.BrushEditSection.TreesList.rows.m_buffer;
 
-            for (int i = 0; i < itemBuffer.Length; i++)
-            {
+            for (int i = 0; i < itemBuffer.Length; i++) {
                 TreeItem treeItem = itemBuffer[i] as TreeItem;
-                if(TreeInfos.Contains(treeItem.Prefab)) treeItem.ToggleCheckbox(true);
+                if (TreeInfos.Contains(treeItem.Prefab)) treeItem.ToggleCheckbox(true);
             }
         }
 
-        public void New(string brushName)
-        {
-            if (Brushes.Find(b => b.Name == brushName) == null)
-            {
+        public void New(string brushName) {
+            if (Brushes.Find(b => b.Name == brushName) == null) {
                 Brush brush = Brush.Default();
 
                 brush.Name = brushName;
 
                 if (UserMod.Settings.KeepTreesInNewBrush) brush.ReplaceAll(TreeInfos);
-                else RemoveAll();
 
                 Brushes.Add(brush);
 
                 UpdateTool(brushName);
-            }
-            else Debug.LogError("Error creating new brush. Brush already exists. This shouldn't happen, please contact the mod author.");
+            } else Debug.LogError("Error creating new brush. Brush already exists. This shouldn't happen, please contact the mod author.");
         }
 
-        internal void DeleteCurrent()
-        {
+        internal void DeleteCurrent() {
             Brushes.Remove(Brush);
             UserMod.Settings.SelectNextBestBrush();
             ForestBrush.Instance.ForestBrushPanel.BrushSelectSection.UpdateDropDown();
@@ -129,17 +111,14 @@ namespace ForestBrush
             UserMod.SaveSettings();
         }
 
-        public TreeInfo CreateBrushPrefab(List<Tree> trees)
-        {
+        public TreeInfo CreateBrushPrefab(List<Tree> trees) {
             var variations = new TreeInfo.Variation[TreeInfos.Count];
-            if (TreeInfos.Count == 0)
-            {
+            if (TreeInfos.Count == 0) {
                 Container.m_variations = variations;
                 return Container;
             }
             var probabilities = probabilityCalculator.Calculate(trees);
-            for (int i = 0; i < probabilities.Count; i++)
-            {
+            for (int i = 0; i < probabilities.Count; i++) {
                 var variation = new TreeInfo.Variation();
                 variation.m_tree = variation.m_finalTree = TreeInfos[i];
                 variation.m_probability = probabilities[i].FloorProbability;
@@ -154,23 +133,19 @@ namespace ForestBrush
             return Container;
         }
 
-        public void UpdateBrushPrefabProbabilities()
-        {
+        public void UpdateBrushPrefabProbabilities() {
             if (TreeInfos.Count == 0) return;
             var probabilities = probabilityCalculator.Calculate(Brush.Trees);
-            for (int i = 0; i < probabilities.Count; i++)
-            {
+            for (int i = 0; i < probabilities.Count; i++) {
                 var variation = Container.m_variations[i];
                 variation.m_probability = probabilities[i].FloorProbability;
             }
         }
 
-        internal void UpdateTreeList(TreeInfo treeInfo, bool value, bool updateAll)
-        {
+        internal void UpdateTreeList(TreeInfo treeInfo, bool value, bool updateAll) {
             if (value) Add(treeInfo);
             else Remove(treeInfo);
-            if(updateAll)
-            {
+            if (updateAll) {
                 if (value) AddAll();
                 else RemoveAll();
             }

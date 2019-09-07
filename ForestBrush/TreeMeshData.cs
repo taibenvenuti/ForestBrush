@@ -61,7 +61,6 @@ namespace ForestBrush
 
             if (mesh != null && mesh.isReadable)
                 triangles = mesh.triangles.Length / 3;
-            
         }
 
         private static Vector2 GetTextureSize(PrefabInfo prefab)

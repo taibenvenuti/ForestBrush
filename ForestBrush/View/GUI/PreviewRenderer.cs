@@ -119,7 +119,6 @@ namespace ForestBrush.GUI
 
             infoManager.SetCurrentMode(currentMod, currentSubMod);
             infoManager.UpdateInfoMode();
-
         }
     }
 }

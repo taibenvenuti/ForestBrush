@@ -38,9 +38,9 @@ namespace ForestBrush
 
         private bool Painting => MouseLeftDown && !CtrlDown && !ShiftDown && !MouseRightDown;
         private bool Deleting => MouseRightDown&& !AltDown && !CtrlDown && !MouseLeftDown;
-        private bool DensityOrRotation => MouseRightDown && CtrlDown && !ShiftDown && !AltDown && !MouseLeftDown;
+        private bool DensityOrRotation => CtrlDown && !ShiftDown && !AltDown && !MouseLeftDown;
         private bool SelectiveDelete => MouseRightDown && ShiftDown && !CtrlDown && !AltDown && !MouseLeftDown;
-        private bool SizeAndStrength => MouseRightDown && AltDown && !ShiftDown && !MouseLeftDown;
+        private bool SizeAndStrength => AltDown && !ShiftDown && !MouseLeftDown;
         private float[] BrushData;
 
         public int ID_Angle { get; private set; }
@@ -199,7 +199,7 @@ namespace ForestBrush
                 else base.ShowToolInfo(false, null, CachedPosition);
             }
             else base.ShowToolInfo(false, null, CachedPosition);
-            if (MouseRightDown && (DensityOrRotation || SizeAndStrength))
+            if ((DensityOrRotation || SizeAndStrength))
             {
                 float axisX = Input.GetAxis("Mouse X");
                 float axisY = Input.GetAxis("Mouse Y");

@@ -1,4 +1,6 @@
 ﻿
+using UnityEngine;
+
 namespace ForestBrush
 {
     public enum TreeSorting
@@ -33,24 +35,45 @@ namespace ForestBrush
             }
             if (a == null || b == null) return -1;
 
-            string authorB, authorA = string.Empty;
-            TreeMeshData meshDataB, meshDataA = null;
-
-            bool haveMeshData = ForestBrush.Instance.TreesMeshData.TryGetValue(b.name, out meshDataB) && ForestBrush.Instance.TreesMeshData.TryGetValue(a.name, out meshDataA);
-            bool haveAuthors = ForestBrush.Instance.TreeAuthors.TryGetValue(b.name, out authorB) && ForestBrush.Instance.TreeAuthors.TryGetValue(a.name, out authorA);
-
             if (sorting == TreeSorting.Name)
                 return b.GetUncheckedLocalizedTitle().CompareTo(a.GetUncheckedLocalizedTitle());
-            if (sorting == TreeSorting.Author)
-                if (haveAuthors)
-                    return authorB.CompareTo(authorA);
-            if (sorting == TreeSorting.Texture)
+
+            if (sorting == TreeSorting.Author) {
+                if (!ForestBrush.Instance.TreeAuthors.TryGetValue(a.name.Split('.')[0], out string authorA)) {
+                    authorA = " ";
+                }
+                if (!ForestBrush.Instance.TreeAuthors.TryGetValue(b.name.Split('.')[0], out string authorB)) {
+                    authorB = " ";
+                }
+                return authorB.CompareTo(authorA);
+            }
+
+            TreeMeshData meshDataB, meshDataA = null;
+            bool aHasMeshData = ForestBrush.Instance.TreesMeshData.TryGetValue(a.name, out meshDataA);
+            bool bHasMeshData = ForestBrush.Instance.TreesMeshData.TryGetValue(b.name, out meshDataB);
+            bool haveMeshData = aHasMeshData && bHasMeshData;
+
+            if (sorting == TreeSorting.Texture) {
                 if (haveMeshData)
                     return (meshDataB.textureSize.x + meshDataB.textureSize.y).CompareTo(meshDataA.textureSize.x + meshDataA.textureSize.y);
-            if (sorting == TreeSorting.Triangles)
+                else if (aHasMeshData)
+                    return 0.CompareTo(meshDataA.textureSize.x + meshDataA.textureSize.y);
+                else if (bHasMeshData) {
+                    return (meshDataB.textureSize.x + meshDataB.textureSize.y).CompareTo(0);
+                }
+            }
+
+            if (sorting == TreeSorting.Triangles) {
                 if (haveMeshData)
                     return meshDataB.triangles.CompareTo(meshDataA.triangles);
-            return 0;
+                else if (aHasMeshData)
+                    return 0.CompareTo(meshDataA.triangles);
+                else if (bHasMeshData) {
+                    return meshDataB.triangles.CompareTo(0);
+                }
+            }
+
+            return -1;
         }
     }
 }

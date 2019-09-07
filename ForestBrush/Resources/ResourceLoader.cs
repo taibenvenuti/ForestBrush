@@ -306,7 +306,14 @@ namespace ForestBrush.Resources
 
         private static Shader LoadCustomShaderFromBundle()
         {
-            AssetBundle shaderBundle = Application.platform == RuntimePlatform.OSXPlayer ? AssetBundle.LoadFromMemory(ExtractResource("ForestBrush.Resources.forestbrushmac")) : AssetBundle.LoadFromMemory(ExtractResource("ForestBrush.Resources.forestbrush"));
+            string bundleName =
+                Application.platform == RuntimePlatform.OSXPlayer
+                ? "ForestBrush.Resources.forestbrushmac"
+                : Application.platform == RuntimePlatform.LinuxPlayer
+                ? "ForestBrush.Resources.forestbrushlinux"
+                : "ForestBrush.Resources.forestbrush";
+            byte[] bytes = ExtractResource(bundleName);
+            AssetBundle shaderBundle = AssetBundle.LoadFromMemory(bytes);
             Shader shader = shaderBundle.LoadAsset<Shader>("Assets/Shader/ForestBrush.shader");
             shaderBundle.Unload(false);
             return shader;

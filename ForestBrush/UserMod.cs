@@ -93,6 +93,7 @@ namespace ForestBrush
             {
                 UninstallMod();
             }
+            if (!IsGame && !IsMap && !IsTheme) return;
             if (IsMap || IsTheme) Resources.ResourceLoader.Atlas = Resources.ResourceLoader.Atlas;
             Resources.ResourceLoader.ForestBrushAtlas = Resources.ResourceLoader.ForestBrushAtlas;
             forestBrushGameObject = new GameObject("ForestBrush");
