@@ -4,8 +4,9 @@ using System.Xml.Serialization;
 namespace ForestBrush.Persistence
 {
     [XmlRoot("ForestBrush")]
-    public class XmlSettings
-    {
+    public class XmlSettings {
+        public XmlSettings() { }
+
         public float PanelPosX { get; set; }
 
         public float PanelPosY { get; set; }

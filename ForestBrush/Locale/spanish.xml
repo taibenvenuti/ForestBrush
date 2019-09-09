@@ -54,12 +54,12 @@
     <Translation ID="FOREST-BRUSH-KEYBIND-TOGGLE-TOOL" String="Muestra/Esconde el panel de 'Forest Brush'" />
     <Translation ID="FOREST-BRUSH-TUTORIAL" String="
 Gracias por descargar Forest Brush.&#10;&#10;
-Haz click en el botón 'herramientas' para agregar árboles al pincel.&#10;
+Haz click en el botón 'Árboles' para agregar árboles al pincel.&#10;
 Usa las casillas para agregar/remover árboles.&#10;
 CTRL + click sobre cualquier casilla para agregar/remover todos los árboles.&#10;&#10;
 Puedes tener tantos pinceles como desees, simplemente presiona el botón '+'.&#10;&#10;
 Usa el campo de busqueda para encontrar un árbol específico.&#10;&#10;
-Haz click en el botón 'engranaje' para cambiar opciones.&#10;
+Haz click en el botón 'Engranaje' para cambiar opciones.&#10;
 Allí puedes cambiar el tamaño, fuerza y densidad del pincel.&#10;
 Visita la pagina del mod para más información." />
   </Translations>

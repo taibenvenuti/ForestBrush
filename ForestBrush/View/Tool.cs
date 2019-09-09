@@ -23,6 +23,7 @@ namespace ForestBrush
         private Vector3 MouseRayRight;
         private Vector3 CachedPosition;
         private Vector3 MousePosition;
+        private Vector3 BrushPosition;
         private Randomizer Randomizer;
         public TreeInfo Container = ForestBrush.Instance.Container;
         private float Size => Options.Size;
@@ -36,11 +37,11 @@ namespace ForestBrush
         private bool CtrlDown => Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl)
                               || Input.GetKey(KeyCode.LeftCommand) || Input.GetKey(KeyCode.RightCommand);
 
-        private bool Painting => MouseLeftDown && !CtrlDown && !ShiftDown && !MouseRightDown;
-        private bool Deleting => MouseRightDown&& !AltDown && !CtrlDown && !MouseLeftDown;
+        private bool Painting => MouseLeftDown && !CtrlDown && !AltDown && !MouseRightDown;
+        private bool Deleting => MouseRightDown && !CtrlDown && !AltDown && !MouseLeftDown;
         private bool DensityOrRotation => CtrlDown && !ShiftDown && !AltDown && !MouseLeftDown;
         private bool SelectiveDelete => MouseRightDown && ShiftDown && !CtrlDown && !AltDown && !MouseLeftDown;
-        private bool SizeAndStrength => AltDown && !ShiftDown && !MouseLeftDown;
+        private bool SizeAndStrength => AltDown && !CtrlDown && !ShiftDown && !MouseLeftDown && !MouseRightDown;
         private float[] BrushData;
 
         public int ID_Angle { get; private set; }
@@ -180,8 +181,8 @@ namespace ForestBrush
                 {
                     if(!AxisChanged && DensityOrRotation) Rotate45();
                     MouseRightDown = false;
-                    AxisChanged = false;
                 }
+                AxisChanged = false;
             }
         }
 
@@ -203,29 +204,21 @@ namespace ForestBrush
             {
                 float axisX = Input.GetAxis("Mouse X");
                 float axisY = Input.GetAxis("Mouse Y");
-                if (axisX != 0)
-                {
-                    AxisChanged = true;
-                    if (DensityOrRotation)
-                    {
-                        DeltaAngle(axisX * 10.0f);
-                    }
-                    else if (SizeAndStrength)
-                    {
-                        Options.Size = Mathf.Clamp((float)Math.Round(Options.Size + axisX * (Tweaker.MaxSize / 50.0f), 1), 1.0f, Tweaker.MaxSize);
-                    }
-                }
-                if (axisY != 0)
-                {
-                    AxisChanged = true;
-                    if (DensityOrRotation)
-                    {
-                        Options.Density = Mathf.Clamp(Options.Density - axisY, 0.0f, 16.0f);
-                        
-                    }
-                    else if (SizeAndStrength)
-                    {
-                        Options.Strength = Mathf.Clamp(Options.Strength + axisY * 0.1f, 0.01f, 1.0f);
+                if (axisX != 0 || axisY != 0) {
+                    if (Mathf.Abs(axisX) > Mathf.Abs(axisY)) {
+                        AxisChanged = true;
+                        if (DensityOrRotation) {
+                            DeltaAngle(axisX * 10.0f);
+                        } else if (SizeAndStrength) {
+                            Options.Size = Mathf.Clamp((float)Math.Round(Options.Size + axisX * (Tweaker.MaxSize / 50.0f), 1), 1.0f, Tweaker.MaxSize);
+                        }
+                    } else if (Mathf.Abs(axisY) > Mathf.Abs(axisX)) {
+                        AxisChanged = true;
+                        if (DensityOrRotation) {
+                            Options.Density = Mathf.Clamp(Options.Density - axisY, 0.0f, 16.0f);
+                        } else if (SizeAndStrength) {
+                            Options.Strength = Mathf.Clamp(Options.Strength + axisY * 0.1f, 0.01f, 1.0f);
+                        }
                     }
                 }
             }
@@ -278,6 +271,7 @@ namespace ForestBrush
             MouseRayRight = Camera.main.transform.TransformDirection(Vector3.right);
             MouseRayValid = (!m_toolController.IsInsideUI && Cursor.visible);
             CachedPosition = MousePosition;
+            BrushPosition = MousePosition;
         }
 
         public override void SimulationStep()
@@ -357,11 +351,11 @@ namespace ForestBrush
                     float maxY = MousePosition.y + height;
                     ItemClass.CollisionType collisionType = ItemClass.CollisionType.Terrain;
 
-                    if (PropManager.instance.OverlapQuad(clearanceQuad, minY, maxY, collisionType, 0, 0) && !AltDown) continue;
+                    if (PropManager.instance.OverlapQuad(clearanceQuad, minY, maxY, collisionType, 0, 0) && !ShiftDown) continue;
                     if (TreeManager.instance.OverlapQuad(spacingQuad, minY, maxY, collisionType, 0, 0)) continue;
-                    if (NetManager.instance.OverlapQuad(clearanceQuad, minY, maxY, collisionType, treeInfo.m_class.m_layer, 0, 0, 0) && !AltDown) continue;
-                    if (BuildingManager.instance.OverlapQuad(clearanceQuad, minY, maxY, collisionType, treeInfo.m_class.m_layer, 0, 0, 0) && !AltDown) continue;
-                    if (TerrainManager.instance.HasWater(treePosition2) && !AltDown) continue;
+                    if (NetManager.instance.OverlapQuad(clearanceQuad, minY, maxY, collisionType, treeInfo.m_class.m_layer, 0, 0, 0)) continue;
+                    if (BuildingManager.instance.OverlapQuad(clearanceQuad, minY, maxY, collisionType, treeInfo.m_class.m_layer, 0, 0, 0)) continue;
+                    if (TerrainManager.instance.HasWater(treePosition2) && !ShiftDown) continue;
                     int noiseScale = Randomizer.Int32(16);
                     float str2Rnd = UnityEngine.Random.Range(0.0f, Tweaker.MaxRandomRange);
                     if (Mathf.PerlinNoise(treePosition.x * noiseScale, treePosition.y * noiseScale) > 0.5 && str2Rnd < Strength * Tweaker.StrengthMultiplier)
@@ -426,7 +420,7 @@ namespace ForestBrush
                             var noiseScale = Randomizer.Int32(Tweaker.NoiseScale);
                             var strengthToRandom = UnityEngine.Random.Range(0.0f, Tweaker.MaxRandomRange);
                             TreeInfo treeInfo = TreeManager.instance.m_trees.m_buffer[treeIndex].Info;
-                            if ((SelectiveDelete && ForestBrush.Instance.BrushTool.TreeInfos.Contains(treeInfo) && Mathf.PerlinNoise(position.x * noiseScale, position.y * noiseScale) > Tweaker.NoiseThreshold && strengthToRandom < UserMod.Settings.SelectedBrush.Options.Strength)
+                            if ((SelectiveDelete && ForestBrush.Instance.BrushTool.TreeInfos.Contains(treeInfo))
                             || !SelectiveDelete)
                             {
                                 Vector2 xzTreePosition = VectorUtils.XZ(treePosition);
@@ -452,11 +446,11 @@ namespace ForestBrush
             if (BrushTexture != null)
             {
                 BrushMaterial.SetTexture(ID_BrushTex, BrushTexture);
-                Vector4 position = MousePosition;
+                Vector4 position = BrushPosition;
                 position.w = Size;
                 BrushMaterial.SetVector(this.ID_BrushWS, position);
                 BrushMaterial.SetFloat(ID_Angle, Angle);
-                Vector3 center = new Vector3(MousePosition.x, 512f, MousePosition.z);
+                Vector3 center = new Vector3(BrushPosition.x, 512f, BrushPosition.z);
                 Vector3 size = new Vector3(Size, 1224f, Size);
                 Bounds bounds = new Bounds(center, size * 1.5f);
                 ToolManager instance = Singleton<ToolManager>.instance;

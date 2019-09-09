@@ -75,6 +75,7 @@ namespace ForestBrush
             toggleButtonComponents = CreateToggleButtonComponents(tabstrip);
             ForestBrushPanel = toggleButtonComponents.TabStripPage.GetComponent<UIPanel>().AddUIComponent<ForestBrushPanel>();
             BrushTool = gameObject.AddComponent<ForestBrushTool>();
+            BrushTool.UpdateTool(UserMod.Settings.SelectedBrush.Name);
             SetTutorialLocale();
 
             toggleButtonComponents.ToggleButton.eventClick += OnToggleClick;

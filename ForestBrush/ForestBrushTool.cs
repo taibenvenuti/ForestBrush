@@ -20,8 +20,6 @@ namespace ForestBrush
 
         void Awake() {
             probabilityCalculator = new ProbabilityCalculator();
-
-            UpdateTool(UserMod.Settings.SelectedBrush.Name);
         }
 
         public void UpdateTool(string brushName) {

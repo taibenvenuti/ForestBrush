@@ -73,7 +73,9 @@ namespace ForestBrush
 
         void InstallOutOfGameDependencies()
         {
-            GameSettings.AddSettingsFile(new SettingsFile { fileName = Constants.ModName });
+            if (GameSettings.FindSettingsFileByName(Constants.ModName) == null) {
+                GameSettings.AddSettingsFile(new SettingsFile { fileName = Constants.ModName });
+            }
             XmlPersistenceService = new XmlPersistenceService();
             Settings = XmlPersistenceService.Load();
         }
