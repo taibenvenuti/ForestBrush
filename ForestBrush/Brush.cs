@@ -28,24 +28,6 @@ namespace ForestBrush
             Trees.Remove(tree);
         }
 
-        /// <summary>
-        /// Replaces all current trees in this brush with the ones provided.
-        /// Also updates the brush options to currently selected options.
-        /// </summary>
-        /// <param name="newTrees">A list of TreeInfo trees to replace the existing ones with.</param>
-        public void ReplaceAll(List<TreeInfo> newTrees)
-        {
-            Trees = new List<Tree>();
-            for (int i = 0; i < newTrees.Count; i++)
-            {
-                if (i < 100)
-                {
-                    Tree tree = new Tree(newTrees[i]);
-                    Trees.Add(tree);
-                }
-            }
-        }
-
         public static Brush Default()
         {
             return new Brush()

@@ -246,6 +246,8 @@ namespace ForestBrush.GUI
         {
             Tree tree = ForestBrush.Instance.BrushTool.Brush.Trees.Find(t => t.Name == info.name);
             if (tree != null) tree.Probability = probability;
+            tree = ForestBrush.Instance.BrushTool.Trees.Find(t => t.Name == info.name);
+            if (tree != null) tree.Probability = probability;
             ForestBrush.Instance.BrushTool.UpdateBrushPrefabProbabilities();
         }
 

@@ -2,6 +2,7 @@
 using ForestBrush.GUI;
 using ForestBrush.TranslationFramework;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace ForestBrush
@@ -11,6 +12,8 @@ namespace ForestBrush
         private ProbabilityCalculator probabilityCalculator;
 
         public Brush Brush => UserMod.Settings.SelectedBrush;
+
+        internal List<Tree> Trees = new List<Tree>();
 
         internal List<TreeInfo> TreeInfos { get; set; } = new List<TreeInfo>();
 
@@ -25,15 +28,16 @@ namespace ForestBrush
         public void UpdateTool(string brushName) {
             UserMod.Settings.SelectBrush(brushName);
 
-            TreeInfos = new List<TreeInfo>();
-
+            TreeInfos.Clear();
+            Trees.Clear();
             foreach (var tree in Brush.Trees) {
                 if (!ForestBrush.Instance.Trees.TryGetValue(tree.Name, out TreeInfo treeInfo)) continue;
                 if (treeInfo == null) continue;
                 TreeInfos.Add(treeInfo);
+                Trees.Add(tree);
             }
 
-            Container = CreateBrushPrefab(Brush.Trees);
+            Container = CreateBrushPrefab(Trees);
 
             ForestBrush.Instance.ForestBrushPanel.LoadBrush(Brush);
 
@@ -41,15 +45,20 @@ namespace ForestBrush
         }
 
         private void Add(TreeInfo tree) {
-            if (TreeInfos.Contains(tree)) return;
-            TreeInfos.Add(tree);
-            Brush.Add(tree);
+            if (!TreeInfos.Contains(tree)) TreeInfos.Add(tree);
+            if (Brush.Trees.Find(t => t.Name == tree.name) == null) {
+                Brush.Add(tree);
+                Trees.Add(new Tree(tree));
+            }
         }
 
-        private void Remove(TreeInfo tree) {
-            if (!TreeInfos.Contains(tree)) return;
-            TreeInfos.Remove(tree);
-            Brush.Remove(tree);
+        private void Remove(TreeInfo treeInfo) {
+            if (!TreeInfos.Contains(treeInfo)) return;
+            TreeInfos.Remove(treeInfo);
+            Brush.Remove(treeInfo);
+            Tree tree = Trees.Find(t => t.Name == treeInfo.name);
+            if (tree == null) return;
+            Trees.Remove(tree);
         }
 
         public void RemoveAll() {
@@ -62,22 +71,18 @@ namespace ForestBrush
         }
 
         private void AddAll() {
-            List<TreeInfo> treeInfos = new List<TreeInfo>();
             foreach (TreeInfo tree in ForestBrush.Instance.ForestBrushPanel.BrushEditSection.TreesList.rowsData) {
-                if (treeInfos.Count == 100) {
+                if (TreeInfos.Count < 100) {
                     UIView.library.ShowModal<ExceptionPanel>("ExceptionPanel").SetMessage(
-                     Translation.Instance.GetTranslation("FOREST-BRUSH-MODAL-LIMITREACHED-TITLE"),
-                     Translation.Instance.GetTranslation("FOREST-BRUSH-MODAL-LIMITREACHED-MESSAGE-ALL"),
-                     false);
+                         Translation.Instance.GetTranslation("FOREST-BRUSH-MODAL-LIMITREACHED-TITLE"),
+                         Translation.Instance.GetTranslation("FOREST-BRUSH-MODAL-LIMITREACHED-MESSAGE-ALL"),
+                         false);
                     break;
                 }
-                treeInfos.Add(tree);
+                Add(tree);
             }
-            TreeInfos = treeInfos;
 
-            Brush.ReplaceAll(TreeInfos);
-
-            var itemBuffer = ForestBrush.Instance.ForestBrushPanel.BrushEditSection.TreesList.rows.m_buffer;
+            IUIFastListRow[] itemBuffer = ForestBrush.Instance.ForestBrushPanel.BrushEditSection.TreesList.rows.m_buffer;
 
             for (int i = 0; i < itemBuffer.Length; i++) {
                 TreeItem treeItem = itemBuffer[i] as TreeItem;
@@ -91,7 +96,11 @@ namespace ForestBrush
 
                 brush.Name = brushName;
 
-                if (UserMod.Settings.KeepTreesInNewBrush) brush.ReplaceAll(TreeInfos);
+                if (UserMod.Settings.KeepTreesInNewBrush) {
+                    foreach (var tree in Trees) {
+                        brush.Trees.Add(tree);
+                    }
+                }
 
                 Brushes.Add(brush);
 
@@ -133,7 +142,7 @@ namespace ForestBrush
 
         public void UpdateBrushPrefabProbabilities() {
             if (TreeInfos.Count == 0) return;
-            var probabilities = probabilityCalculator.Calculate(Brush.Trees);
+            var probabilities = probabilityCalculator.Calculate(Trees);
             for (int i = 0; i < probabilities.Count; i++) {
                 var variation = Container.m_variations[i];
                 variation.m_probability = probabilities[i].FloorProbability;
@@ -147,7 +156,7 @@ namespace ForestBrush
                 if (value) AddAll();
                 else RemoveAll();
             }
-            Container = CreateBrushPrefab(Brush.Trees);
+            Container = CreateBrushPrefab(Trees);
             UserMod.SaveSettings();
         }
     }

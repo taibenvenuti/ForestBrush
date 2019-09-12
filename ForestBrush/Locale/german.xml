@@ -12,7 +12,6 @@
     <Translation ID="FOREST-BRUSH-TOGGLE-EDIT" String="Baumliste anzeigen/verstecken" />
     <Translation ID="FOREST-BRUSH-TOGGLE-OPTIONS" String="Pinseloptionen anzeigen/verstecken" />
     <Translation ID="FOREST-BRUSH-TOGGLE-SELECTBRUSHSHAPE" String="Toggle 'Brush Shapes' panel" />
-    <Translation ID="FOREST-BRUSH-BRUSH-OPTIONS-SQUAREBRUSH" String="Quadratischer Pinsel" />
     <Translation ID="FOREST-BRUSH-BRUSH-OPTIONS-STRENGTH" String="Stärke" />
     <Translation ID="FOREST-BRUSH-BRUSH-OPTIONS-DENSITY" String="Dichte" />
     <Translation ID="FOREST-BRUSH-BRUSH-OPTIONS-SIZE" String="Größe" />

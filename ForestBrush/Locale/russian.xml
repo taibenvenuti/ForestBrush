@@ -12,7 +12,6 @@
     <Translation ID="FOREST-BRUSH-TOGGLE-EDIT" String="Переключить панель 'Деревья'" />
     <Translation ID="FOREST-BRUSH-TOGGLE-OPTIONS" String="Переключить панель 'Настройки кисти'" />
     <Translation ID="FOREST-BRUSH-TOGGLE-SELECTBRUSHSHAPE" String="Переключить панель 'Формы кисти'" />
-    <Translation ID="FOREST-BRUSH-BRUSH-OPTIONS-SQUAREBRUSH" String="Квадратная кисть" />
     <Translation ID="FOREST-BRUSH-BRUSH-OPTIONS-STRENGTH" String="Сила" />
     <Translation ID="FOREST-BRUSH-BRUSH-OPTIONS-DENSITY" String="Плотность" />
     <Translation ID="FOREST-BRUSH-BRUSH-OPTIONS-SIZE" String="Размер" />

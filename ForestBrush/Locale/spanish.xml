@@ -12,7 +12,6 @@
     <Translation ID="FOREST-BRUSH-TOGGLE-EDIT" String="Muestra/Esconde el panel 'Árboles'" />
     <Translation ID="FOREST-BRUSH-TOGGLE-OPTIONS" String="Muestra/Esconde el panel 'Opciones de Pincel'" />
     <Translation ID="FOREST-BRUSH-TOGGLE-SELECTBRUSHSHAPE" String="Muestra/Esconde el panel 'Formas del Pincel'" />
-    <Translation ID="FOREST-BRUSH-BRUSH-OPTIONS-SQUAREBRUSH" String="Pincel cuadrado" />
     <Translation ID="FOREST-BRUSH-BRUSH-OPTIONS-STRENGTH" String="Fuerza" />
     <Translation ID="FOREST-BRUSH-BRUSH-OPTIONS-DENSITY" String="Densidad" />
     <Translation ID="FOREST-BRUSH-BRUSH-OPTIONS-SIZE" String="Tamaño" />

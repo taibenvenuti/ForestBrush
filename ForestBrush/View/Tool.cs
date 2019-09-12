@@ -29,7 +29,7 @@ namespace ForestBrush
         private float Size => Options.Size;
         private float Strength => Options.Strength;
         private float Density => Options.Density;
-        private int TreeCount => UserMod.Settings.SelectedBrush.Trees.Count;
+        private int TreeCount => Container == null || Container.m_variations == null ? 0 : Container.m_variations.Length;
         private Brush.BrushOptions Options { get => UserMod.Settings.SelectedBrush.Options; set => UserMod.Settings.SelectedBrush.Options = value; }
 
         private bool ShiftDown => Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
