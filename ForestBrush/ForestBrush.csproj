@@ -29,6 +29,7 @@
     mkdir "$(LOCALAPPDATA)\Colossal Order\Cities_Skylines\Addons\Mods\$(TargetName)"\Locale
     xcopy /y "$(ProjectDir)\Locale" "$(LOCALAPPDATA)\Colossal Order\Cities_Skylines\Addons\Mods\$(TargetName)\Locale" /s /e
     </PostBuildEvent>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -43,8 +44,12 @@
     mkdir "$(LOCALAPPDATA)\Colossal Order\Cities_Skylines\Addons\Mods\$(TargetName)"\Locale
     xcopy /y "$(ProjectDir)\Locale" "$(LOCALAPPDATA)\Colossal Order\Cities_Skylines\Addons\Mods\$(TargetName)\Locale" /s /e
     </PostBuildEvent>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="0Harmony, Version=1.2.0.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Lib.Harmony.1.2.0.1\lib\net35\0Harmony.dll</HintPath>
+    </Reference>
     <Reference Include="Assembly-CSharp">
       <HintPath>C:\References\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
@@ -76,6 +81,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Brush.cs" />
+    <Compile Include="Patching\TreeInstanceDetour.cs" />
+    <Compile Include="Patching\TreeInstancePatches.cs" />
+    <Compile Include="Persistence\Data.cs" />
+    <Compile Include="Persistence\SerializableDataExtension.cs" />
+    <Compile Include="Redirection\RedirectionHelper.cs" />
+    <Compile Include="Redirection\RedirectionUtil.cs" />
+    <Compile Include="Redirection\RedirectMethodAttribute.cs" />
+    <Compile Include="Redirection\Redirector.cs" />
+    <Compile Include="Redirection\RedirectReverseAttribute.cs" />
+    <Compile Include="Redirection\TargetTypeAttribute.cs" />
+    <Compile Include="Redirection\Tuple.cs" />
     <Compile Include="View\GUI\BrushShapeSelector.cs" />
     <Compile Include="View\Tool.cs" />
     <Compile Include="View\GUI\BrushSelectSection.cs" />
@@ -190,6 +206,9 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\forestbrushlinux" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

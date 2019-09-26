@@ -72,7 +72,7 @@ namespace ForestBrush
 
         private void AddAll() {
             foreach (TreeInfo tree in ForestBrush.Instance.ForestBrushPanel.BrushEditSection.TreesList.rowsData) {
-                if (TreeInfos.Count < 100) {
+                if (TreeInfos.Count == 100) {
                     UIView.library.ShowModal<ExceptionPanel>("ExceptionPanel").SetMessage(
                          Translation.Instance.GetTranslation("FOREST-BRUSH-MODAL-LIMITREACHED-TITLE"),
                          Translation.Instance.GetTranslation("FOREST-BRUSH-MODAL-LIMITREACHED-MESSAGE-ALL"),

@@ -1,7 +1,9 @@
 ﻿using ColossalFramework;
+using ColossalFramework.Globalization;
 using ColossalFramework.Math;
 using ColossalFramework.UI;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -19,8 +21,10 @@ namespace ForestBrush
         private bool MouseLeftDown;
         private bool MouseRightDown;
         private bool MouseRayValid;
+        private ToolErrors Errors;
         private Ray MouseRay;
         private Vector3 MouseRayRight;
+        private Vector3 LastValidMousePosition = Vector3.zero;
         private Vector3 CachedPosition;
         private Vector3 MousePosition;
         private Vector3 BrushPosition;
@@ -57,8 +61,7 @@ namespace ForestBrush
 
         public Texture2D BrushTexture { get; set; }
 
-        protected override void Awake()
-        {
+        protected override void Awake() {
             base.Awake();
             enabled = false;
             BoxMesh = RenderManager.instance.OverlayEffect.GetType().GetField("m_boxMesh", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(RenderManager.instance.OverlayEffect) as Mesh;
@@ -83,31 +86,25 @@ namespace ForestBrush
             ToolsModifierControl.SetTool<DefaultTool>();
         }
 
-        protected override void OnDestroy()
-        {
+        protected override void OnDestroy() {
             base.OnDestroy();
-            try
-            {
+            try {
                 FieldInfo fieldInfo = typeof(ToolController).GetField("m_tools", BindingFlags.Instance | BindingFlags.NonPublic);
                 List<ToolBase> tools = ((ToolBase[])fieldInfo.GetValue(ToolsModifierControl.toolController)).ToList();
                 tools.Remove(this);
                 fieldInfo.SetValue(ToolsModifierControl.toolController, tools.ToArray());
                 Dictionary<Type, ToolBase> dictionary = (Dictionary<Type, ToolBase>)typeof(ToolsModifierControl).GetField("m_Tools", BindingFlags.Static | BindingFlags.NonPublic).GetValue(null);
                 dictionary.Remove(typeof(ForestTool));
-                if (BrushMaterial != null)
-                {
+                if (BrushMaterial != null) {
                     Destroy(BrushMaterial);
                     BrushMaterial = null;
                 }
-            }
-            catch (Exception exception)
-            {
+            } catch (Exception exception) {
                 Debug.LogWarning($"Exception caught: {exception}");
             }
         }
 
-        protected override void OnEnable()
-        {
+        protected override void OnEnable() {
             base.OnEnable();
             this.m_toolController.ClearColliding();
             ToolBase.cursorInfoLabel.textAlignment = UIHorizontalAlignment.Left;
@@ -115,8 +112,7 @@ namespace ForestBrush
             ClampAngle();
         }
 
-        protected override void OnDisable()
-        {
+        protected override void OnDisable() {
             base.OnDisable();
             SetBrush(string.Empty);
             MouseLeftDown = false;
@@ -125,83 +121,87 @@ namespace ForestBrush
             ToolBase.cursorInfoLabel.textAlignment = UIHorizontalAlignment.Center;
         }
 
-        public Dictionary<string, Texture2D> GetBrushes()
-        {
+        public Dictionary<string, Texture2D> GetBrushes() {
             return Brushes;
         }
 
-        public void SetBrush(string id)
-        {
+        public void SetBrush(string id) {
             if (id == null || id == string.Empty)
                 return;
-            if (Brushes.TryGetValue(id, out Texture2D brush))
-            {
+            if (Brushes.TryGetValue(id, out Texture2D brush)) {
                 SetBrush(brush);
                 Options.BitmapID = id;
                 UserMod.SaveSettings();
             }
         }
 
-        private void SetBrush(Texture2D brush)
-        {
+        private void SetBrush(Texture2D brush) {
             BrushTexture = brush;
-            if (brush != null)
-            {
-                for (int i = 0; i < 128; i++)
-                {
-                    for (int j = 0; j < 128; j++)
-                    {
+            if (brush != null) {
+                for (int i = 0; i < 128; i++) {
+                    for (int j = 0; j < 128; j++) {
                         BrushData[i * 128 + j] = brush.GetPixel(j, i).a;
                     }
                 }
             }
         }
 
-        protected override void OnToolGUI(Event e)
-        {
-            if (!this.m_toolController.IsInsideUI && e.type == EventType.MouseDown)
-            {
-                if (e.button == 0)
-                {
+        protected override void OnToolGUI(Event e) {
+            if (!m_toolController.IsInsideUI && (e.type == EventType.MouseDown || e.type == EventType.MouseDrag && Size == 1.0f && !ShiftDown)) {
+                if (e.button == 0) {
                     MouseLeftDown = true;
-                }
-                else if (e.button == 1)
-                {
+                    if (Size == 1.0f && TreeCount > 0) {
+                        Vector3 mousePos = MousePosition;
+                        if (!LastValidMousePosition.Equals(Vector3.zero)) {
+                            if (Strength < 1.0f) {
+                                var distance = 25;
+                                if (Math.Pow(mousePos.x - LastValidMousePosition.x, 2) +
+                                    Math.Pow(mousePos.z - LastValidMousePosition.z, 2) < Math.Pow(distance - distance * Strength, 2)) {
+                                    return;
+                                }
+                            }
+                        }
+                        LastValidMousePosition = mousePos;
+                        SimulationManager.instance.AddAction(CreateTree());
+                    }
+                } else if (e.button == 1) {
                     MouseRightDown = true;
                     AxisChanged = false;
                 }
-            }
-            else if (e.type == EventType.MouseUp)
-            {
-                if (e.button == 0)
-                {
+            } else if (e.type == EventType.MouseUp) {
+                if (e.button == 0) {
                     MouseLeftDown = false;
-                }
-                else if (e.button == 1)
-                {
-                    if(!AxisChanged && DensityOrRotation) Rotate45();
+                } else if (e.button == 1) {
+                    if (!AxisChanged && DensityOrRotation) Rotate45();
                     MouseRightDown = false;
                 }
                 AxisChanged = false;
             }
         }
 
-        protected override void OnToolUpdate()
-        {
+        public override ToolErrors GetErrors() {
+            return Errors;
+        }
+
+        protected override void OnToolUpdate() {
             if (Container is null) return;
-            if (MouseRayValid)
-            {
-                if (UserMod.Settings.ShowInfoTooltip && (CtrlDown || AltDown))
-                {
+            if (MouseRayValid) {
+                if (UserMod.Settings.ShowInfoTooltip && (CtrlDown || AltDown)) {
                     string density = Options.AutoDensity ? "Auto" : string.Concat(Math.Round((16 - Options.Density) * 6.25f, 1, MidpointRounding.AwayFromZero), "%");
                     string text = $"Trees: {Container.m_variations.Length}\nSize: {Options.Size}\nStrength: { Math.Round(Options.Strength * 100, 1) + "%"}\nDensity: {density}";
                     ShowInfo(true, text);
-                }
-                else base.ShowToolInfo(false, null, CachedPosition);
-            }
-            else base.ShowToolInfo(false, null, CachedPosition);
-            if ((DensityOrRotation || SizeAndStrength))
-            {
+                } else if (Size == 1.0f && TreeCount > 0) {
+                    Randomizer tmp = new Randomizer(TreeManager.instance.m_treeCount);
+                    int cost = Container.GetVariation(ref tmp).GetConstructionCost();
+                    if (cost != 0) {
+                        string text = StringUtils.SafeFormat(Locale.Get(LocaleID.TOOL_CONSTRUCTION_COST), cost / 100);
+                        ShowToolInfo(true, text, MousePosition);
+                    } else {
+                        ShowToolInfo(true, null, MousePosition);
+                    }
+                } else ShowToolInfo(false, null, CachedPosition);
+            } else ShowToolInfo(false, null, CachedPosition);
+            if ((DensityOrRotation || SizeAndStrength)) {
                 float axisX = Input.GetAxis("Mouse X");
                 float axisY = Input.GetAxis("Mouse Y");
                 if (axisX != 0 || axisY != 0) {
@@ -226,46 +226,36 @@ namespace ForestBrush
             ForestBrush.Instance.ForestBrushPanel.BrushOptionsSection.UpdateBindings(Options);
         }
 
-        protected void ShowInfo(bool show, string text)
-        {
-            if (ToolBase.cursorInfoLabel == null)
-            {
+        protected void ShowInfo(bool show, string text) {
+            if (ToolBase.cursorInfoLabel == null) {
                 return;
             }
-            if (!string.IsNullOrEmpty(text) && show)
-            {
+            if (!string.IsNullOrEmpty(text) && show) {
                 text = kCursorInfoNormalColor + text + kCursorInfoCloseColorTag;
                 ToolBase.cursorInfoLabel.isVisible = true;
                 UIView uiview = ToolBase.cursorInfoLabel.GetUIView();
                 Vector2 vector = (!(ToolBase.fullscreenContainer != null)) ? uiview.GetScreenResolution() : ToolBase.fullscreenContainer.size;
                 Vector3 relativePosition = ForestBrush.Instance.ForestBrushPanel.absolutePosition + new Vector3(410.0f, 0.0f);
                 ToolBase.cursorInfoLabel.text = text;
-                if (relativePosition.x < 0f)
-                {
+                if (relativePosition.x < 0f) {
                     relativePosition.x = 0f;
                 }
-                if (relativePosition.y < 0f)
-                {
+                if (relativePosition.y < 0f) {
                     relativePosition.y = 0f;
                 }
-                if (relativePosition.x + ToolBase.cursorInfoLabel.width > vector.x)
-                {
+                if (relativePosition.x + ToolBase.cursorInfoLabel.width > vector.x) {
                     relativePosition.x = vector.x - ToolBase.cursorInfoLabel.width;
                 }
-                if (relativePosition.y + ToolBase.cursorInfoLabel.height > vector.y)
-                {
+                if (relativePosition.y + ToolBase.cursorInfoLabel.height > vector.y) {
                     relativePosition.y = vector.y - ToolBase.cursorInfoLabel.height;
                 }
                 ToolBase.cursorInfoLabel.relativePosition = relativePosition;
-            }
-            else
-            {
+            } else {
                 ToolBase.cursorInfoLabel.isVisible = false;
             }
         }
 
-        protected override void OnToolLateUpdate()
-        {
+        protected override void OnToolLateUpdate() {
             MouseRay = Camera.main.ScreenPointToRay(Input.mousePosition);
             MouseRayLength = Camera.main.farClipPlane;
             MouseRayRight = Camera.main.transform.TransformDirection(Vector3.right);
@@ -274,29 +264,104 @@ namespace ForestBrush
             BrushPosition = MousePosition;
         }
 
-        public override void SimulationStep()
-        {
+        public override void SimulationStep() {
             if (Container is null) return;
-            RaycastInput input = new RaycastInput(MouseRay, MouseRayLength);
-            if (RayCast(input, out RaycastOutput output))
-            {
-                MousePosition = output.m_hitPos;
-                if (MouseLeftDown != MouseRightDown) ApplyBrush();
+
+            ulong[] collidingSegmentBuffer;
+            ulong[] collidingBuildingBuffer;
+            m_toolController.BeginColliding(out collidingSegmentBuffer, out collidingBuildingBuffer);
+            try {
+                RaycastInput input = new RaycastInput(MouseRay, MouseRayLength);
+                if (RayCast(input, out RaycastOutput output)) {
+                    MousePosition = output.m_hitPos;
+                    if (Size > 1.0f) {
+                        if (MouseLeftDown != MouseRightDown) ApplyBrush();
+                    } else {
+                        Randomizer tmp = Randomizer;
+                        Randomizer tmp2 = new Randomizer(TreeManager.instance.m_treeCount);
+                        uint item = TreeManager.instance.m_trees.NextFreeItem(ref tmp);
+                        TreeInfo treeInfo = Container.GetVariation(ref tmp2);
+                        ToolErrors errors = CheckPlacementErrors(treeInfo, output.m_hitPos, item, collidingSegmentBuffer, collidingBuildingBuffer);
+                        bool needMoney = (ToolManager.instance.m_properties.m_mode & ItemClass.Availability.Game) != 0;
+                        if (needMoney) {
+                            int cost = treeInfo.GetConstructionCost();
+                            if (cost != 0) {
+                                if (cost != EconomyManager.instance.PeekResource(EconomyManager.Resource.Construction, cost)) {
+                                    errors |= ToolErrors.NotEnoughMoney;
+                                }
+                            }
+                        }
+                        if (!TreeManager.instance.CheckLimits()) errors |= ToolErrors.TooManyObjects;
+                        MousePosition = output.m_hitPos;
+                        Errors = errors;
+                    }
+                } else {
+                    Errors = ToolErrors.RaycastFailed;
+                }
+            } finally {
+                m_toolController.EndColliding();
             }
         }
 
-        private void ApplyBrush()
-        {
+        private void ApplyBrush() {
             if (Container is null) return;
             if (Painting && TreeCount > 0) AddTreesImpl();
-            else if(Deleting && !AxisChanged) RemoveTreesImpl();
+            else if (Deleting && !AxisChanged) RemoveTreesImpl();
         }
 
-        private void AddTreesImpl()
-        {
+        IEnumerator CreateTree() {
+            if (Errors == ToolErrors.None) {
+                bool success = true;
+                bool needMoney = (ToolManager.instance.m_properties.m_mode & ItemClass.Availability.Game) != 0;
+                Randomizer tmp = new Randomizer(TreeManager.instance.m_treeCount);
+                TreeInfo treeInfo = Container.GetVariation(ref tmp);
+                if (needMoney) {
+                    int cost = treeInfo.GetConstructionCost();
+                    success = (cost == 0 || cost == EconomyManager.instance.FetchResource(EconomyManager.Resource.Construction, cost, treeInfo.m_class));
+                }
+                if (success) {
+                    uint tree;
+                    if (TreeManager.instance.CreateTree(out tree, ref Randomizer, treeInfo, MousePosition, true)) {
+                        TreeTool.DispatchPlacementEffect(MousePosition, false);
+                    }
+                }
+            }
+            yield return 0;
+        }
+
+        public ToolErrors CheckPlacementErrors(TreeInfo info, Vector3 position, uint id, ulong[] collidingSegmentBuffer, ulong[] collidingBuildingBuffer) {
+            if (ShiftDown) return ToolErrors.None;
+            Randomizer tmp = new Randomizer(TreeManager.instance.m_treeCount);
+            TreeInfo treeInfo = Container.GetVariation(ref tmp);
+            Vector3 treePosition = MousePosition;
+            treePosition.y = Singleton<TerrainManager>.instance.SampleDetailHeight(treePosition, out float f, out float f2);
+            Randomizer treeRandomizer = new Randomizer(id);
+            float scale = treeInfo.m_minScale + (float)treeRandomizer.Int32(10000u) * (treeInfo.m_maxScale - treeInfo.m_minScale) * 0.0001f;
+            float height = treeInfo.m_generatedInfo.m_size.y * scale;
+            float clearance = Tweaker.SingleTreeClearance;
+            Vector2 treePosition2 = VectorUtils.XZ(treePosition);
+            Quad2 quad = default(Quad2);
+            quad.a = treePosition2 + new Vector2(-clearance, -clearance);
+            quad.b = treePosition2 + new Vector2(-clearance, clearance);
+            quad.c = treePosition2 + new Vector2(clearance, clearance);
+            quad.d = treePosition2 + new Vector2(clearance, -clearance);
+            float minY = MousePosition.y;
+            float maxY = MousePosition.y + height;
+            ItemClass.CollisionType collisionType = ItemClass.CollisionType.Terrain;
+
+            ToolErrors errors = ToolErrors.None;
+            if (PropManager.instance.OverlapQuad(quad, minY, maxY, collisionType, 0, 0)) errors |= ToolErrors.ObjectCollision;
+            if (TreeManager.instance.OverlapQuad(quad, minY, maxY, collisionType, 0, 0)) errors |= ToolErrors.ObjectCollision;
+            if (NetManager.instance.OverlapQuad(quad, minY, maxY, collisionType, info.m_class.m_layer, 0, 0, 0, collidingSegmentBuffer)) errors |= ToolErrors.ObjectCollision;
+            if (BuildingManager.instance.OverlapQuad(quad, minY, maxY, collisionType, info.m_class.m_layer, 0, 0, 0, collidingBuildingBuffer)) errors |= ToolErrors.ObjectCollision;
+            if (TerrainManager.instance.HasWater(treePosition)) errors |= ToolErrors.CannotBuildOnWater;
+            if (GameAreaManager.instance.QuadOutOfArea(quad)) errors |= ToolErrors.OutOfArea;
+            return errors;
+        }
+
+        private void AddTreesImpl() {
             int batchSize = (int)Size * Tweaker.SizeMultiplier + Tweaker.SizeAddend;
-            for (int i = 0; i < batchSize; i++)
-            {
+            for (int i = 0; i < batchSize; i++) {
                 float brushRadius = Size / 2;
                 Vector2 randomPosition = UnityEngine.Random.insideUnitCircle;
                 Vector3 treePosition = MousePosition + new Vector3(randomPosition.x, 0f, randomPosition.y) * Size;
@@ -324,8 +389,7 @@ namespace ForestBrush
 
                 int change = (int)(Strength * (brush * 1.2f - 0.2f) * 10000.0f);
 
-                if (Randomizer.Int32(10000) < change)
-                {
+                if (Randomizer.Int32(10000) < change) {
                     TreeInfo treeInfo = Container.GetVariation(ref Randomizer);
 
                     treePosition.y = Singleton<TerrainManager>.instance.SampleDetailHeight(treePosition, out float f, out float f2);
@@ -358,16 +422,14 @@ namespace ForestBrush
                     if (TerrainManager.instance.HasWater(treePosition2) && !ShiftDown) continue;
                     int noiseScale = Randomizer.Int32(16);
                     float str2Rnd = UnityEngine.Random.Range(0.0f, Tweaker.MaxRandomRange);
-                    if (Mathf.PerlinNoise(treePosition.x * noiseScale, treePosition.y * noiseScale) > 0.5 && str2Rnd < Strength * Tweaker.StrengthMultiplier)
-                    {
+                    if (Mathf.PerlinNoise(treePosition.x * noiseScale, treePosition.y * noiseScale) > 0.5 && str2Rnd < Strength * Tweaker.StrengthMultiplier) {
                         if (Singleton<TreeManager>.instance.CreateTree(out uint num25, ref Randomizer, treeInfo, treePosition, false)) { }
                     }
                 }
             }
         }
 
-        private void RemoveTreesImpl()
-        {
+        private void RemoveTreesImpl() {
             float brushRadius = Size / 2;
             float cellSize = TreeManager.TREEGRID_CELL_SIZE;
             int resolution = TreeManager.TREEGRID_RESOLUTION;
@@ -381,14 +443,11 @@ namespace ForestBrush
             int maxX = Mathf.Min((int)((position.x + Size) / cellSize + resolution * 0.5f), resolution - 1);
             int maxZ = Mathf.Min((int)((position.z + Size) / cellSize + resolution * 0.5f), resolution - 1);
 
-            for (int z = minZ; z <= maxZ; ++z)
-            {
-                for (int x = minX; x <= maxX; ++x)
-                {
+            for (int z = minZ; z <= maxZ; ++z) {
+                for (int x = minX; x <= maxX; ++x) {
                     uint treeIndex = treeGrid[z * resolution + x];
 
-                    while (treeIndex != 0)
-                    {
+                    while (treeIndex != 0) {
                         uint next = trees[treeIndex].m_nextGridTree;
 
                         Vector3 treePosition = TreeManager.instance.m_trees.m_buffer[treeIndex].Position;
@@ -415,14 +474,12 @@ namespace ForestBrush
 
                         int change = (int)(strength * (brush * 1.2f - 0.2f) * 10000.0f);
 
-                        if (Randomizer.Int32(10000) < change)
-                        {
+                        if (Randomizer.Int32(10000) < change) {
                             var noiseScale = Randomizer.Int32(Tweaker.NoiseScale);
                             var strengthToRandom = UnityEngine.Random.Range(0.0f, Tweaker.MaxRandomRange);
                             TreeInfo treeInfo = TreeManager.instance.m_trees.m_buffer[treeIndex].Info;
                             if ((SelectiveDelete && ForestBrush.Instance.BrushTool.TreeInfos.Contains(treeInfo))
-                            || !SelectiveDelete)
-                            {
+                            || !SelectiveDelete) {
                                 Vector2 xzTreePosition = VectorUtils.XZ(treePosition);
                                 Vector2 xzMousePosition = VectorUtils.XZ(MousePosition);
                                 if ((xzMousePosition - xzTreePosition).sqrMagnitude <= Size * Size) TreeManager.instance.ReleaseTree(treeIndex);
@@ -433,18 +490,50 @@ namespace ForestBrush
                 }
             }
         }
+        public override void RenderGeometry(RenderManager.CameraInfo cameraInfo) {
+            if (!MouseRayValid || Container is null) {
+                base.RenderGeometry(cameraInfo);
+                return;
+            }
 
-        public override void RenderOverlay(RenderManager.CameraInfo cameraInfo)
-        {
-            if (!MouseRayValid || Container is null) return;
+            Randomizer tmp = new Randomizer(TreeManager.instance.m_treeCount);
+            TreeInfo info = Container.GetVariation(ref tmp);
+            if (!(info is null) && Size == 1.0f && Errors == ToolErrors.None && TreeCount > 0) {
+                Randomizer tmp2 = Randomizer;
+                uint item = TreeManager.instance.m_trees.NextFreeItem(ref tmp2);
 
-            RenderBrush(cameraInfo); 
+                Randomizer r = new Randomizer(item);
+                float scale = info.m_minScale + r.Int32(10000) * (info.m_maxScale - info.m_minScale) * 0.0001f;
+                float brightness = info.m_minBrightness + r.Int32(10000) * (info.m_maxBrightness - info.m_minBrightness) * 0.0001f;
+
+                TreeInstance.RenderInstance(null, info, MousePosition, scale, brightness, RenderManager.DefaultColorLocation);
+            }
+
+            base.RenderGeometry(cameraInfo);
         }
 
-        private void RenderBrush(RenderManager.CameraInfo cameraInfo)
-        {
-            if (BrushTexture != null)
-            {
+        public override void RenderOverlay(RenderManager.CameraInfo cameraInfo) {
+            if (!MouseRayValid || Container is null) return;
+            Randomizer tmp = new Randomizer(TreeManager.instance.m_treeCount);
+            TreeInfo info = Container.GetVariation(ref tmp);
+            if (!(info is null) && Size == 1.0f) {
+                Color color = TreeCount == 0 ? m_toolController.m_errorColorInfo : GetToolColor(false, Errors != ToolErrors.None);
+                m_toolController.RenderColliding(cameraInfo, color, color, color, color, 0, 0);
+
+                Randomizer tmp2 = Randomizer;
+                uint item = TreeManager.instance.m_trees.NextFreeItem(ref tmp2);
+
+                Randomizer r = new Randomizer(item);
+                float scale = info.m_minScale + r.Int32(10000) * (info.m_maxScale - info.m_minScale) * 0.0001f;
+
+                TreeTool.RenderOverlay(cameraInfo, info, MousePosition, scale, color);
+            } else {
+                RenderBrush(cameraInfo);
+            }
+        }
+
+        private void RenderBrush(RenderManager.CameraInfo cameraInfo) {
+            if (BrushTexture != null) {
                 BrushMaterial.SetTexture(ID_BrushTex, BrushTexture);
                 Vector4 position = BrushPosition;
                 position.w = Size;
@@ -459,26 +548,21 @@ namespace ForestBrush
             }
         }
 
-        private void Rotate45()
-        {
+        private void Rotate45() {
             Angle = Mathf.Round(Angle / 45f - 1f) * 45f;
             ClampAngle();
         }
 
-        private void ClampAngle()
-        {
-            if (Angle < 0f)
-            {
+        private void ClampAngle() {
+            if (Angle < 0f) {
                 Angle += 360f;
             }
-            if (Angle >= 360f)
-            {
+            if (Angle >= 360f) {
                 Angle -= 360f;
             }
         }
 
-        private  void DeltaAngle(float delta)
-        {
+        private void DeltaAngle(float delta) {
             Angle += delta;
             ClampAngle();
         }
@@ -491,31 +575,29 @@ namespace ForestBrush
             public float NoiseThreshold;
             public float MaxRandomRange;
             public float Clearance;
+            public float SingleTreeClearance;
             public float SpacingFactor;
             public float StrengthMultiplier;
             public float _maxSize;
-            public float MaxSize
-            {
-                get
-                {
+            public float MaxSize {
+                get {
                     return _maxSize;
                 }
-                set
-                {
+                set {
                     _maxSize = value;
                     ForestBrush.Instance.ForestBrushPanel.BrushOptionsSection.sizeSlider.maxValue = value;
                 }
             }
         }
 
-        public Tweaks Tweaker = new Tweaks()
-        {
+        public Tweaks Tweaker = new Tweaks() {
             SizeAddend = 10,
             SizeMultiplier = 7,
             NoiseScale = 16,
             NoiseThreshold = 0.5f,
             MaxRandomRange = 4f,
             Clearance = 4.5f,
+            SingleTreeClearance = 0.3f,
             SpacingFactor = 0.6f,
             StrengthMultiplier = 10,
             _maxSize = 1000f

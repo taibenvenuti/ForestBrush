@@ -77,7 +77,7 @@ namespace ForestBrush.Resources
             {
                 if (atlas == null)
                 {
-                    atlas = GetAtlas("Ingame");
+                    atlas = GetAtlas();
                 }
                 return atlas;
             }
@@ -229,15 +229,9 @@ namespace ForestBrush.Resources
             atlas.RebuildIndexes();
         }
 
-        public static UITextureAtlas GetAtlas(string name)
+        public static UITextureAtlas GetAtlas()
         {
-            UITextureAtlas[] atlases = UnityEngine.Resources.FindObjectsOfTypeAll(typeof(UITextureAtlas)) as UITextureAtlas[];
-            for (int i = 0; i < atlases.Length; i++)
-            {
-                if (atlases[i].name == name)
-                    return atlases[i];
-            }
-            return UnityEngine.Resources.Load<UITextureAtlas>(string.Concat("Assets/Data/GUI/", name));
+            return UserMod.IsGame ? UIView.GetAView().defaultAtlas : UIView.library?.Get<OptionsMainPanel>("OptionsPanel")?.GetComponent<UIPanel>()?.atlas;
         }
 
         public static Texture2D LoadTextureFromAssembly(string path)
