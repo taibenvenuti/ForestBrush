@@ -147,16 +147,17 @@ namespace ForestBrush
         }
 
         protected override void OnToolGUI(Event e) {
-            if (!m_toolController.IsInsideUI && (e.type == EventType.MouseDown || e.type == EventType.MouseDrag && Size == 1.0f && !ShiftDown)) {
+            if (!m_toolController.IsInsideUI && (e.type == EventType.MouseDown || e.type == EventType.MouseDrag && Size == 1.0f)) {
                 if (e.button == 0) {
                     MouseLeftDown = true;
                     if (Size == 1.0f && TreeCount > 0) {
                         Vector3 mousePos = MousePosition;
+                        float strength = ShiftDown ? Mathf.Clamp(Strength, 0.01f, 0.99f) : Strength;
                         if (!LastValidMousePosition.Equals(Vector3.zero)) {
-                            if (Strength < 1.0f) {
+                            if (strength < 1.0f) {
                                 var distance = 25;
                                 if (Math.Pow(mousePos.x - LastValidMousePosition.x, 2) +
-                                    Math.Pow(mousePos.z - LastValidMousePosition.z, 2) < Math.Pow(distance - distance * Strength, 2)) {
+                                    Math.Pow(mousePos.z - LastValidMousePosition.z, 2) < Math.Pow(distance - distance * strength, 2)) {
                                     return;
                                 }
                             }
@@ -336,7 +337,7 @@ namespace ForestBrush
             Vector3 treePosition = MousePosition;
             treePosition.y = Singleton<TerrainManager>.instance.SampleDetailHeight(treePosition, out float f, out float f2);
             Randomizer treeRandomizer = new Randomizer(id);
-            float scale = treeInfo.m_minScale + (float)treeRandomizer.Int32(10000u) * (treeInfo.m_maxScale - treeInfo.m_minScale) * 0.0001f;
+            float scale = treeInfo.m_minScale + treeRandomizer.Int32(10000u) * (treeInfo.m_maxScale - treeInfo.m_minScale) * 0.0001f;
             float height = treeInfo.m_generatedInfo.m_size.y * scale;
             float clearance = Tweaker.SingleTreeClearance;
             Vector2 treePosition2 = VectorUtils.XZ(treePosition);
@@ -345,13 +346,20 @@ namespace ForestBrush
             quad.b = treePosition2 + new Vector2(-clearance, clearance);
             quad.c = treePosition2 + new Vector2(clearance, clearance);
             quad.d = treePosition2 + new Vector2(clearance, -clearance);
+            float spacing = Options.AutoDensity ? treeInfo.m_generatedInfo.m_size.x * Tweaker.SpacingFactor : Density;
+            Quad2 spacingQuad = default(Quad2);
+            spacingQuad.a = treePosition2 + new Vector2(-spacing, -spacing);
+            spacingQuad.b = treePosition2 + new Vector2(-spacing, spacing);
+            spacingQuad.c = treePosition2 + new Vector2(spacing, spacing);
+            spacingQuad.d = treePosition2 + new Vector2(spacing, -spacing);
+
             float minY = MousePosition.y;
             float maxY = MousePosition.y + height;
             ItemClass.CollisionType collisionType = ItemClass.CollisionType.Terrain;
 
             ToolErrors errors = ToolErrors.None;
             if (PropManager.instance.OverlapQuad(quad, minY, maxY, collisionType, 0, 0)) errors |= ToolErrors.ObjectCollision;
-            if (TreeManager.instance.OverlapQuad(quad, minY, maxY, collisionType, 0, 0)) errors |= ToolErrors.ObjectCollision;
+            if (TreeManager.instance.OverlapQuad(spacingQuad, minY, maxY, collisionType, 0, 0)) errors |= ToolErrors.ObjectCollision;
             if (NetManager.instance.OverlapQuad(quad, minY, maxY, collisionType, info.m_class.m_layer, 0, 0, 0, collidingSegmentBuffer)) errors |= ToolErrors.ObjectCollision;
             if (BuildingManager.instance.OverlapQuad(quad, minY, maxY, collisionType, info.m_class.m_layer, 0, 0, 0, collidingBuildingBuffer)) errors |= ToolErrors.ObjectCollision;
             if (TerrainManager.instance.HasWater(treePosition)) errors |= ToolErrors.CannotBuildOnWater;
