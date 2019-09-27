@@ -1,1 +1,65 @@
-﻿
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Language UniqueName="en" ReadableName="English" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2009/XMLSchema/XMLSchema.xsd">
+  <Translations>
+    <Translation ID="FOREST-BRUSH-MODDESCRIPTION" String="Lets you create, edit, and save mixed tree brushes." />
+    <Translation ID="FOREST-BRUSH-MODNAME" String="Forest Brush" />
+    <Translation ID="FOREST-BRUSH-BRUSH" String="Brush" />
+    <Translation ID="FOREST-BRUSH-SELECT" String="Select brush" />
+    <Translation ID="FOREST-BRUSH-CREATE" String="Create new brush" />
+    <Translation ID="FOREST-BRUSH-DELETE" String="Delete current brush" />
+    <Translation ID="FOREST-BRUSH-SEARCH" String="Search" />
+    <Translation ID="FOREST-BRUSH-PROBABILITY" String="Probability" />
+    <Translation ID="FOREST-BRUSH-TOGGLE-EDIT" String="Toggle 'Trees' panel" />
+    <Translation ID="FOREST-BRUSH-TOGGLE-OPTIONS" String="Toggle 'Brush Options' panel" />
+    <Translation ID="FOREST-BRUSH-TOGGLE-SELECTBRUSHSHAPE" String="Toggle 'Brush Shapes' panel" />
+    <Translation ID="FOREST-BRUSH-BRUSH-OPTIONS-STRENGTH" String="Strength" />
+    <Translation ID="FOREST-BRUSH-BRUSH-OPTIONS-DENSITY" String="Density" />
+    <Translation ID="FOREST-BRUSH-BRUSH-OPTIONS-SIZE" String="Size" />
+    <Translation ID="FOREST-BRUSH-BRUSH-OPTIONS-AUTODENSITY" String="Auto-density" />
+    <Translation ID="FOREST-BRUSH-BRUSH-OPTIONS-RESET" String="Reset" />
+    <Translation ID="FOREST-BRUSH-OPTIONS-RESET" String="Reset all options to default values" />
+    <Translation ID="FOREST-BRUSH-OPTIONS-SHOWMESHDATA" String="Show tree mesh and texture data in tooltip" />
+    <Translation ID="FOREST-BRUSH-DATA-NAME" String="Name" />
+    <Translation ID="FOREST-BRUSH-DATA-AUTHOR" String="Author" />
+    <Translation ID="FOREST-BRUSH-DATA-MESH" String="Mesh" />
+    <Translation ID="FOREST-BRUSH-DATA-MESHNOTREADABLE" String="Unreadable" />
+    <Translation ID="FOREST-BRUSH-DATA-TRIANGLES" String="Triangles" />
+    <Translation ID="FOREST-BRUSH-DATA-TEXTURE" String="Texture" />
+    <Translation ID="FOREST-BRUSH-DATA-PIXELS" String="px" />
+    <Translation ID="FOREST-BRUSH-OPTIONS-SORTING" String="Sort trees list by" />
+    <Translation ID="FOREST-BRUSH-OPTIONS-SORTING-ORDER" String="Sorting order" />
+    <Translation ID="FOREST-BRUSH-OPTIONS-SORTING-ASCENDING" String="Ascending" />
+    <Translation ID="FOREST-BRUSH-OPTIONS-SORTING-DESCENDING" String="Descending" />
+    <Translation ID="FOREST-BRUSH-OPTIONS-FILTERING-LOGIC" String="Search logic" />
+    <Translation ID="FOREST-BRUSH-OPTIONS-FILTERING-AND" String="AND (Match both words)" />
+    <Translation ID="FOREST-BRUSH-OPTIONS-FILTERING-OR" String="OR (Match either word)" />
+    <Translation ID="FOREST-BRUSH-OPTIONS-FILTERING-SIMPLE" String="Simple (Faster 'Tree-name only' search)" />
+    <Translation ID="FOREST-BRUSH-OPTIONS-NEWBRUSH" String="When creating a new brush" />
+    <Translation ID="FOREST-BRUSH-OPTIONS-NEWBRUSH-CLEAR" String="Start with empty brush" />
+    <Translation ID="FOREST-BRUSH-OPTIONS-NEWBRUSH-KEEP" String="Keep trees from last brush" />
+    <Translation ID="FOREST-BRUSH-OPTIONS-IGNORE-VANILLA" String="Hide vanilla trees" />
+    <Translation ID="FOREST-BRUSH-MODAL-WARNING" String="Warning" />
+    <Translation ID="FOREST-BRUSH-MODAL-LIMITREACHED-TITLE" String="Tree limit reached" />
+    <Translation ID="FOREST-BRUSH-MODAL-LIMITREACHED-MESSAGE-ONE" String="You've reached the 100 tree limit for this brush. Please remove some trees to add more." />
+    <Translation ID="FOREST-BRUSH-MODAL-LIMITREACHED-MESSAGE-ALL" String="You've reached the 100 tree limit for this brush. Some trees were not added. Please remove some trees to add more." />
+    <Translation ID="FOREST-BRUSH-PROMPT-NEW" String="Brush name" />
+    <Translation ID="FOREST-BRUSH-RENAME-BRUSH" String="Use this textfield to rename the current brush." />
+    <Translation ID="FOREST-BRUSH-PROMPT-DELETE" String="Are you sure you want to permanently delete this brush?" />
+    <Translation ID="FOREST-BRUSH-RENAME-ERROR" String="Another brush already exists with this name." />
+    <Translation ID="FOREST-BRUSH-PROMPT-YES" String="Yes" />
+    <Translation ID="FOREST-BRUSH-PROMPT-NO" String="No" />
+    <Translation ID="FOREST-BRUSH-PROMPT-OK" String="OK" />
+    <Translation ID="FOREST-BRUSH-PROMPT-CANCEL" String="Cancel" />
+    <Translation ID="FOREST-BRUSH-KEYBIND-TOGGLE-TOOL" String="Toggle Forest Brush panel" />
+    <Translation ID="FOREST-BRUSH-TUTORIAL" String="
+Thanks for subscribing to Forest Brush.&#10;&#10;
+Click on the 'Trees' button to select the trees for your brush.&#10;
+Use the checkboxes to add/remove trees to the brush.&#10;
+CTRL + click on a checkbox to select/deselect all trees.&#10;&#10;
+You can have as many different brushes as you like, just add more with the 'plus' button.&#10;&#10;
+Use the searchbox to find specific trees.&#10;&#10;
+Click on the 'Gear' button to edit your brush settings.&#10;
+Here you can change the size, strength and density of your brush.&#10;
+Visit the mod's workshop page for detailed instructions." />
+  </Translations>
+</Language>
