@@ -188,7 +188,7 @@ namespace ForestBrush
             if (Container is null) return;
             if (MouseRayValid) {
                 if (UserMod.Settings.ShowInfoTooltip && (CtrlDown || AltDown)) {
-                    string density = Options.AutoDensity ? "Auto" : string.Concat(Math.Round((16 - Options.Density) * 6.25f, 1, MidpointRounding.AwayFromZero), "%");
+                    string density = Options.AutoDensity ? "Auto" : string.Concat(Math.Round((16 - Options.Density) * 6.451612903225806f, 1, MidpointRounding.AwayFromZero), "%");
                     string text = $"Trees: {Container.m_variations.Length}\nSize: {Options.Size}\nStrength: { Math.Round(Options.Strength * 100, 1) + "%"}\nDensity: {density}";
                     ShowInfo(true, text);
                 } else if (Size == 1.0f && TreeCount > 0) {
@@ -216,7 +216,7 @@ namespace ForestBrush
                     } else if (Mathf.Abs(axisY) > Mathf.Abs(axisX)) {
                         AxisChanged = true;
                         if (DensityOrRotation) {
-                            Options.Density = Mathf.Clamp(Options.Density - axisY, 0.0f, 16.0f);
+                            Options.Density = Mathf.Clamp(Options.Density - axisY, 0.5f, 16.0f);
                         } else if (SizeAndStrength) {
                             Options.Strength = Mathf.Clamp(Options.Strength + axisY * 0.1f, 0.01f, 1.0f);
                         }

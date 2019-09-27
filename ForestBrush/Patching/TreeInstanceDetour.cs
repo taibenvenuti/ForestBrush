@@ -22,10 +22,6 @@ namespace ForestBrush
                         return result;
                     } else {
                         Vector3 result;
-                        //Begin Mod
-                        //result.x = (float)this.m_posX * 0.263671875f;
-                        //result.y = (float)this.m_posY * 0.015625f;
-                        //result.z = (float)this.m_posZ * 0.263671875f;
 
                         ushort index;
                         fixed (TreeInstance* buffer = TreeManager.instance.m_trees.m_buffer) {
@@ -66,8 +62,8 @@ namespace ForestBrush
                         tree->m_posZ = (short)Mathf.Clamp(Mathf.RoundToInt(value.z * 60.68148f), -32767, 32767);
                         tree->m_posY = (ushort)Mathf.Clamp(Mathf.RoundToInt(value.y * 64f), 0, 65535);
                     } else {
-                        tree->m_posX = (short)Mathf.Clamp(/* Mathf.RoundToInt */(int)(value.x * 3.79259253f), -32767, 32767);
-                        tree->m_posZ = (short)Mathf.Clamp(/* Mathf.RoundToInt */(int)(value.z * 3.79259253f), -32767, 32767);
+                        tree->m_posX = (short)Mathf.Clamp((int)(value.x * 3.79259253f), -32767, 32767);
+                        tree->m_posZ = (short)Mathf.Clamp((int)(value.z * 3.79259253f), -32767, 32767);
                         tree->m_posY = (ushort)Mathf.Clamp(Mathf.RoundToInt(value.y * 64f), 0, 65535);
                         //Begin Mod
                         Data.PrecisionData precisionData = new Data.PrecisionData();

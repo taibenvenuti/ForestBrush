@@ -218,12 +218,12 @@ namespace ForestBrush.GUI
             densitySlider.size = new Vector2(400f - densityLabel.width - 30f, 5f);
             densitySlider.color = new Color32(0, 0, 0, 255);
             densitySlider.disabledColor = new Color32(75, 75, 75, 255);
-            densitySlider.minValue = 0f;
-            densitySlider.maxValue = 16f;
-            densitySlider.stepSize = 0.16f;
-            densitySlider.value = 16 - UserMod.Settings.SelectedBrush.Options.Density;
-            densitySlider.scrollWheelAmount = 0.16f;
-            densitySlider.tooltip = Math.Round(densitySlider.value * 6.25, 1, MidpointRounding.AwayFromZero) + "%";
+            densitySlider.minValue = 0.0f;
+            densitySlider.maxValue = 15.5f;
+            densitySlider.stepSize = 0.155f;
+            densitySlider.value = 16.0f - UserMod.Settings.SelectedBrush.Options.Density;
+            densitySlider.scrollWheelAmount = 0.155f;
+            densitySlider.tooltip = Math.Round(densitySlider.value * 6.451612903225806, 1, MidpointRounding.AwayFromZero) + "%";
             densitySlider.eventValueChanged += DensitySlider_eventValueChanged;
             densitySlider.eventMouseUp += DensitySlider_eventMouseUp;
             densitySlider.backgroundSprite = ResourceLoader.WhiteRect;
@@ -254,7 +254,7 @@ namespace ForestBrush.GUI
 
         private void DensitySlider_eventValueChanged(UIComponent component, float value)
         {
-            densitySlider.tooltip = Math.Round(densitySlider.value * 6.25, 1, MidpointRounding.AwayFromZero) + "%";
+            densitySlider.tooltip = Math.Round(densitySlider.value * 6.451612903225806, 1, MidpointRounding.AwayFromZero) + "%";
             densitySlider.RefreshTooltip();
             UserMod.Settings.SelectedBrush.Options.Density = 16f - value;
         }
