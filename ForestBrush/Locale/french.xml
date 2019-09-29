@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Language UniqueName="fr" ReadableName="Français/French" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2009/XMLSchema/XMLSchema.xsd">
+<Language UniqueName="fr" ReadableName="Français" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2009/XMLSchema/XMLSchema.xsd">
   <Translations>
     <Translation ID="FOREST-BRUSH-MODDESCRIPTION" String="Il vous permet de créer, éditer et d'enregistrer des arbes mélangés à l'aide d'un pinceau." />
     <Translation ID="FOREST-BRUSH-MODNAME" String="Pinceau de Forêt" />
@@ -27,7 +27,7 @@
     <Translation ID="FOREST-BRUSH-DATA-TEXTURE" String="Texture" />
     <Translation ID="FOREST-BRUSH-DATA-PIXELS" String="px" />
     <Translation ID="FOREST-BRUSH-OPTIONS-SORTING" String="Trier les arbres par" />
-    <Translation ID="FOREST-BRUSH-OPTIONS-SORTING-ORDER" String="ordre de tri" />
+    <Translation ID="FOREST-BRUSH-OPTIONS-SORTING-ORDER" String="Ordre de tri" />
     <Translation ID="FOREST-BRUSH-OPTIONS-SORTING-ASCENDING" String="Ascendant" />
     <Translation ID="FOREST-BRUSH-OPTIONS-SORTING-DESCENDING" String="Descendant" />
     <Translation ID="FOREST-BRUSH-OPTIONS-FILTERING-LOGIC" String="Recherche logique" />
@@ -51,6 +51,7 @@
     <Translation ID="FOREST-BRUSH-PROMPT-OK" String="OK" />
     <Translation ID="FOREST-BRUSH-PROMPT-CANCEL" String="Annuler" />
     <Translation ID="FOREST-BRUSH-KEYBIND-TOGGLE-TOOL" String="Basculer ver le panneau du pinceau de Forêt" />
+    <Translation ID="FOREST-BRUSH-TOOLERROR-BRUSHEMPTY" String="Pas d'arbres dans le piceau" />
     <Translation ID="FOREST-BRUSH-TUTORIAL" String="
 Merci de vous être abonné à Forest Brush.&#10;&#10;
 Cliquez sur le bouton 'Arbres' pour sélectionner les arbres pour votre pinceau.&#10;

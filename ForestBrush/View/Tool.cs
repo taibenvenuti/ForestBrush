@@ -2,6 +2,8 @@
 using ColossalFramework.Globalization;
 using ColossalFramework.Math;
 using ColossalFramework.UI;
+using ForestBrush.Persistence;
+using ForestBrush.TranslationFramework;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -60,6 +62,7 @@ namespace ForestBrush
         private Shader Shader => Resources.ResourceLoader.Shader;
 
         public Texture2D BrushTexture { get; set; }
+
 
         protected override void Awake() {
             base.Awake();
@@ -153,7 +156,7 @@ namespace ForestBrush
                     if (Size == 1.0f && TreeCount > 0) {
                         Vector3 mousePos = MousePosition;
                         float strength = ShiftDown ? Mathf.Clamp(Strength, 0.01f, 0.99f) : Strength;
-                        if (!LastValidMousePosition.Equals(Vector3.zero)) {
+                        if (!LastValidMousePosition.Equals(Vector3.zero) && e.type == EventType.MouseDrag) {
                             if (strength < 1.0f) {
                                 var distance = 25;
                                 if (Math.Pow(mousePos.x - LastValidMousePosition.x, 2) +
@@ -163,7 +166,7 @@ namespace ForestBrush
                             }
                         }
                         LastValidMousePosition = mousePos;
-                        SimulationManager.instance.AddAction(CreateTree());
+                        SimulationManager.instance.AddAction(CreateTree(ShiftDown));
                     }
                 } else if (e.button == 1) {
                     MouseRightDown = true;
@@ -191,14 +194,19 @@ namespace ForestBrush
                     string density = Options.AutoDensity ? "Auto" : string.Concat(Math.Round((16 - Options.Density) * 6.451612903225806f, 1, MidpointRounding.AwayFromZero), "%");
                     string text = $"Trees: {Container.m_variations.Length}\nSize: {Options.Size}\nStrength: { Math.Round(Options.Strength * 100, 1) + "%"}\nDensity: {density}";
                     ShowInfo(true, text);
-                } else if (Size == 1.0f && TreeCount > 0) {
-                    Randomizer tmp = new Randomizer(TreeManager.instance.m_treeCount);
-                    int cost = Container.GetVariation(ref tmp).GetConstructionCost();
-                    if (cost != 0) {
-                        string text = StringUtils.SafeFormat(Locale.Get(LocaleID.TOOL_CONSTRUCTION_COST), cost / 100);
-                        ShowToolInfo(true, text, MousePosition);
+                } else if (Size == 1.0f) {
+                    if (TreeCount > 0) {
+                        Randomizer tmp = new Randomizer(TreeManager.instance.m_treeCount);
+                        int cost = Container.GetVariation(ref tmp).GetConstructionCost();
+                        if (cost != 0) {
+                            string text = StringUtils.SafeFormat(Locale.Get(LocaleID.TOOL_CONSTRUCTION_COST), cost / 100);
+                            ShowToolInfo(true, text, MousePosition);
+                        } else {
+                            ShowToolInfo(true, null, MousePosition);
+                        }
                     } else {
-                        ShowToolInfo(true, null, MousePosition);
+                        string text = Translation.Instance.GetTranslation("FOREST-BRUSH-TOOLERROR-BRUSHEMPTY");
+                        ShowToolInfo(true, text, MousePosition);
                     }
                 } else ShowToolInfo(false, null, CachedPosition);
             } else ShowToolInfo(false, null, CachedPosition);
@@ -310,7 +318,7 @@ namespace ForestBrush
             else if (Deleting && !AxisChanged) RemoveTreesImpl();
         }
 
-        IEnumerator CreateTree() {
+        IEnumerator CreateTree(bool anarchy) {
             if (Errors == ToolErrors.None) {
                 bool success = true;
                 bool needMoney = (ToolManager.instance.m_properties.m_mode & ItemClass.Availability.Game) != 0;
@@ -323,6 +331,7 @@ namespace ForestBrush
                 if (success) {
                     uint tree;
                     if (TreeManager.instance.CreateTree(out tree, ref Randomizer, treeInfo, MousePosition, true)) {
+                        if (anarchy) GrowState.data.Add(tree);
                         TreeTool.DispatchPlacementEffect(MousePosition, false);
                     }
                 }

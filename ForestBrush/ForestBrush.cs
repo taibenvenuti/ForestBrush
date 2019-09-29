@@ -8,6 +8,7 @@ using ColossalFramework.PlatformServices;
 using ColossalFramework.UI;
 using ForestBrush.GUI;
 using ForestBrush.TranslationFramework;
+using ForestBrush.Persistence;
 using UnityEngine;
 
 namespace ForestBrush
@@ -47,6 +48,9 @@ namespace ForestBrush
         public ForestBrushTool BrushTool { get; private set; }
 
         public UIButton ToggleButton => toggleButtonComponents.ToggleButton;
+
+        public Dictionary<uint, Precision.Data> PrecisionData => Precision.data;
+        public HashSet<uint> GrowStateData => GrowState.data;
 
         internal ForestBrushPanel ForestBrushPanel { get; private set; }
 

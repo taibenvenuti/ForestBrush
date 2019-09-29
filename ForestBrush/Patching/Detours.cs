@@ -1,12 +1,11 @@
 ﻿using ColossalFramework;
 using ForestBrush.Redirection;
 using UnityEngine;
-using ForestBrush.Persistence;
 
 namespace ForestBrush
 {
     [TargetType(typeof(TreeInstance))]
-    public struct TreeInstanceDetour
+    public struct PositionDetour
     {
         [RedirectMethod]
         public unsafe Vector3 Position {
@@ -23,13 +22,13 @@ namespace ForestBrush
                     } else {
                         Vector3 result;
 
-                        ushort index;
+                        uint index;
                         fixed (TreeInstance* buffer = TreeManager.instance.m_trees.m_buffer) {
-                            index = (ushort)(tree - buffer);
+                            index = (uint)(tree - buffer);
                         }
 
-                        if (Data.data.ContainsKey(index)) {
-                            Data.PrecisionData precisionData = (Data.PrecisionData)Data.data[index];
+                        if (Persistence.Precision.data.ContainsKey(index)) {
+                            Persistence.Precision.Data precisionData = (Persistence.Precision.Data)Persistence.Precision.data[index];
 
                             if (tree->m_posX > 0) {
                                 result.x = ((float)tree->m_posX + (float)precisionData.x / (float)ushort.MaxValue) * 0.263671875f;
@@ -48,7 +47,6 @@ namespace ForestBrush
                             result.y = (float)tree->m_posY * 0.015625f;
                             result.z = (float)tree->m_posZ * 0.263671875f;
                         }
-                        //EndMod
                         return result;
                     }
                 }
@@ -65,15 +63,13 @@ namespace ForestBrush
                         tree->m_posX = (short)Mathf.Clamp((int)(value.x * 3.79259253f), -32767, 32767);
                         tree->m_posZ = (short)Mathf.Clamp((int)(value.z * 3.79259253f), -32767, 32767);
                         tree->m_posY = (ushort)Mathf.Clamp(Mathf.RoundToInt(value.y * 64f), 0, 65535);
-                        //Begin Mod
-                        Data.PrecisionData precisionData = new Data.PrecisionData();
+                        Persistence.Precision.Data precisionData = new Persistence.Precision.Data();
                         precisionData.x = (ushort)(ushort.MaxValue * Mathf.Abs(value.x * 3.79259253f - (float)tree->m_posX));
                         precisionData.z = (ushort)(ushort.MaxValue * Mathf.Abs(value.z * 3.79259253f - (float)tree->m_posZ));
 
                         fixed (TreeInstance* buffer = TreeManager.instance.m_trees.m_buffer) {
-                            Data.data[(ushort)(tree - buffer)] = precisionData;
+                            Persistence.Precision.data[(uint)(tree - buffer)] = precisionData;
                         }
-                        //EndMod
                     }
                 }
             }

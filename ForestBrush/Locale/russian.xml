@@ -51,6 +51,7 @@
     <Translation ID="FOREST-BRUSH-PROMPT-OK" String="ОК" />
     <Translation ID="FOREST-BRUSH-PROMPT-CANCEL" String="Отмена" />
     <Translation ID="FOREST-BRUSH-KEYBIND-TOGGLE-TOOL" String="Переключить панель Кисть Для Леса" />
+    <Translation ID="FOREST-BRUSH-TOOLERROR-BRUSHEMPTY" String="кисть пуста" />
     <Translation ID="FOREST-BRUSH-TUTORIAL" String="
 Спасибо, что подписались на Кисть Для Леса.&#10;&#10;
 Нажмите на кнопку 'дерево', чтобы выбрать деревья для вашей кисти.&#10;

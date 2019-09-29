@@ -115,7 +115,7 @@ namespace ForestBrush
                 }
             }
             if (!IsModEnabled(1873351912UL, "Tree Precision")) {
-                Redirector<TreeInstanceDetour>.Deploy();
+                Redirector<PositionDetour>.Deploy();
             }
         }
 
@@ -129,7 +129,7 @@ namespace ForestBrush
                     Harmony = null;
                 }
             }
-            Redirector<TreeInstanceDetour>.Revert();
+            Redirector<PositionDetour>.Revert();
         }
 
         void InstallMod()

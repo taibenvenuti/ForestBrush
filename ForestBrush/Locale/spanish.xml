@@ -51,6 +51,7 @@
     <Translation ID="FOREST-BRUSH-PROMPT-OK" String="OK" />
     <Translation ID="FOREST-BRUSH-PROMPT-CANCEL" String="Regresar" />
     <Translation ID="FOREST-BRUSH-KEYBIND-TOGGLE-TOOL" String="Muestra/Esconde el panel de 'Forest Brush'" />
+    <Translation ID="FOREST-BRUSH-TOOLERROR-BRUSHEMPTY" String="No hay árboles en el picel" />
     <Translation ID="FOREST-BRUSH-TUTORIAL" String="
 Gracias por descargar Forest Brush.&#10;&#10;
 Haz click en el botón 'Árboles' para agregar árboles al pincel.&#10;

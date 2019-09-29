@@ -81,9 +81,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Brush.cs" />
-    <Compile Include="Patching\TreeInstanceDetour.cs" />
-    <Compile Include="Patching\TreeInstancePatches.cs" />
-    <Compile Include="Persistence\Data.cs" />
+    <Compile Include="Patching\Detours.cs" />
+    <Compile Include="Patching\Patches.cs" />
+    <Compile Include="Persistence\Precision.cs" />
+    <Compile Include="Persistence\GrowState.cs" />
     <Compile Include="Persistence\SerializableDataExtension.cs" />
     <Compile Include="Redirection\RedirectionHelper.cs" />
     <Compile Include="Redirection\RedirectionUtil.cs" />
@@ -129,6 +130,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Locale\french.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Locale\german.xml">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

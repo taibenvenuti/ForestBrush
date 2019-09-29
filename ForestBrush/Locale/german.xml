@@ -51,6 +51,7 @@
     <Translation ID="FOREST-BRUSH-PROMPT-OK" String="Ok" />
     <Translation ID="FOREST-BRUSH-PROMPT-CANCEL" String="Abbrechen" />
     <Translation ID="FOREST-BRUSH-KEYBIND-TOGGLE-TOOL" String="Waldpinsel Panel anzeigen/verstecken" />
+    <Translation ID="FOREST-BRUSH-TOOLERROR-BRUSHEMPTY" String="Keine Bäume im Pinsel" />
     <Translation ID="FOREST-BRUSH-TUTORIAL" String="
 Danke dafür, dass du die Wald Pinsel Mod abonniert hast.&#10;&#10;
 Klicke auf die Schaltfläche 'Bäume', um Bäume für deinen Pinsel auszuwählen.&#10;
