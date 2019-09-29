@@ -38,6 +38,7 @@
     <Translation ID="FOREST-BRUSH-OPTIONS-NEWBRUSH-CLEAR" String="Начать с пустой кисти" />
     <Translation ID="FOREST-BRUSH-OPTIONS-NEWBRUSH-KEEP" String="Оставить деревья с предыдущей кисти" />
     <Translation ID="FOREST-BRUSH-OPTIONS-IGNORE-VANILLA" String="Скрыть стандартные деревья" />
+    <Translation ID="FOREST-BRUSH-OPTIONS-SINGLETREE-EFFECT" String="Воспроизвести эффект «звук и пыль» при размещении отдельных деревьев" />
     <Translation ID="FOREST-BRUSH-MODAL-WARNING" String="Внимание" />
     <Translation ID="FOREST-BRUSH-MODAL-LIMITREACHED-TITLE" String="Достигнут предел деревьев" />
     <Translation ID="FOREST-BRUSH-MODAL-LIMITREACHED-MESSAGE-ONE" String="Вы достигли предела в 100 деревьев для этой кисти. Пожалуйста, удалите некоторые деревья, чтобы добавить ещё." />

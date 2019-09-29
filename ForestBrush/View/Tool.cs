@@ -332,7 +332,7 @@ namespace ForestBrush
                     uint tree;
                     if (TreeManager.instance.CreateTree(out tree, ref Randomizer, treeInfo, MousePosition, true)) {
                         if (anarchy) GrowState.data.Add(tree);
-                        TreeTool.DispatchPlacementEffect(MousePosition, false);
+                        if (UserMod.Settings.PlayEffect) TreeTool.DispatchPlacementEffect(MousePosition, false);
                     }
                 }
             }
@@ -440,7 +440,9 @@ namespace ForestBrush
                     int noiseScale = Randomizer.Int32(16);
                     float str2Rnd = UnityEngine.Random.Range(0.0f, Tweaker.MaxRandomRange);
                     if (Mathf.PerlinNoise(treePosition.x * noiseScale, treePosition.y * noiseScale) > 0.5 && str2Rnd < Strength * Tweaker.StrengthMultiplier) {
-                        if (Singleton<TreeManager>.instance.CreateTree(out uint num25, ref Randomizer, treeInfo, treePosition, false)) { }
+                        if (Singleton<TreeManager>.instance.CreateTree(out uint num25, ref Randomizer, treeInfo, treePosition, false)) {
+                            EconomyManager.instance.FetchResource(EconomyManager.Resource.Construction, 1000, treeInfo.m_class);
+                        }
                     }
                 }
             }

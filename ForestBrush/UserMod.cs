@@ -246,6 +246,9 @@ namespace ForestBrush
                         ForestBrush.Instance.ForestBrushPanel.BrushEditSection.SetupFastlist();
                     }
                 });
+                group.AddSpace(10);
+
+                group.AddCheckbox(Translation.Instance.GetTranslation("FOREST-BRUSH-OPTIONS-SINGLETREE-EFFECT"), Settings.PlayEffect, (b) => { Settings.PlayEffect = b; SaveSettings(); });
 
                 group.AddSpace(20);
 

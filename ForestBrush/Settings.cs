@@ -22,7 +22,8 @@ namespace ForestBrush
             SavedInputKey toggleTool,
             bool keepTreesInNewBrush,
             bool ignoreVanillaTrees,
-            bool showInfoTooltip
+            bool showInfoTooltip,
+            bool playEffect
         )
         {
             this.PanelPosX = panelPosX;
@@ -38,6 +39,7 @@ namespace ForestBrush
             this.KeepTreesInNewBrush = keepTreesInNewBrush;
             this.IgnoreVanillaTrees = ignoreVanillaTrees;
             this.ShowInfoTooltip = showInfoTooltip;
+            this.PlayEffect = playEffect;
 
             this.Brushes = forestBrushes.ToList();
             if (this.Brushes.Count == 0)
@@ -77,6 +79,8 @@ namespace ForestBrush
 
         public bool ShowInfoTooltip { get; internal set; }
 
+        public bool PlayEffect { get; internal set; } = true;
+
         public List<Brush> Brushes { get; set; }
 
         public static Settings Default()
@@ -98,6 +102,7 @@ namespace ForestBrush
                 new SavedInputKey("toggleTool", Constants.ModName, SavedInputKey.Encode(KeyCode.B, false, false, true), true),
                 false,
                 false,
+                true,
                 true
             );
         }
@@ -138,22 +143,6 @@ namespace ForestBrush
             {
                 return first;
             }
-        }
-
-        public void Reset()
-        {
-            var defaultSettings = Default();
-
-            this.PanelPosX = defaultSettings.PanelPosX;
-            this.PanelPosY = defaultSettings.PanelPosY;
-            this.BrushShapesOpen = defaultSettings.BrushShapesOpen;
-            this.BrushEditOpen = defaultSettings.BrushEditOpen;
-            this.BrushOptionsOpen = defaultSettings.BrushOptionsOpen;
-            this.ToggleTool = defaultSettings.ToggleTool;
-            this.ShowTreeMeshData = defaultSettings.ShowTreeMeshData;
-            this.Sorting = defaultSettings.Sorting;
-            this.SortingOrder = defaultSettings.SortingOrder;
-            this.FilterStyle = defaultSettings.FilterStyle;
         }
     }
 }

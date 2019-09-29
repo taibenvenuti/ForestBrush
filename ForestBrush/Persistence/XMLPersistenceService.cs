@@ -28,7 +28,8 @@ namespace ForestBrush.Persistence
                 ToggleTool = GetXmlInputKey(settings.ToggleTool),
                 KeepTreesInNewBrush = settings.KeepTreesInNewBrush,
                 IgnoreVanillaTrees = settings.IgnoreVanillaTrees,
-                ShowInfoTooltip = settings.ShowInfoTooltip
+                ShowInfoTooltip = settings.ShowInfoTooltip,
+                PlayEffect = settings.PlayEffect
             };
 
             using (var sw = new StreamWriter(configurationPath))
@@ -63,7 +64,8 @@ namespace ForestBrush.Persistence
                     GetSavedInputKey(xmlSettings.ToggleTool),
                     xmlSettings.KeepTreesInNewBrush,
                     xmlSettings.IgnoreVanillaTrees,
-                    xmlSettings.ShowInfoTooltip
+                    xmlSettings.ShowInfoTooltip,
+                    xmlSettings.PlayEffect
                 );
             }
             else

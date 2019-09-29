@@ -33,6 +33,8 @@ namespace ForestBrush.Persistence
 
         public bool ShowInfoTooltip { get; internal set; }
 
+        public bool PlayEffect { get; internal set; } = true;
+
         public XmlInputKey Search { get; set; }
 
         public XmlInputKey ToggleTool { get; set; }

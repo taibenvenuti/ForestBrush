@@ -38,6 +38,7 @@
     <Translation ID="FOREST-BRUSH-OPTIONS-NEWBRUSH-CLEAR" String="Start with empty brush" />
     <Translation ID="FOREST-BRUSH-OPTIONS-NEWBRUSH-KEEP" String="Keep trees from last brush" />
     <Translation ID="FOREST-BRUSH-OPTIONS-IGNORE-VANILLA" String="Hide vanilla trees" />
+    <Translation ID="FOREST-BRUSH-OPTIONS-SINGLETREE-EFFECT" String="Play 'sound and dust' effect when placing single trees" />
     <Translation ID="FOREST-BRUSH-MODAL-WARNING" String="Warning" />
     <Translation ID="FOREST-BRUSH-MODAL-LIMITREACHED-TITLE" String="Tree limit reached" />
     <Translation ID="FOREST-BRUSH-MODAL-LIMITREACHED-MESSAGE-ONE" String="You've reached the 100 tree limit for this brush. Please remove some trees to add more." />
