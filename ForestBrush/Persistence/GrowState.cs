@@ -52,6 +52,14 @@ namespace ForestBrush.Persistence
         }
 
         public void AfterDeserialize(DataSerializer s) {
+            foreach (uint tree in data) {
+                try {
+                    TreeManager.instance.m_trees.m_buffer[tree].GrowState = 1;
+                } catch (Exception e) {
+                    Debug.LogException(e);
+                    continue;
+                }
+            }
         }
     }
 }

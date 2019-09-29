@@ -15,11 +15,9 @@ namespace ForestBrush
 {
     public class UserMod : LoadingExtensionBase, IUserMod
     {
-        //out of game dependencies
         public static XmlPersistenceService XmlPersistenceService { get; private set; }
         public static Settings Settings { get; private set; }
         public static LoadMode LoadMode;
-        //in game dependecies
         private bool modInstalled = false;
         private OptionsKeyBinding optionKeys;
         private GameObject forestBrushGameObject;
@@ -120,6 +118,7 @@ namespace ForestBrush
         }
 
         private void Unpatch() {
+            Redirector<PositionDetour>.Revert();
             if (Harmony != null) {
                 try {
                     Harmony.UnpatchAll(HarmonyID);
@@ -129,7 +128,6 @@ namespace ForestBrush
                     Harmony = null;
                 }
             }
-            Redirector<PositionDetour>.Revert();
         }
 
         void InstallMod()
@@ -158,7 +156,7 @@ namespace ForestBrush
             }
             if (forestBrushGameObject != null)
             {
-                GameObject.Destroy(forestBrushGameObject);
+                UnityEngine.Object.Destroy(forestBrushGameObject);
             }
             modInstalled = false;
         }

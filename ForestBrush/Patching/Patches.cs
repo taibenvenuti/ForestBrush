@@ -3,14 +3,6 @@ using Harmony;
 
 namespace ForestBrush
 {
-    [HarmonyPatch(typeof(TreeInstance), "GrowState", MethodType.Setter)]
-    public static class SetGrowStatePatch
-    {
-        static void Prefix(ref TreeInstance __instance, ref int value) {
-            if (value == 0) value = 1;
-        }
-    }
-
     [HarmonyPatch(typeof(TreeInstance), "CheckOverlap")]
     public static class CheckOverlapPatch
     {
