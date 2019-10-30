@@ -56,6 +56,8 @@ namespace ForestBrush
         public int ID_Color1 { get; private set; }
         public int ID_Color2 { get; private set; }
 
+        private int RandomModifier { get; set; } = 1;
+
         public Material BrushMaterial { get; private set; }
         private Mesh BoxMesh { get; set; }
         private Dictionary<string, Texture2D> Brushes { get; set; }
@@ -129,22 +131,19 @@ namespace ForestBrush
         }
 
         public void SetBrush(string id) {
-            if (id == null || id == string.Empty)
-                return;
-            if (Brushes.TryGetValue(id, out Texture2D brush)) {
-                SetBrush(brush);
-                Options.BitmapID = id;
-                UserMod.SaveSettings();
-            }
+            if (string.IsNullOrEmpty(id)) return;
+            if (!Brushes.TryGetValue(id, out Texture2D brush)) return;
+            SetBrush(brush);
+            Options.BitmapID = id;
+            UserMod.SaveSettings();
         }
 
         private void SetBrush(Texture2D brush) {
             BrushTexture = brush;
-            if (brush != null) {
-                for (int i = 0; i < 128; i++) {
-                    for (int j = 0; j < 128; j++) {
-                        BrushData[i * 128 + j] = brush.GetPixel(j, i).a;
-                    }
+            if (brush == null) return;
+            for (var i = 0; i < 128; i++) {
+                for (var j = 0; j < 128; j++) {
+                    BrushData[i * 128 + j] = brush.GetPixel(j, i).a;
                 }
             }
         }
@@ -171,6 +170,9 @@ namespace ForestBrush
                 } else if (e.button == 1) {
                     MouseRightDown = true;
                     AxisChanged = false;
+                    if (Size == 1.0f && TreeCount > 0) {
+                        RandomModifier += 1;
+                    }
                 }
             } else if (e.type == EventType.MouseUp) {
                 if (e.button == 0) {
@@ -196,9 +198,9 @@ namespace ForestBrush
                     ShowInfo(true, text);
                 } else if (Size == 1.0f) {
                     if (TreeCount > 0) {
-                        Randomizer tmp = new Randomizer(TreeManager.instance.m_treeCount);
+                        Randomizer tmp = new Randomizer(TreeManager.instance.m_treeCount + RandomModifier);
                         int cost = Container.GetVariation(ref tmp).GetConstructionCost();
-                        if (cost != 0) {
+                        if (UserMod.Settings.ChargeMoney && cost != 0) {
                             string text = StringUtils.SafeFormat(Locale.Get(LocaleID.TOOL_CONSTRUCTION_COST), cost / 100);
                             ShowToolInfo(true, text, MousePosition);
                         } else {
@@ -287,11 +289,11 @@ namespace ForestBrush
                         if (MouseLeftDown != MouseRightDown) ApplyBrush();
                     } else {
                         Randomizer tmp = Randomizer;
-                        Randomizer tmp2 = new Randomizer(TreeManager.instance.m_treeCount);
+                        Randomizer tmp2 = new Randomizer(TreeManager.instance.m_treeCount + RandomModifier);
                         uint item = TreeManager.instance.m_trees.NextFreeItem(ref tmp);
                         TreeInfo treeInfo = Container.GetVariation(ref tmp2);
                         ToolErrors errors = CheckPlacementErrors(treeInfo, output.m_hitPos, item, collidingSegmentBuffer, collidingBuildingBuffer);
-                        bool needMoney = (ToolManager.instance.m_properties.m_mode & ItemClass.Availability.Game) != 0;
+                        bool needMoney = UserMod.Settings.ChargeMoney && (ToolManager.instance.m_properties.m_mode & ItemClass.Availability.Game) != 0;
                         if (needMoney) {
                             int cost = treeInfo.GetConstructionCost();
                             if (cost != 0) {
@@ -321,16 +323,15 @@ namespace ForestBrush
         IEnumerator CreateTree(bool anarchy) {
             if (Errors == ToolErrors.None) {
                 bool success = true;
-                bool needMoney = (ToolManager.instance.m_properties.m_mode & ItemClass.Availability.Game) != 0;
-                Randomizer tmp = new Randomizer(TreeManager.instance.m_treeCount);
+                bool needMoney = UserMod.Settings.ChargeMoney && (ToolManager.instance.m_properties.m_mode & ItemClass.Availability.Game) != 0;
+                Randomizer tmp = new Randomizer(TreeManager.instance.m_treeCount + RandomModifier);
                 TreeInfo treeInfo = Container.GetVariation(ref tmp);
                 if (needMoney) {
                     int cost = treeInfo.GetConstructionCost();
                     success = (cost == 0 || cost == EconomyManager.instance.FetchResource(EconomyManager.Resource.Construction, cost, treeInfo.m_class));
                 }
                 if (success) {
-                    uint tree;
-                    if (TreeManager.instance.CreateTree(out tree, ref Randomizer, treeInfo, MousePosition, true)) {
+                    if (TreeManager.instance.CreateTree(out uint tree, ref Randomizer, treeInfo, MousePosition, true)) {
                         if (anarchy) GrowState.data.Add(tree);
                         if (UserMod.Settings.PlayEffect) TreeTool.DispatchPlacementEffect(MousePosition, false);
                     }
@@ -341,7 +342,7 @@ namespace ForestBrush
 
         public ToolErrors CheckPlacementErrors(TreeInfo info, Vector3 position, uint id, ulong[] collidingSegmentBuffer, ulong[] collidingBuildingBuffer) {
             if (ShiftDown) return ToolErrors.None;
-            Randomizer tmp = new Randomizer(TreeManager.instance.m_treeCount);
+            Randomizer tmp = new Randomizer(TreeManager.instance.m_treeCount + RandomModifier);
             TreeInfo treeInfo = Container.GetVariation(ref tmp);
             Vector3 treePosition = MousePosition;
             treePosition.y = Singleton<TerrainManager>.instance.SampleDetailHeight(treePosition, out float f, out float f2);
@@ -515,7 +516,7 @@ namespace ForestBrush
                 return;
             }
 
-            Randomizer tmp = new Randomizer(TreeManager.instance.m_treeCount);
+            Randomizer tmp = new Randomizer(TreeManager.instance.m_treeCount + RandomModifier);
             TreeInfo info = Container.GetVariation(ref tmp);
             if (!(info is null) && Size == 1.0f && Errors == ToolErrors.None && TreeCount > 0) {
                 Randomizer tmp2 = Randomizer;
@@ -533,7 +534,7 @@ namespace ForestBrush
 
         public override void RenderOverlay(RenderManager.CameraInfo cameraInfo) {
             if (!MouseRayValid || Container is null) return;
-            Randomizer tmp = new Randomizer(TreeManager.instance.m_treeCount);
+            Randomizer tmp = new Randomizer(TreeManager.instance.m_treeCount + RandomModifier);
             TreeInfo info = Container.GetVariation(ref tmp);
             if (!(info is null) && Size == 1.0f) {
                 Color color = TreeCount == 0 ? m_toolController.m_errorColorInfo : GetToolColor(false, Errors != ToolErrors.None);

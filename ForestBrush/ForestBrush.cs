@@ -237,13 +237,13 @@ namespace ForestBrush
             for (uint i = 0; i < treeCount; i++)
             {
                 var tree = PrefabCollection<TreeInfo>.GetLoaded(i);
-                if (tree == null || tree == Container || (UserMod.Settings.IgnoreVanillaTrees && !tree.m_isCustomContent)) continue;
+                if (tree == null || tree == Container || (UserMod.Settings != null && UserMod.Settings.IgnoreVanillaTrees && !tree.m_isCustomContent)) continue;
                 if (tree.m_availableIn != ItemClass.Availability.All)
                 {
                     tree.m_availableIn = ItemClass.Availability.All;
                 }
 
-                if (tree.m_Atlas == null || tree.m_Thumbnail.IsNullOrWhiteSpace()) ImageUtils.CreateThumbnailAtlas(GetName(tree), tree);
+                if (tree.m_Atlas == null || string.IsNullOrEmpty(tree.m_Thumbnail) || tree.m_Thumbnail.IsNullOrWhiteSpace()) ImageUtils.CreateThumbnailAtlas(GetName(tree), tree);
 
                 Trees.Add(tree.name, tree);
                 TreesMeshData.Add(tree.name, new TreeMeshData(tree));

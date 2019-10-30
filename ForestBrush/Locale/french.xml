@@ -39,6 +39,7 @@
     <Translation ID="FOREST-BRUSH-OPTIONS-NEWBRUSH-KEEP" String="Gardez les arbres du dernier pinceau sélectionné" />
     <Translation ID="FOREST-BRUSH-OPTIONS-IGNORE-VANILLA" String="Cacher les arbres du jeu Vanilla" />
     <Translation ID="FOREST-BRUSH-OPTIONS-SINGLETREE-EFFECT" String="Effets visuels et sonores en plaçant les arbres individuellement" />
+    <Translation ID="FOREST-BRUSH-OPTIONS-CHARGE-MONEY" String="Charge de l'argent pour placer les arbres" />
     <Translation ID="FOREST-BRUSH-MODAL-WARNING" String="Attention" />
     <Translation ID="FOREST-BRUSH-MODAL-LIMITREACHED-TITLE" String="Limite d'arbre atteinte" />
     <Translation ID="FOREST-BRUSH-MODAL-LIMITREACHED-MESSAGE-ONE" String="Vous avez atteint la limite de 100 arbres pour ce pinceau. Supprimez quelques arbres pour en ajouter." />

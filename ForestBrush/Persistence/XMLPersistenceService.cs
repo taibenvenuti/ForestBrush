@@ -29,7 +29,8 @@ namespace ForestBrush.Persistence
                 KeepTreesInNewBrush = settings.KeepTreesInNewBrush,
                 IgnoreVanillaTrees = settings.IgnoreVanillaTrees,
                 ShowInfoTooltip = settings.ShowInfoTooltip,
-                PlayEffect = settings.PlayEffect
+                PlayEffect = settings.PlayEffect,
+                ChargeMoney = settings.ChargeMoney
             };
 
             using (var sw = new StreamWriter(configurationPath))
@@ -65,7 +66,8 @@ namespace ForestBrush.Persistence
                     xmlSettings.KeepTreesInNewBrush,
                     xmlSettings.IgnoreVanillaTrees,
                     xmlSettings.ShowInfoTooltip,
-                    xmlSettings.PlayEffect
+                    xmlSettings.PlayEffect,
+                    xmlSettings.ChargeMoney
                 );
             }
             else

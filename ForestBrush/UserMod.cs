@@ -248,13 +248,17 @@ namespace ForestBrush
                 });
                 group.AddSpace(10);
 
-                group.AddCheckbox(Translation.Instance.GetTranslation("FOREST-BRUSH-OPTIONS-SINGLETREE-EFFECT"), Settings.PlayEffect, (b) => { Settings.PlayEffect = b; SaveSettings(); });
+                group.AddCheckbox(Translation.Instance.GetTranslation("FOREST-BRUSH-OPTIONS-SINGLETREE-EFFECT"), Settings.PlayEffect, (b) => { Settings.PlayEffect = b; SaveSettings(); }); 
+                
+                group.AddSpace(10);
+
+                group.AddCheckbox(Translation.Instance.GetTranslation("FOREST-BRUSH-OPTIONS-CHARGE-MONEY"), Settings.ChargeMoney, (b) => { Settings.ChargeMoney = b; SaveSettings(); });
 
                 group.AddSpace(20);
 
                 optionKeys = panel.gameObject.AddComponent<OptionsKeyBinding>();
 
-                group.AddSpace(10);
+                group.AddSpace(10); 
             }
             catch (Exception)
             {

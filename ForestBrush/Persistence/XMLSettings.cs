@@ -35,6 +35,8 @@ namespace ForestBrush.Persistence
 
         public bool PlayEffect { get; internal set; } = true;
 
+        public bool ChargeMoney { get; internal set; } = true;
+
         public XmlInputKey Search { get; set; }
 
         public XmlInputKey ToggleTool { get; set; }

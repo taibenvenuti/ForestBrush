@@ -39,6 +39,7 @@
     <Translation ID="FOREST-BRUSH-OPTIONS-NEWBRUSH-KEEP" String="Mantén los árboles del pincel anterior" />
     <Translation ID="FOREST-BRUSH-OPTIONS-IGNORE-VANILLA" String="Oculta los árboles 'vanilla'" />
     <Translation ID="FOREST-BRUSH-OPTIONS-SINGLETREE-EFFECT" String="Reproduce los efectos audiovisuales al colocar árboles individualmente " />
+    <Translation ID="FOREST-BRUSH-OPTIONS-CHARGE-MONEY" String="Cobrar dinero para sembrar árboles" />
     <Translation ID="FOREST-BRUSH-MODAL-WARNING" String="Advertencia" />
     <Translation ID="FOREST-BRUSH-MODAL-LIMITREACHED-TITLE" String="Limite de árboles alcanzado" />
     <Translation ID="FOREST-BRUSH-MODAL-LIMITREACHED-MESSAGE-ONE" String="Haz alcanzado el limite de 100 arboles por pincel. Porfavor remueve algunos árboles para agregar más." />

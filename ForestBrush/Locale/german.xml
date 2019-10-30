@@ -38,7 +38,8 @@
     <Translation ID="FOREST-BRUSH-OPTIONS-NEWBRUSH-CLEAR" String="Starte mit leerem Pinsel" />
     <Translation ID="FOREST-BRUSH-OPTIONS-NEWBRUSH-KEEP" String="Behalte die Bäume des letzten Pinsels" />
     <Translation ID="FOREST-BRUSH-OPTIONS-IGNORE-VANILLA" String="Standardbäume verstecken" />
-    <Translation ID="FOREST-BRUSH-OPTIONS-SINGLETREE-EFFECT" String="Spielen Sie Sound- und Staubeffekte ab, wenn Sie einzelne Bäume platzieren" />
+    <Translation ID="FOREST-BRUSH-OPTIONS-SINGLETREE-EFFECT" String="Spielt Sound- und Staubeffekte ab, wenn einzelne Bäume platziert werden" />
+    <Translation ID="FOREST-BRUSH-OPTIONS-CHARGE-MONEY" String="Laden Sie Geld für das Platzieren von Bäumen" />
     <Translation ID="FOREST-BRUSH-MODAL-WARNING" String="Warnung" />
     <Translation ID="FOREST-BRUSH-MODAL-LIMITREACHED-TITLE" String="Baum Limit erreicht" />
     <Translation ID="FOREST-BRUSH-MODAL-LIMITREACHED-MESSAGE-ONE" String="Du hast das Limit von 100 Bäumen für diesen Pinsel erreicht. Bitte entferne zunächst Bäume um andere hinzuzufügen." />

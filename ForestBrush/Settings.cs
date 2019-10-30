@@ -23,7 +23,8 @@ namespace ForestBrush
             bool keepTreesInNewBrush,
             bool ignoreVanillaTrees,
             bool showInfoTooltip,
-            bool playEffect
+            bool playEffect,
+            bool chargeMoney
         )
         {
             this.PanelPosX = panelPosX;
@@ -40,7 +41,7 @@ namespace ForestBrush
             this.IgnoreVanillaTrees = ignoreVanillaTrees;
             this.ShowInfoTooltip = showInfoTooltip;
             this.PlayEffect = playEffect;
-
+            this.ChargeMoney = chargeMoney;
             this.Brushes = forestBrushes.ToList();
             if (this.Brushes.Count == 0)
             {
@@ -79,7 +80,9 @@ namespace ForestBrush
 
         public bool ShowInfoTooltip { get; internal set; }
 
-        public bool PlayEffect { get; internal set; } = true;
+        public bool PlayEffect { get; internal set; }
+
+        public bool ChargeMoney { get; internal set; }
 
         public List<Brush> Brushes { get; set; }
 
@@ -102,6 +105,7 @@ namespace ForestBrush
                 new SavedInputKey("toggleTool", Constants.ModName, SavedInputKey.Encode(KeyCode.B, false, false, true), true),
                 false,
                 false,
+                true,
                 true,
                 true
             );
