@@ -442,7 +442,7 @@ namespace ForestBrush
                     float str2Rnd = UnityEngine.Random.Range(0.0f, Tweaker.MaxRandomRange);
                     if (Mathf.PerlinNoise(treePosition.x * noiseScale, treePosition.y * noiseScale) > 0.5 && str2Rnd < Strength * Tweaker.StrengthMultiplier) {
                         if (Singleton<TreeManager>.instance.CreateTree(out uint num25, ref Randomizer, treeInfo, treePosition, false)) {
-                            EconomyManager.instance.FetchResource(EconomyManager.Resource.Construction, 1000, treeInfo.m_class);
+                            if (UserMod.Settings.ChargeMoney) EconomyManager.instance.FetchResource(EconomyManager.Resource.Construction, 1000, treeInfo.m_class);
                         }
                     }
                 }
