@@ -22,7 +22,7 @@ namespace ForestBrush.Persistence
                 }
             }
 
-            if (UserMod.IsModEnabled(1873351912UL, "Tree Precision")) return;
+            if (Patcher.IsModEnabled(1873351912UL, "Tree Precision")) return;
             if (!serializableDataManager.EnumerateData().Contains(PRECISION_ID)) return;
             var data = serializableDataManager.LoadData(PRECISION_ID);
             using (var ms = new MemoryStream(data)) {
@@ -40,7 +40,7 @@ namespace ForestBrush.Persistence
                 serializableDataManager.SaveData(GROWSTATE_ID, data);
             }
 
-            if (UserMod.IsModEnabled(1873351912UL, "Tree Precision")) return;
+            if (Patcher.IsModEnabled(1873351912UL, "Tree Precision")) return;
             using (var ms = new MemoryStream()) {
                 DataSerializer.Serialize(ms, DataSerializer.Mode.Memory, VERSION, new Precision());
                 var data = ms.ToArray();    

@@ -1,10 +1,8 @@
-﻿using ColossalFramework;
-using ColossalFramework.Plugins;
+﻿using CitiesHarmony.API;
+using ColossalFramework;
 using ColossalFramework.UI;
 using ForestBrush.Persistence;
-using ForestBrush.Redirection;
 using ForestBrush.TranslationFramework;
-using Harmony;
 using ICities;
 using System;
 using System.Collections.Generic;
@@ -23,26 +21,14 @@ namespace ForestBrush
         private GameObject forestBrushGameObject;
         private UIDropDown searchLogic;
         private UIDropDown newBrushBehaviour;
-        private HarmonyInstance Harmony { get; set; }
-        private const string HarmonyID = "com.tpb.forestbrush";
 
         public string Name => Constants.ModName;
 
         public string Description => Translation.Instance.GetTranslation("FOREST-BRUSH-MODDESCRIPTION");
 
-        public static bool IsModEnabled(ulong publishedFileID, string modName) {
-            foreach (var plugin in PluginManager.instance.GetPluginsInfo()) {
-                if (plugin.publishedFileID.AsUInt64 == publishedFileID
-                    || plugin.name == modName) {
-                    return plugin.isEnabled;
-                }
-            }
-            return false;
-        }
-
         public void OnEnabled()
         {
-            Patch();
+            HarmonyHelper.DoOnHarmonyReady(() => Patcher.PatchAll());
             InstallOutOfGameDependencies();
 
             if (LoadingManager.exists && LoadingManager.instance.m_loadingComplete)
@@ -59,7 +45,10 @@ namespace ForestBrush
             }
 
             UninstallOutOfGameDependencies();
-            Unpatch();
+            if (HarmonyHelper.IsHarmonyInstalled)
+            {
+                Patcher.UnpatchAll();
+            }
         }
 
         public static bool IsGame = LoadMode == LoadMode.LoadGame || LoadMode == LoadMode.NewGame || LoadMode == LoadMode.NewGameFromScenario;
@@ -102,32 +91,6 @@ namespace ForestBrush
             var settingFiles = (Dictionary<string, SettingsFile>)typeof(GameSettings).GetField("m_SettingsFiles", BindingFlags.NonPublic | BindingFlags.Instance)
                 .GetValue(GameSettings.instance);
             settingFiles.Remove(Constants.ModName);
-        }
-
-        private void Patch() {
-            if (!IsModEnabled(593588108UL, "Prop & Tree Anarchy")) {
-                if (Harmony == null) {
-                    Harmony = HarmonyInstance.Create(HarmonyID);
-                    Harmony.PatchAll(Assembly.GetExecutingAssembly());
-
-                }
-            }
-            if (!IsModEnabled(1873351912UL, "Tree Precision")) {
-                Redirector<PositionDetour>.Deploy();
-            }
-        }
-
-        private void Unpatch() {
-            Redirector<PositionDetour>.Revert();
-            if (Harmony != null) {
-                try {
-                    Harmony.UnpatchAll(HarmonyID);
-                } catch (Exception) {
-                    Debug.LogWarning($"Failed unpatching {HarmonyID}, please notify the mod author.");
-                } finally {
-                    Harmony = null;
-                }
-            }
         }
 
         void InstallMod()
